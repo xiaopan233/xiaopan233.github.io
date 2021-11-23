@@ -1,0 +1,1061 @@
+<!DOCTYPE html>
+
+
+
+  
+
+
+<html class="theme-next mist use-motion" lang="en">
+<head>
+  <meta charset="UTF-8"/>
+<meta http-equiv="X-UA-Compatible" content="IE=edge" />
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1"/>
+<meta name="theme-color" content="#222">
+
+
+
+
+
+
+
+
+
+<meta http-equiv="Cache-Control" content="no-transform" />
+<meta http-equiv="Cache-Control" content="no-siteapp" />
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  
+  <link href="/lib/fancybox/source/jquery.fancybox.css?v=2.1.5" rel="stylesheet" type="text/css" />
+
+
+
+
+
+
+
+<link href="/lib/font-awesome/css/font-awesome.min.css?v=4.6.2" rel="stylesheet" type="text/css" />
+
+<link href="/css/main.css?v=5.1.4" rel="stylesheet" type="text/css" />
+
+
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png?v=5.1.4">
+
+
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32-next.png?v=5.1.4">
+
+
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16-next.png?v=5.1.4">
+
+
+  <link rel="mask-icon" href="/images/logo.svg?v=5.1.4" color="#222">
+
+
+
+
+
+  <meta name="keywords" content="Docker" />
+
+
+
+
+
+  <link rel="alternate" href="/atom.xml" title="Xiaopan233 Blog" type="application/atom+xml" />
+
+
+
+
+
+
+<meta name="description" content="本文首发在 Freebuf。但好像排版没那么好看 233.。。。于是想博客也发一份对照看看，个人感觉还是我这里的排版好看点哈哈哈">
+<meta property="og:type" content="article">
+<meta property="og:title" content="PHPSTORM 调试 Docker内项目">
+<meta property="og:url" content="http://example.com/2021/03/17/2021-03-17-phpstorm-docker/index.html">
+<meta property="og:site_name" content="Xiaopan233 Blog">
+<meta property="og:description" content="本文首发在 Freebuf。但好像排版没那么好看 233.。。。于是想博客也发一份对照看看，个人感觉还是我这里的排版好看点哈哈哈">
+<meta property="og:locale" content="en_US">
+<meta property="og:image" content="http://example.com/2021/03/17/2021-03-17-phpstorm-docker/15.png">
+<meta property="og:image" content="http://example.com/2021/03/17/2021-03-17-phpstorm-docker/8.png">
+<meta property="og:image" content="http://example.com/2021/03/17/2021-03-17-phpstorm-docker/9.png">
+<meta property="og:image" content="http://example.com/2021/03/17/2021-03-17-phpstorm-docker/10.png">
+<meta property="og:image" content="http://example.com/2021/03/17/2021-03-17-phpstorm-docker/11.png">
+<meta property="og:image" content="http://example.com/2021/03/17/2021-03-17-phpstorm-docker/12.png">
+<meta property="og:image" content="http://example.com/2021/03/17/2021-03-17-phpstorm-docker/1.png">
+<meta property="og:image" content="http://example.com/2021/03/17/2021-03-17-phpstorm-docker/2.png">
+<meta property="og:image" content="http://example.com/2021/03/17/2021-03-17-phpstorm-docker/3.png">
+<meta property="og:image" content="http://example.com/2021/03/17/2021-03-17-phpstorm-docker/4.png">
+<meta property="og:image" content="http://example.com/2021/03/17/2021-03-17-phpstorm-docker/5.png">
+<meta property="og:image" content="http://example.com/2021/03/17/2021-03-17-phpstorm-docker/6.png">
+<meta property="og:image" content="http://example.com/2021/03/17/2021-03-17-phpstorm-docker/7.png">
+<meta property="og:image" content="http://example.com/2021/03/17/2021-03-17-phpstorm-docker/8.png">
+<meta property="og:image" content="http://example.com/2021/03/17/2021-03-17-phpstorm-docker/9.png">
+<meta property="og:image" content="http://example.com/2021/03/17/2021-03-17-phpstorm-docker/10.png">
+<meta property="og:image" content="http://example.com/2021/03/17/2021-03-17-phpstorm-docker/11.png">
+<meta property="og:image" content="http://example.com/2021/03/17/2021-03-17-phpstorm-docker/12.png">
+<meta property="og:image" content="http://example.com/2021/03/17/2021-03-17-phpstorm-docker/13.png">
+<meta property="article:published_time" content="2021-03-17T12:04:27.000Z">
+<meta property="article:modified_time" content="2021-03-24T15:33:56.028Z">
+<meta property="article:author" content="Xiaopan233">
+<meta property="article:tag" content="Docker">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="http://example.com/2021/03/17/2021-03-17-phpstorm-docker/15.png">
+
+
+
+<script type="text/javascript" id="hexo.configurations">
+  var NexT = window.NexT || {};
+  var CONFIG = {
+    root: '',
+    scheme: 'Mist',
+    version: '5.1.4',
+    sidebar: {"position":"right","display":"always","offset":12,"b2t":false,"scrollpercent":false,"onmobile":false},
+    fancybox: true,
+    tabs: true,
+    motion: {"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}},
+    duoshuo: {
+      userId: '0',
+      author: 'Author'
+    },
+    algolia: {
+      applicationID: '',
+      apiKey: '',
+      indexName: '',
+      hits: {"per_page":10},
+      labels: {"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}
+    }
+  };
+</script>
+
+
+
+  <link rel="canonical" href="http://example.com/2021/03/17/2021-03-17-phpstorm-docker/"/>
+
+
+
+
+
+  <title>PHPSTORM 调试 Docker内项目 | Xiaopan233 Blog</title>
+  
+
+
+
+
+
+
+
+
+<meta name="generator" content="Hexo 5.4.0"></head>
+
+<body itemscope itemtype="http://schema.org/WebPage" lang="en">
+
+  
+  
+    
+  
+
+  <div class="container sidebar-position-right page-post-detail">
+    <div class="headband"></div>
+
+    <header id="header" class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-wrapper">
+  <div class="site-meta ">
+    
+
+    <div class="custom-logo-site-title">
+      <a href="/"  class="brand" rel="start">
+        <span class="logo-line-before"><i></i></span>
+        <span class="site-title">Xiaopan233 Blog</span>
+        <span class="logo-line-after"><i></i></span>
+      </a>
+    </div>
+      
+        <p class="site-subtitle"></p>
+      
+  </div>
+
+  <div class="site-nav-toggle">
+    <button>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+    </button>
+  </div>
+</div>
+
+<nav class="site-nav">
+  
+
+  
+    <ul id="menu" class="menu">
+      
+        
+        <li class="menu-item menu-item-home">
+          <a href="/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-question-circle"></i> <br />
+            
+            Home
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-tags">
+          <a href="/tags/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-question-circle"></i> <br />
+            
+            Tags
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-categories">
+          <a href="/categories/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-question-circle"></i> <br />
+            
+            Categories
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-archives">
+          <a href="/archives/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-question-circle"></i> <br />
+            
+            Archives
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-sitemap">
+          <a href="/atom.xml" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-question-circle"></i> <br />
+            
+            Sitemap
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-about">
+          <a href="/2020/01/01/about" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-question-circle"></i> <br />
+            
+            About
+          </a>
+        </li>
+      
+
+      
+    </ul>
+  
+
+  
+</nav>
+
+
+
+ </div>
+    </header>
+
+    <main id="main" class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          <div id="content" class="content">
+            
+
+  <div id="posts" class="posts-expand">
+    
+
+<script>
+  var server_url = "http://127.0.0.1/blog_v1/blog_v1.php";
+</script>
+
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
+  
+  
+  
+  <div class="post-block">
+    <link itemprop="mainEntityOfPage" href="http://example.com/2021/03/17/2021-03-17-phpstorm-docker/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="">
+      <meta itemprop="description" content="">
+      <meta itemprop="image" content="/images/avatar.gif">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="Xiaopan233 Blog">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">PHPSTORM 调试 Docker内项目</h1>
+        
+        <div class="post-meta">
+          <span class="post-time">
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">Posted on</span>
+              
+              <time title="Post created" itemprop="dateCreated datePublished" datetime="2021-03-17T20:04:27+08:00">
+                2021-03-17
+              </time>
+            
+
+            
+
+            
+          </span>
+          
+            <span class="post-category" >
+            
+              <span class="post-meta-divider">|</span>
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">In</span>
+              
+              
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/Docker/" itemprop="url" rel="index">
+                    <span itemprop="name">Docker</span>
+                  </a>
+                </span>
+
+                
+                
+              
+            </span>
+          
+          
+            
+          
+
+
+          
+          
+
+          
+
+          
+
+          
+
+        </div>
+      </header>
+    
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        <p>本文首发在 Freebuf。但好像排版没那么好看 233.。。。于是想博客也发一份对照看看，个人感觉还是我这里的排版好看点哈哈哈</p>
+<span id="more"></span>
+
+
+
+<br>
+
+<h1 id="前言"><a href="#前言" class="headerlink" title="前言"></a>前言</h1><p>在做一些CTF的审计题或者复现漏洞时，会得到 Docker 环境。需要我们在 Docker环境中进行代码调试。在 PHP 代码审计中，没有好的调试环境（如 xdebug这类调试工具），单单靠 var_dump 和 debug_print_backtrace 来手撕代码，效率十分低下。而要配好一个调试环境有时也是挺多坑的。俗话说“搭建环境两小时，漏洞复现两分钟”。本文就来简单说说如何使用 PHPSTORM 调试 Docker项目。</p>
+<br>
+
+<p>在开始之前，需要简单了解下 Docker。至少要会最基本的用法。不过由于主要是讲 PHPSTORM 调试的。所以 Docker介绍不会讲太多。若想了解更多的话建议看手册。</p>
+<br>
+
+<h1 id="Docker基本用法"><a href="#Docker基本用法" class="headerlink" title="Docker基本用法"></a>Docker基本用法</h1><p>首先要知道 Docker 最基本的两样东西：<strong>image</strong> 和 <strong>container</strong></p>
+<p><strong>image</strong> 就是镜像，搭建一个 Docker 环境最基本的就是 image。可以<strong>简单理解</strong>为这就是创建虚拟机的那个镜像。</p>
+<p><strong>container</strong> 就是容器。即 依据 image，创建出来的虚拟环境。可以<strong>简单理解</strong>为就是运行着的虚拟机</p>
+<br>
+
+<p>Docker 的配置文件为 Dockerfile。该文件内容为构建 container 的命令。基本命令有：</p>
+<p><strong>FROM</strong> 设置 container 运行在哪个 image 上。必须写在 Dockerfile 的开头。可以在 <a target="_blank" rel="noopener" href="https://hub.docker.com/">Docker Hub</a> 里找适合的 image。</p>
+<p><strong>RUN</strong> 在 image <strong>build</strong> 时执行命令。一般用于安装环境</p>
+<p><strong>CMD</strong> 在 container<strong>刚启动</strong>时执行命令。一般用于启动服务</p>
+<p><strong>COPY</strong> 将宿主机的文件拷贝到 container中</p>
+<p><strong>WORKDIR</strong> 设置工作目录。所有命令都会在这个目录的基础上进行工作</p>
+<br>
+
+<p>了解了上面的三个命令后，我们可以来简单写一个 Dockerfile了。</p>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">#</span><span class="bash">基础 image 为 php:7.3-apache</span></span><br><span class="line">FROM php:7.3-apache</span><br><span class="line"><span class="meta">#</span><span class="bash">安装 xdebug 扩展 并开启</span></span><br><span class="line">RUN pecl install xdebug &amp;&amp; \</span><br><span class="line">	docker-php-ext-enable xdebug</span><br><span class="line"><span class="meta">#</span><span class="bash">将 宿主机的 phpinfo.php 拷贝到 container /var/www/html/phpinfo.php 中</span></span><br><span class="line">COPY ./phpinfo.php /var/www/html/phpinfo.php</span><br></pre></td></tr></table></figure>
+
+<p>写完后在 Dockerfile 的目录里运行</p>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">docker build -t test/testmyphp .</span><br></pre></td></tr></table></figure>
+
+<p>等命令跑完，输入以下命令即可看到创建好的 image</p>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">$</span><span class="bash"> docker image ls</span></span><br><span class="line">REPOSITORY                          TAG                  IMAGE ID            CREATED             SIZE</span><br><span class="line">test/testmyphp                      latest               4931b92274f2        56 seconds ago      413MB</span><br><span class="line">php                                 7.3-apache           b79d423ea1e9        2 months ago        411MB</span><br></pre></td></tr></table></figure>
+
+<p>要想让 container 运行起来，使用如下命令。使用 <code>-p</code> 来指定映射端口，左边是宿舍机端口，右边是 container 端口</p>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">docker run -p 81:80 test/testmyphp</span><br></pre></td></tr></table></figure>
+
+<p>查看运行中的 container</p>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">$</span><span class="bash"> docker container ls</span></span><br><span class="line">CONTAINER ID        IMAGE              PORTS                ......</span><br><span class="line">10b8c28b2f69        test/testmyphp     0.0.0.0:81-&gt;80/tcp   ......</span><br></pre></td></tr></table></figure>
+
+<p>进入 container 的  shell</p>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">$</span><span class="bash"> docker <span class="built_in">exec</span> -it CONTAINER_ID值 bash</span></span><br><span class="line">root@10b8c28b2f69:/var/www/html# </span><br></pre></td></tr></table></figure>
+
+<p>至此，基本的 Docker 环境我们就建好了。接下来研究下如何让 PHPSTORM 调试 Docker 项目</p>
+<br>
+
+<h1 id="调试方式一-Docker挂载调试"><a href="#调试方式一-Docker挂载调试" class="headerlink" title="调试方式一 - Docker挂载调试"></a>调试方式一 - Docker挂载调试</h1><p>这里做测试使用前文的 Dockerfile，需要按照实际情况进行配置添加。</p>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">#</span><span class="bash">基础 image 为 php:7.3-apache</span></span><br><span class="line">FROM php:7.3-apache</span><br><span class="line"><span class="meta">#</span><span class="bash">安装 xdebug 扩展 并开启</span></span><br><span class="line">RUN pecl install xdebug &amp;&amp; \</span><br><span class="line">	docker-php-ext-enable xdebug</span><br><span class="line"><span class="meta">#</span><span class="bash"> !!! 使用一个启动脚本来启动服务 !!!</span></span><br><span class="line">COPY ./start.sh /start.sh</span><br><span class="line">RUN chmod +x /start.sh</span><br><span class="line">CMD [&quot;/start.sh&quot;]</span><br></pre></td></tr></table></figure>
+
+<p>start.sh 内容</p>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">#</span><span class="bash">配置 Xdebug</span></span><br><span class="line">echo &quot;xdebug.client_host = host.docker.internal&quot; &gt;&gt; /usr/local/etc/php/conf.d/docker-php-ext-xdebug.ini</span><br><span class="line">echo &quot;xdebug.client_port = 9003&quot; &gt;&gt; /usr/local/etc/php/conf.d/docker-php-ext-xdebug.ini</span><br><span class="line">echo &quot;xdebug.mode = debug&quot; &gt;&gt; /usr/local/etc/php/conf.d/docker-php-ext-xdebug.ini</span><br><span class="line">echo &quot;xdebug.max_nesting_level = 1000&quot; &gt;&gt; /usr/local/etc/php/conf.d/docker-php-ext-xdebug.ini</span><br><span class="line">echo &quot;xdebug.discover_client_host = true&quot; &gt;&gt; /usr/local/etc/php/conf.d/docker-php-ext-xdebug.ini</span><br><span class="line"><span class="meta">#</span><span class="bash">重启 apache ssh</span></span><br><span class="line">service apache2 restart</span><br></pre></td></tr></table></figure>
+
+<p>重建 image：</p>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">#</span><span class="bash">最好先删掉之前的再重建</span></span><br><span class="line">docker image rm IMAGE值 -f</span><br><span class="line">docker build -t test/testmyphp .</span><br></pre></td></tr></table></figure>
+
+<p>重建完先不急着跑 container。先定位到我们的项目代码位置</p>
+<img src="/2021/03/17/2021-03-17-phpstorm-docker/15.png" width="500px">
+
+<p>使用 Docker 的 <em>Bind mounts</em> 技术。将宿主机的项目目录映射到 container 的网站目录下</p>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">docker run -p 81:80 --mount type=bind,source=/home/xp/test_docker/test_program,target=/var/www/html test/testmyphp</span><br></pre></td></tr></table></figure>
+
+<p>至此，调试环境所需要的服务就安装好了，接下来配置 PHPSTORM。</p>
+<br>
+
+<h2 id="配置-PHPSTORM"><a href="#配置-PHPSTORM" class="headerlink" title="配置 PHPSTORM"></a>配置 PHPSTORM</h2><p>直接使用 <code>Open</code> 打开项目</p>
+<br>
+
+<p><strong>配置 目录映射</strong></p>
+<p>进入 <em>File -&gt; Settings -&gt; Languages &amp; Frameworks -&gt; PHP -&gt; Servers</em>。配置目录映射</p>
+<p>注意一定要把 <em>Use path mappings</em> 的勾勾上，才能配置目录映射</p>
+<p><em>Absolute path on the server</em>  是要手动打上服务器路径的</p>
+<img src="/2021/03/17/2021-03-17-phpstorm-docker/8.png" width="800px">
+
+
+
+<p><strong>设置Xdebug端口</strong></p>
+<p>进入 <em>File -&gt; Settings -&gt; Languages &amp; Frameworks -&gt; PHP</em> -&gt; Debug。设置 <em>Xdebug Debug port</em> 为 9003。和 php 配置一致。</p>
+<img src="/2021/03/17/2021-03-17-phpstorm-docker/9.png" width="800px">
+
+<p><strong>配置一个 Run/Debug Configuration</strong></p>
+<p>点击 PHPSTORM 右上角的 *Add Configuration….*。进入配置面，新增一个 PHP Web Page。并进行如下简单的配置即可（改名字设url 路径）</p>
+<img src="/2021/03/17/2021-03-17-phpstorm-docker/10.png" width="900px">
+
+<p><strong>启动 PHP Debug Listening</strong></p>
+<p>直接点击 PHPSTROM 右上角的 <em>小电话</em> ，即可开启监听</p>
+<img src="/2021/03/17/2021-03-17-phpstorm-docker/11.png" width="500px">
+
+<p><strong>验证</strong></p>
+<p>在 php文件上打上断点，点击 右上角 甲壳虫样式的 Debug按钮。即可成功断点</p>
+<img src="/2021/03/17/2021-03-17-phpstorm-docker/12.png" width="500px">
+
+
+
+<br>
+
+<h1 id="调试方式二-ssh-隧道"><a href="#调试方式二-ssh-隧道" class="headerlink" title="调试方式二 - ssh 隧道"></a>调试方式二 - ssh 隧道</h1><p>这种方式不仅仅可以用在 <strong>Docker 环境</strong> 上，同样可以用在 <strong>远程服务器</strong> 上。缺点就是要在 container 里头安装许多额外服务。</p>
+<br>
+
+<h2 id="配置Dockerfile"><a href="#配置Dockerfile" class="headerlink" title="配置Dockerfile"></a>配置Dockerfile</h2><ol>
+<li>安装ssh服务。 PHPSTORM需要 ssh 来进行目录映射，不然无法成功 Debug</li>
+<li>安装 xdebug。这是调试的基础扩展组件</li>
+<li>设置 ssh 允许 root 登陆。毕竟只是个 docker 调试环境，就不弄那么麻烦了。当然如果是线上业务啥的当然要做好权限分配。</li>
+<li>修改 root密码。毕竟不知道密码也无法连接</li>
+<li>启动 ssh 服务</li>
+<li>重启 apache 服务</li>
+</ol>
+<p>这里做测试使用前文的 Dockerfile，需要按照实际情况进行配置添加。</p>
+<p>修改前文的 Dockerfile。</p>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">#</span><span class="bash">基础 image 为 php:7.3-apache</span></span><br><span class="line">FROM php:7.3-apache</span><br><span class="line"></span><br><span class="line">ENV APACHE_DOCUMENT_ROOT /var/www/html</span><br><span class="line"><span class="meta">#</span><span class="bash">安装 ssh 服务</span></span><br><span class="line">RUN apt-get update &amp;&amp; \</span><br><span class="line">	apt-get install ssh -y</span><br><span class="line"><span class="meta">#</span><span class="bash">安装 xdebug 扩展 并开启</span></span><br><span class="line">RUN pecl install xdebug &amp;&amp; \</span><br><span class="line">	docker-php-ext-enable xdebug</span><br><span class="line"><span class="meta">#</span><span class="bash">将宿主机的 phpinfo.php 拷贝到 container /var/www/html/phpinfo.php 中</span></span><br><span class="line">COPY ./phpinfo.php /var/www/html/phpinfo.php</span><br><span class="line"><span class="meta">#</span><span class="bash"> !!! 使用一个启动脚本来完成流程 3 4 5 的工作 !!!</span></span><br><span class="line">COPY ./start.sh /start.sh</span><br><span class="line">RUN chmod +x /start.sh</span><br><span class="line">CMD [&quot;/start.sh&quot;]</span><br></pre></td></tr></table></figure>
+
+<p>start.sh 内容</p>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">#</span><span class="bash">!/bin/bash</span></span><br><span class="line"><span class="meta">#</span><span class="bash">设置 ssh 允许 root 登录</span></span><br><span class="line">echo &#x27;PermitRootLogin yes&#x27; &gt;&gt; /etc/ssh/sshd_config</span><br><span class="line"><span class="meta">#</span><span class="bash">修改root密码</span></span><br><span class="line">echo root:123456 | chpasswd</span><br><span class="line"><span class="meta">#</span><span class="bash">配置 Xdebug。Xdebug 3 的配置如下，和 Xdebug 2不太一样</span></span><br><span class="line">echo &quot;xdebug.client_host = host.docker.internal&quot; &gt;&gt; /usr/local/etc/php/conf.d/docker-php-ext-xdebug.ini</span><br><span class="line">echo &quot;xdebug.client_port = 9003&quot; &gt;&gt; /usr/local/etc/php/conf.d/docker-php-ext-xdebug.ini</span><br><span class="line">echo &quot;xdebug.mode = debug&quot; &gt;&gt; /usr/local/etc/php/conf.d/docker-php-ext-xdebug.ini</span><br><span class="line">echo &quot;xdebug.max_nesting_level = 1000&quot; &gt;&gt; /usr/local/etc/php/conf.d/docker-php-ext-xdebug.ini</span><br><span class="line">echo &quot;xdebug.discover_client_host = true&quot; &gt;&gt; /usr/local/etc/php/conf.d/docker-php-ext-xdebug.ini</span><br><span class="line"><span class="meta">#</span><span class="bash">重启 apache ssh</span></span><br><span class="line">service apache2 restart</span><br><span class="line">service ssh restart</span><br><span class="line"><span class="meta">#</span><span class="bash">要加上这个，不然 container 运行完就停止了。</span></span><br><span class="line">sleep infinity</span><br></pre></td></tr></table></figure>
+
+<p>重建 image：</p>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">#</span><span class="bash">最好先删掉之前的再重建</span></span><br><span class="line">docker image rm IMAGE值 -f</span><br><span class="line">docker build -t test/testmyphp .</span><br></pre></td></tr></table></figure>
+
+<p>启动 container：</p>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">docker run -p 81:80 -p 2222:22 test/testmyphp</span><br></pre></td></tr></table></figure>
+
+<p>至此，调试环境所需要的服务就安装好了，接下来配置 PHPSTORM。</p>
+<br>
+
+<h2 id="配置-PHPSTORM-1"><a href="#配置-PHPSTORM-1" class="headerlink" title="配置 PHPSTORM"></a>配置 PHPSTORM</h2><p>打开 PHPSTORM，新建一个 Project。选择 <em>New Project from Existing Files</em></p>
+<img src="/2021/03/17/2021-03-17-phpstorm-docker/1.png" width="500px">
+
+<p>选择 <em>Web server is on remote host</em>。</p>
+<img src="/2021/03/17/2021-03-17-phpstorm-docker/2.png" width="500px">
+
+<p>一路 <em>Next</em>。走到配置 <em>Remote Server</em></p>
+<img src="/2021/03/17/2021-03-17-phpstorm-docker/3.png" width="500px">
+
+<p>然后又是一路 <em>Next</em> 即可。</p>
+<p>配置完成后，将能看到我们的项目。</p>
+<img src="/2021/03/17/2021-03-17-phpstorm-docker/4.png" width="500px">
+
+<p>此时是不能直接进行代码调试的。我们要做以下工作</p>
+<ol>
+<li>配置 CLI Interpreter</li>
+<li>配置目录映射</li>
+<li>设置Xdebug端口</li>
+<li>配置一个 Run/Debug Configuration</li>
+<li>启动 PHP Debug Listening</li>
+</ol>
+<p><em>ps：由于有些步骤是一样的，就直接拉上文的截图过来了。</em></p>
+<p><strong>配置 CLI Interpreter</strong></p>
+<p>进入 <em>File -&gt; Settings -&gt; Languages &amp; Frameworks -&gt; PHP</em>。设置 CLI Interpreter</p>
+<img src="/2021/03/17/2021-03-17-phpstorm-docker/5.png" width="500px">
+
+<p>新建一个 <em>CLI Interpreter</em>。选择 <em>From Docker, Vagrant, VM, WSL,Remote….</em></p>
+<p>这里我们可以填 SSH，也可以直接选择 Docker。我这里用的是 SSH</p>
+<img src="/2021/03/17/2021-03-17-phpstorm-docker/6.png" width="500px">
+
+<p>设置 PHP executable 路径。不知道可以进入 container 中使用 <code>whereis php</code> 进行搜索</p>
+<img src="/2021/03/17/2021-03-17-phpstorm-docker/7.png" width="500px">
+
+
+
+<p><strong>配置 目录映射</strong></p>
+<p>进入 <em>File -&gt; Settings -&gt; Languages &amp; Frameworks -&gt; PHP -&gt; Servers</em>。配置目录映射</p>
+<p>注意一定要把 <em>Use path mappings</em> 的勾勾上，才能配置目录映射</p>
+<p><em>Absolute path on the server</em>  是要手动打上服务器路径的</p>
+<img src="/2021/03/17/2021-03-17-phpstorm-docker/8.png" width="500px">
+
+
+
+<p><strong>设置Xdebug端口</strong></p>
+<p>进入 <em>File -&gt; Settings -&gt; Languages &amp; Frameworks -&gt; PHP</em> -&gt; Debug。设置 <em>Xdebug Debug port</em> 为 9003。和 php 配置一致。</p>
+<img src="/2021/03/17/2021-03-17-phpstorm-docker/9.png" width="500px">
+
+
+
+<p><strong>配置一个 Run/Debug Configuration</strong></p>
+<p>点击 PHPSTORM 右上角的 *Add Configuration….*。进入配置面，新增一个 PHP Web Page。并进行如下简单的配置即可（改名字设url 路径）</p>
+<img src="/2021/03/17/2021-03-17-phpstorm-docker/10.png" width="500px">
+
+
+
+<p><strong>启动 PHP Debug Listening</strong></p>
+<p>直接点击 PHPSTROM 右上角的 <em>小电话</em> ，即可开启监听</p>
+<img src="/2021/03/17/2021-03-17-phpstorm-docker/11.png" width="500px">
+
+
+
+<p><strong>验证</strong></p>
+<p>在 php文件上打上断点，点击 右上角 甲壳虫样式的 Debug按钮。即可成功断点</p>
+<img src="/2021/03/17/2021-03-17-phpstorm-docker/12.png" width="500px">
+
+
+
+<p><strong>扩展 - 远程服务器调试</strong></p>
+<p>这里可以扩展以一下，如果调试目标是远程服务器而不是本地 Docker，该如何配置？</p>
+<p>其实和上面的步骤一样的，只是 Xdebug 监听的流量我们要做修改下。</p>
+<p><strong>简单说说 Xdebug 监听的原理：</strong></p>
+<p>当 php-xdebug 接收到带有 XDEBUG_SESSION_START 的请求时，将会把当前的 Debug信 息发送给 xdebug 中配置的 client_host 和 cilent_port。</p>
+<p>在我们的 start.sh 启动文件中，设置如下：</p>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">xdebug.client_host = host.docker.internal</span><br><span class="line">xdebug.client_port = 9003</span><br></pre></td></tr></table></figure>
+
+<p><code>host.docker.internal</code> 值在 Xdebug 中是自动将请求端的 ip 设置为 调试端，即自动将 Debug信息 发送给任何请求IP。</p>
+<p>而 <code>xdebug.client_port</code> 的值是 Debug信息 被发送至的端口。</p>
+<br>
+
+<p>我们可以想下，在本地，xdebug端是能访问到到我们请求端的 ip 和 端口 的，因为都是同一局域网。</p>
+<p>但若调试的是远程服务器，由于公网和内网的原因，公网服务器是无法发送 Debug信息 调试端的（除非调试端也在公网上。。）</p>
+<br>
+
+<p>所以我们需要将 <code>xdebug.client_host</code> 设置为 <code>127.0.0.1</code>，让 xdebug 转发 Debug信息 到本地的 9003 端口中。</p>
+<p>接着使用 ssh 隧道进行端口转发，把调试端监听的 9003 端口映射到 服务端的 9003 上。这样就能接收到 xdebug 转发的 Debug信息了。这一点使用 ssh 隧道是可以做到的。</p>
+<br>
+
+<p>我们来测试下，首先修改 php.ini。让 <code>xdebug.client_host</code> 值为 <code>127.0.0.1</code></p>
+<img src="/2021/03/17/2021-03-17-phpstorm-docker/13.png" width="500px">
+
+
+
+<p>进行 ssh隧道端口转发</p>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">ssh -N -R 远程IP:远程端口:127.0.0.1:9003 root@远程IP</span><br></pre></td></tr></table></figure>
+
+<p>这样就能使用调试远程程序了。</p>
+<br>
+
+<h1 id="Reference："><a href="#Reference：" class="headerlink" title="Reference："></a>Reference：</h1><p><a target="_blank" rel="noopener" href="https://docs.docker.com/engine/reference/builder/">https://docs.docker.com/engine/reference/builder/</a></p>
+<p><a target="_blank" rel="noopener" href="https://hub.docker.com/_/php">https://hub.docker.com/_/php</a></p>
+
+      
+    </div>
+    
+    
+    
+
+    
+
+    
+
+    
+
+    <footer class="post-footer">
+      
+        <div class="post-tags">
+          
+            <a href="/tags/Docker/" rel="tag"># Docker</a>
+          
+        </div>
+      
+
+      
+      
+      
+
+      
+        <div class="post-nav">
+          <div class="post-nav-next post-nav-item">
+            
+              <a href="/2021/03/15/2021-03-14-VNCTF2021-log/" rel="next" title="CTF玩耍系列[2] - [VNCTF2021] WEB realezjvav && Ez_game">
+                <i class="fa fa-chevron-left"></i> CTF玩耍系列[2] - [VNCTF2021] WEB realezjvav && Ez_game
+              </a>
+            
+          </div>
+
+          <span class="post-nav-divider"></span>
+
+          <div class="post-nav-prev post-nav-item">
+            
+              <a href="/2021/03/24/2021-03-24-php-design-patterns/" rel="prev" title="PHP设计模式学习">
+                PHP设计模式学习 <i class="fa fa-chevron-right"></i>
+              </a>
+            
+          </div>
+        </div>
+      
+
+      
+      
+    </footer>
+  </div>
+  
+  
+  
+  </article>
+
+
+
+
+
+    <div class="post-spread">
+      
+    </div>
+  </div>
+
+
+          </div>
+          
+
+
+          
+
+  
+
+
+
+        </div>
+        
+          
+  
+  <div class="sidebar-toggle">
+    <div class="sidebar-toggle-line-wrap">
+      <span class="sidebar-toggle-line sidebar-toggle-line-first"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-middle"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-last"></span>
+    </div>
+  </div>
+
+  <aside id="sidebar" class="sidebar">
+    
+    <div class="sidebar-inner">
+
+      
+
+      
+        <ul class="sidebar-nav motion-element">
+          <li class="sidebar-nav-toc sidebar-nav-active" data-target="post-toc-wrap">
+            Table of Contents
+          </li>
+          <li class="sidebar-nav-overview" data-target="site-overview-wrap">
+            Overview
+          </li>
+        </ul>
+      
+
+      <section class="site-overview-wrap sidebar-panel">
+        <div class="site-overview">
+          <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+            
+              <p class="site-author-name" itemprop="name"></p>
+              <p class="site-description motion-element" itemprop="description"></p>
+          </div>
+
+          <nav class="site-state motion-element">
+
+            
+              <div class="site-state-item site-state-posts">
+              
+                <a href="/archives/">
+              
+                  <span class="site-state-item-count">25</span>
+                  <span class="site-state-item-name">posts</span>
+                </a>
+              </div>
+            
+
+            
+              
+              
+              <div class="site-state-item site-state-categories">
+                <a href="/categories/index.html">
+                  <span class="site-state-item-count">21</span>
+                  <span class="site-state-item-name">categories</span>
+                </a>
+              </div>
+            
+
+            
+              
+              
+              <div class="site-state-item site-state-tags">
+                <a href="/tags/index.html">
+                  <span class="site-state-item-count">20</span>
+                  <span class="site-state-item-name">tags</span>
+                </a>
+              </div>
+            
+
+          </nav>
+
+          
+            <div class="feed-link motion-element">
+              <a href="/atom.xml" rel="alternate">
+                <i class="fa fa-rss"></i>
+                RSS
+              </a>
+            </div>
+          
+
+          
+            <div class="links-of-author motion-element">
+                
+                  <span class="links-of-author-item">
+                    <a href="https://github.com/xiaopan233" target="_blank" title="GitHub">
+                      
+                        <i class="fa fa-fw fa-github"></i>GitHub</a>
+                  </span>
+                
+                  <span class="links-of-author-item">
+                    <a href="https://forum.butian.net/people/483" target="_blank" title="奇安信攻防社区">
+                      
+                        <i class="fa fa-fw fa-globe"></i>奇安信攻防社区</a>
+                  </span>
+                
+                  <span class="links-of-author-item">
+                    <a href="https://www.anquanke.com/member.html?memberId=144071" target="_blank" title="安全客">
+                      
+                        <i class="fa fa-fw fa-globe"></i>安全客</a>
+                  </span>
+                
+                  <span class="links-of-author-item">
+                    <a href="https://www.freebuf.com/author/xiaopan233" target="_blank" title="Freebuf">
+                      
+                        <i class="fa fa-fw fa-globe"></i>Freebuf</a>
+                  </span>
+                
+                  <span class="links-of-author-item">
+                    <a href="https://blog.csdn.net/xiaopan233/" target="_blank" title="CSDN">
+                      
+                        <i class="fa fa-fw fa-globe"></i>CSDN</a>
+                  </span>
+                
+            </div>
+          
+
+          
+          
+
+          
+          
+            <div class="links-of-blogroll motion-element links-of-blogroll-block">
+              <div class="links-of-blogroll-title">
+                <i class="fa  fa-fw fa-link"></i>
+                友链
+              </div>
+              <ul class="links-of-blogroll-list">
+                
+                  <li class="links-of-blogroll-item">
+                    <a href="https://hui3c.club/" title="Hui3c 窝" target="_blank">Hui3c 窝</a>
+                  </li>
+                
+                  <li class="links-of-blogroll-item">
+                    <a href="https://www.noerrorp.com/" title="YouGe的技术笔记" target="_blank">YouGe的技术笔记</a>
+                  </li>
+                
+                  <li class="links-of-blogroll-item">
+                    <a href="https://www.jingqingg.com/" title="惊青の小窝" target="_blank">惊青の小窝</a>
+                  </li>
+                
+                  <li class="links-of-blogroll-item">
+                    <a href="https://blog.luolingjiang.com/" title="洛翎酱的小窝" target="_blank">洛翎酱的小窝</a>
+                  </li>
+                
+              </ul>
+            </div>
+          
+
+          
+
+        </div>
+      </section>
+
+      
+      <!--noindex-->
+        <section class="post-toc-wrap motion-element sidebar-panel sidebar-panel-active">
+          <div class="post-toc">
+
+            
+              
+            
+
+            
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#%E5%89%8D%E8%A8%80"><span class="nav-number">1.</span> <span class="nav-text">前言</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#Docker%E5%9F%BA%E6%9C%AC%E7%94%A8%E6%B3%95"><span class="nav-number">2.</span> <span class="nav-text">Docker基本用法</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#%E8%B0%83%E8%AF%95%E6%96%B9%E5%BC%8F%E4%B8%80-Docker%E6%8C%82%E8%BD%BD%E8%B0%83%E8%AF%95"><span class="nav-number">3.</span> <span class="nav-text">调试方式一 - Docker挂载调试</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#%E9%85%8D%E7%BD%AE-PHPSTORM"><span class="nav-number">3.1.</span> <span class="nav-text">配置 PHPSTORM</span></a></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#%E8%B0%83%E8%AF%95%E6%96%B9%E5%BC%8F%E4%BA%8C-ssh-%E9%9A%A7%E9%81%93"><span class="nav-number">4.</span> <span class="nav-text">调试方式二 - ssh 隧道</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#%E9%85%8D%E7%BD%AEDockerfile"><span class="nav-number">4.1.</span> <span class="nav-text">配置Dockerfile</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E9%85%8D%E7%BD%AE-PHPSTORM-1"><span class="nav-number">4.2.</span> <span class="nav-text">配置 PHPSTORM</span></a></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#Reference%EF%BC%9A"><span class="nav-number">5.</span> <span class="nav-text">Reference：</span></a></li></ol></div>
+            
+
+          </div>
+        </section>
+      <!--/noindex-->
+      
+
+      
+
+    </div>
+  </aside>
+
+
+        
+      </div>
+    </main>
+
+    <footer id="footer" class="footer">
+      <div class="footer-inner">
+        <div class="copyright">&copy; <span itemprop="copyrightYear">2021</span>
+  <span class="with-love">
+    <i class="fa fa-user"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">Xiaopan233</span>
+
+  
+</div>
+
+
+  <div class="powered-by">Powered by <a class="theme-link" target="_blank" href="https://hexo.io">Hexo</a></div>
+
+
+
+  <span class="post-meta-divider">|</span>
+
+
+
+  <div class="theme-info">Theme &mdash; <a class="theme-link" target="_blank" href="https://github.com/iissnan/hexo-theme-next">NexT.Mist</a> v5.1.4</div>
+
+
+
+
+        
+
+
+
+
+
+
+
+        
+      </div>
+    </footer>
+
+    
+      <div class="back-to-top">
+        <i class="fa fa-arrow-up"></i>
+        
+      </div>
+    
+
+    
+
+  </div>
+
+  
+
+<script type="text/javascript">
+  if (Object.prototype.toString.call(window.Promise) !== '[object Function]') {
+    window.Promise = null;
+  }
+</script>
+
+
+
+
+
+
+
+
+
+  
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  
+    <script type="text/javascript" src="/lib/jquery/index.js?v=2.1.3"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/fastclick/lib/fastclick.min.js?v=1.0.6"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/jquery_lazyload/jquery.lazyload.js?v=1.9.7"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/velocity/velocity.min.js?v=1.2.1"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/velocity/velocity.ui.min.js?v=1.2.1"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/fancybox/source/jquery.fancybox.pack.js?v=2.1.5"></script>
+  
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/utils.js?v=5.1.4"></script>
+
+  <script type="text/javascript" src="/js/src/motion.js?v=5.1.4"></script>
+
+
+
+  
+  
+
+  
+  <script type="text/javascript" src="/js/src/scrollspy.js?v=5.1.4"></script>
+<script type="text/javascript" src="/js/src/post-details.js?v=5.1.4"></script>
+
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/bootstrap.js?v=5.1.4"></script>
+
+
+
+  
+
+
+  
+
+
+
+
+	
+
+
+
+
+
+  
+
+
+
+
+
+  
+
+
+
+
+
+
+
+
+
+
+
+
+  
+
+
+
+
+
+  
+
+  
+
+  
+
+  
+  
+
+  
+
+  
+
+  
+
+</body>
+</html>

