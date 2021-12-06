@@ -6,7 +6,7 @@
   <link href="http://example.com/atom.xml" rel="self"/>
   
   <link href="http://example.com/"/>
-  <updated>2021-09-04T11:27:06.525Z</updated>
+  <updated>2021-12-06T15:22:36.539Z</updated>
   <id>http://example.com/</id>
   
   <author>
@@ -15,6 +15,31 @@
   </author>
   
   <generator uri="https://hexo.io/">Hexo</generator>
+  
+  <entry>
+    <title>博客跑路半年，简单说下这半年干了嘛</title>
+    <link href="http://example.com/2021/12/06/2021-12-06-talk/"/>
+    <id>http://example.com/2021/12/06/2021-12-06-talk/</id>
+    <published>2021-12-06T13:43:06.000Z</published>
+    <updated>2021-12-06T15:22:36.539Z</updated>
+    
+    <content type="html"><![CDATA[<p>大概6月份吧。把域名的实名注销掉了。原因是之前备案时提供的ip早就释放掉了。担心别人用着那个ip，绑的实名却是我这里。于是乎，就注销了实名。然后又把服务器重装了下。嗯。然后就一直懒得弄了。</p><p>然后直到最近，才把博客再搭起来。因为懒得配服务器，博客直接放<code>github.io</code>了。再把原先域名的CNAME一指，完事。多简单。</p><p><strong>简单梳理下这半年干了啥</strong></p><p>6-8月，放暑假。在家玩玩魔兽，看看番，学了学Java、车、烹饪。最大收获是大概搞懂了RMI、过了科二、能搓一两个还能看的面包和蛋糕。。嗯。。可以说又是荒废了一个暑假</p><p>9月，因为之前OSCP考试挂了。所以打了一个月vulnhub靶机。约考10月5号，准备考试。</p><p>10月至今，幸好，OSCP过了。不然又得去水文赚补考费了。过了之后。照常在学校学学Java，这样。简单一想。我好像也没学啥。啧，，懒得梳理了。学习时写的文，，有空再传到博客来吧。我好懒 = =</p><p><strong>Todo</strong></p><p>今天无意翻了翻三梦师傅的博客。看到师傅执行过ARTS，即每周至少做一个算法题(Algorithm)；每周阅读点评一篇英语技术文章(Review)；每周学习至少一个技术技巧(Tip)；每周分享一篇有观点思考的技术文章(Share)。</p><p>我也想试试哈哈哈。降低下标准。我来试下”WRTS”。即：</p><p>W: 每周至少复现一个漏洞</p><p>R: 每周至少阅读一篇英语技术文章，分析并写出理解</p><p>T: 每周至少学习一个技术技巧</p><p>S: 每周分享一篇技术文章</p><p>嗯，，，感觉，，还行，不算太难吧哈哈哈哈。</p><p>就这样趴</p>]]></content>
+    
+    
+      
+      
+    <summary type="html">&lt;p&gt;大概6月份吧。把域名的实名注销掉了。原因是之前备案时提供的ip早就释放掉了。担心别人用着那个ip，绑的实名却是我这里。于是乎，就注销了实名。然后又把服务器重装了下。嗯。然后就一直懒得弄了。&lt;/p&gt;
+&lt;p&gt;然后直到最近，才把博客再搭起来。因为懒得配服务器，博客直接放&lt;code</summary>
+      
+    
+    
+    
+    <category term="life" scheme="http://example.com/categories/life/"/>
+    
+    
+    <category term="life" scheme="http://example.com/tags/life/"/>
+    
+  </entry>
   
   <entry>
     <title>ysoserial学习之番外 - CommonsCollections1 transformedmap链</title>
@@ -535,28 +560,6 @@
     
     
     <category term="免杀" scheme="http://example.com/tags/%E5%85%8D%E6%9D%80/"/>
-    
-  </entry>
-  
-  <entry>
-    <title>初涉免杀的一些小想法</title>
-    <link href="http://example.com/2020/12/13/2020-12-13-sundry/"/>
-    <id>http://example.com/2020/12/13/2020-12-13-sundry/</id>
-    <published>2020-12-13T14:53:47.000Z</published>
-    <updated>2021-01-04T06:11:46.786Z</updated>
-    
-    <content type="html"><![CDATA[<p>前两天心血来潮尝试玩了下Webshell免杀， 二进制免杀。得出结论Webshell免杀有手就行 [手动狗头]。二进制刚刚初学，推荐 TideSec 的文章：</p><p><a href="https://github.com/TideSec/BypassAntiVirus">https://github.com/TideSec/BypassAntiVirus</a></p><span id="more"></span><p>我写的加载器是用 C 写的，简单学了下 XOR 加密、反沙箱和进程注入。实战用师弟的电脑可过  Avast [doge]</p><p>这里有个小问题：360在虚拟机里居然不检测我的马子，但是物理机一下载就秒杀。。。真是奇了怪了。盲猜 360 有虚拟机检测机制</p><p>怼了一会360。</p><p><strong>发现一些些规律：</strong></p><p>1、一层 XOR 的 shellcode 单单放在那里就会被杀</p><p>2、用 C 写了个 Socket 客户端，就单单创建 socket 套接都会被 360 杀</p><p>我写的马带反沙箱、异或值为 31。下载被360秒杀。师弟的就一个 异或，但异或值为 \x71，比我的异或值大很多。下载360识别为未知文件不杀，但执行被杀</p><p><strong>猜测：</strong></p><p>360可能检测了 cs shellcode 的某些特征值，病毒码我已经改成自定义的了应该不是问题。盲猜检测了 shellcode 长度以及 360 尝试过进行 XOR 解密。</p><p><strong>对策：</strong></p><p>现在先把 OSCP 干完。干完后回头再来看看免杀：</p><p><strong>todo：</strong></p><p>1、抓 360 的流量，尝试拦截其自动上传恶意程序，随便看看他是怎么发样本出去的，他认为的特征值有什么。就可以对症下药了</p><p>2、尝试自行修改 cs 的源码，生成的 shellcode 都是固定长度的不太好，尝试修改下。如果能做到内存中分段解密更妙了</p><p>结果玩免杀玩上头了，结果三天没摸 OSCP。。。白浪费了三天的 OSCP lab 时间。。。呜呜呜</p>]]></content>
-    
-    
-    <summary type="html">&lt;p&gt;前两天心血来潮尝试玩了下Webshell免杀， 二进制免杀。得出结论Webshell免杀有手就行 [手动狗头]。二进制刚刚初学，推荐 TideSec 的文章：&lt;/p&gt;
-&lt;p&gt;&lt;a href=&quot;https://github.com/TideSec/BypassAntiVirus&quot;&gt;https://github.com/TideSec/BypassAntiVirus&lt;/a&gt;&lt;/p&gt;</summary>
-    
-    
-    
-    <category term="杂谈" scheme="http://example.com/categories/%E6%9D%82%E8%B0%88/"/>
-    
-    
-    <category term="Bypass AV" scheme="http://example.com/tags/Bypass-AV/"/>
     
   </entry>
   
