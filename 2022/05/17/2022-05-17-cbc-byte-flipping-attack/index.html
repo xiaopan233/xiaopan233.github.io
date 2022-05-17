@@ -1,0 +1,903 @@
+<!DOCTYPE html>
+
+
+
+  
+
+
+<html class="theme-next mist use-motion" lang="en">
+<head>
+  <meta charset="UTF-8"/>
+<meta http-equiv="X-UA-Compatible" content="IE=edge" />
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1"/>
+<meta name="theme-color" content="#222">
+
+
+
+
+
+
+
+
+
+<meta http-equiv="Cache-Control" content="no-transform" />
+<meta http-equiv="Cache-Control" content="no-siteapp" />
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  
+  <link href="/lib/fancybox/source/jquery.fancybox.css?v=2.1.5" rel="stylesheet" type="text/css" />
+
+
+
+
+
+
+
+<link href="/lib/font-awesome/css/font-awesome.min.css?v=4.6.2" rel="stylesheet" type="text/css" />
+
+<link href="/css/main.css?v=5.1.4" rel="stylesheet" type="text/css" />
+
+
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png?v=5.1.4">
+
+
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32-next.png?v=5.1.4">
+
+
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16-next.png?v=5.1.4">
+
+
+  <link rel="mask-icon" href="/images/logo.svg?v=5.1.4" color="#222">
+
+
+
+
+
+  <meta name="keywords" content="CBC" />
+
+
+
+
+
+  <link rel="alternate" href="/atom.xml" title="Xiaopan233 Blog" type="application/atom+xml" />
+
+
+
+
+
+
+<meta name="description" content="又有半年没更博客233，主要是懒，笔记和文还是有写的，只不过我开了一个私密的语雀，文都放到语雀上了。现在从语雀那扒拉几篇文，丢到博客上吧。">
+<meta property="og:type" content="article">
+<meta property="og:title" content="CBC字节翻转">
+<meta property="og:url" content="http://example.com/2022/05/17/2022-05-17-cbc-byte-flipping-attack/index.html">
+<meta property="og:site_name" content="Xiaopan233 Blog">
+<meta property="og:description" content="又有半年没更博客233，主要是懒，笔记和文还是有写的，只不过我开了一个私密的语雀，文都放到语雀上了。现在从语雀那扒拉几篇文，丢到博客上吧。">
+<meta property="og:locale" content="en_US">
+<meta property="og:image" content="http://example.com/2022/05/17/2022-05-17-cbc-byte-flipping-attack/Document/1private-manaul/code-audit/cbc_byte_flipping/1.png">
+<meta property="og:image" content="http://example.com/2022/05/17/2022-05-17-cbc-byte-flipping-attack/Document/1private-manaul/code-audit/cbc_byte_flipping/2.png">
+<meta property="og:image" content="http://example.com/2022/05/17/2022-05-17-cbc-byte-flipping-attack/Document/1private-manaul/code-audit/cbc_byte_flipping/3.png">
+<meta property="article:published_time" content="2022-05-17T05:30:00.000Z">
+<meta property="article:modified_time" content="2022-05-17T05:30:10.399Z">
+<meta property="article:author" content="Xiaopan233">
+<meta property="article:tag" content="加密">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="http://example.com/2022/05/17/2022-05-17-cbc-byte-flipping-attack/Document/1private-manaul/code-audit/cbc_byte_flipping/1.png">
+
+
+
+<script type="text/javascript" id="hexo.configurations">
+  var NexT = window.NexT || {};
+  var CONFIG = {
+    root: '',
+    scheme: 'Mist',
+    version: '5.1.4',
+    sidebar: {"position":"right","display":"always","offset":12,"b2t":false,"scrollpercent":false,"onmobile":false},
+    fancybox: true,
+    tabs: true,
+    motion: {"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}},
+    duoshuo: {
+      userId: '0',
+      author: 'Author'
+    },
+    algolia: {
+      applicationID: '',
+      apiKey: '',
+      indexName: '',
+      hits: {"per_page":10},
+      labels: {"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}
+    }
+  };
+</script>
+
+
+
+  <link rel="canonical" href="http://example.com/2022/05/17/2022-05-17-cbc-byte-flipping-attack/"/>
+
+
+
+
+
+  <title>CBC字节翻转 | Xiaopan233 Blog</title>
+  
+
+
+
+
+
+
+
+
+<meta name="generator" content="Hexo 5.4.0"></head>
+
+<body itemscope itemtype="http://schema.org/WebPage" lang="en">
+
+  
+  
+    
+  
+
+  <div class="container sidebar-position-right page-post-detail">
+    <div class="headband"></div>
+
+    <header id="header" class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-wrapper">
+  <div class="site-meta ">
+    
+
+    <div class="custom-logo-site-title">
+      <a href="/"  class="brand" rel="start">
+        <span class="logo-line-before"><i></i></span>
+        <span class="site-title">Xiaopan233 Blog</span>
+        <span class="logo-line-after"><i></i></span>
+      </a>
+    </div>
+      
+        <p class="site-subtitle"></p>
+      
+  </div>
+
+  <div class="site-nav-toggle">
+    <button>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+    </button>
+  </div>
+</div>
+
+<nav class="site-nav">
+  
+
+  
+    <ul id="menu" class="menu">
+      
+        
+        <li class="menu-item menu-item-home">
+          <a href="/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-question-circle"></i> <br />
+            
+            Home
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-tags">
+          <a href="/tags/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-question-circle"></i> <br />
+            
+            Tags
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-categories">
+          <a href="/categories/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-question-circle"></i> <br />
+            
+            Categories
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-archives">
+          <a href="/archives/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-question-circle"></i> <br />
+            
+            Archives
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-sitemap">
+          <a href="/atom.xml" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-question-circle"></i> <br />
+            
+            Sitemap
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-about">
+          <a href="/2020/01/01/about" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-question-circle"></i> <br />
+            
+            About
+          </a>
+        </li>
+      
+
+      
+    </ul>
+  
+
+  
+</nav>
+
+
+
+ </div>
+    </header>
+
+    <main id="main" class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          <div id="content" class="content">
+            
+
+  <div id="posts" class="posts-expand">
+    
+
+<script>
+  var server_url = "http://127.0.0.1/blog_v1/blog_v1.php";
+</script>
+
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
+  
+  
+  
+  <div class="post-block">
+    <link itemprop="mainEntityOfPage" href="http://example.com/2022/05/17/2022-05-17-cbc-byte-flipping-attack/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="">
+      <meta itemprop="description" content="">
+      <meta itemprop="image" content="/images/avatar.gif">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="Xiaopan233 Blog">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">CBC字节翻转</h1>
+        
+        <div class="post-meta">
+          <span class="post-time">
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">Posted on</span>
+              
+              <time title="Post created" itemprop="dateCreated datePublished" datetime="2022-05-17T13:30:00+08:00">
+                2022-05-17
+              </time>
+            
+
+            
+
+            
+          </span>
+          
+            <span class="post-category" >
+            
+              <span class="post-meta-divider">|</span>
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">In</span>
+              
+              
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/%E5%8A%A0%E5%AF%86/" itemprop="url" rel="index">
+                    <span itemprop="name">加密</span>
+                  </a>
+                </span>
+
+                
+                
+              
+            </span>
+          
+          
+            
+          
+
+
+          
+          
+
+          
+
+          
+
+          
+
+        </div>
+      </header>
+    
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        <p>又有半年没更博客233，主要是懒，笔记和文还是有写的，只不过我开了一个私密的语雀，文都放到语雀上了。现在从语雀那扒拉几篇文，丢到博客上吧。</p>
+<span id="more"></span>
+
+<p>概念</p>
+<p>简单来说CBC是一种加密模式（我也没学太深），全称 cipher block chaining。即块加密链。</p>
+<p>加密时，<strong>明文会按照约定的块大小，分割成各个小块，并依次加解密</strong>。如下图的加解密过程所示。图源 <a target="_blank" rel="noopener" href="https://resources.infosecinstitute.com/topic/cbc-byte-flipping-attack-101-approach/">CBC byte flipping attack—101 approach</a></p>
+<p><img src="/2022/05/17/2022-05-17-cbc-byte-flipping-attack/Document\1private-manaul\code-audit\cbc_byte_flipping\1.png"></p>
+<p><img src="/2022/05/17/2022-05-17-cbc-byte-flipping-attack/Document\1private-manaul\code-audit\cbc_byte_flipping\2.png"></p>
+<p>简单来说。在CBC模式中，加密一段明文，需要四要素：</p>
+<ul>
+<li>明文</li>
+<li>固定块大小</li>
+<li>加密key，长度为块大小的长度</li>
+<li>iv - 随机生成的一串字节，长度也是块大小的长度</li>
+</ul>
+<p>块大小是可以指定的，常用的是16字节</p>
+<p>加密算法如下，以块为单位（偷的<a target="_blank" rel="noopener" href="https://resources.infosecinstitute.com/topic/cbc-byte-flipping-attack-101-approach/">CBC byte flipping attack—101 approach</a>）</p>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">Ciphertext-0 = Encrypt(Plaintext XOR IV)</span><br><span class="line">Ciphertext-N= Encrypt(Plaintext XOR Ciphertext-N-1)</span><br></pre></td></tr></table></figure>
+
+<p>第一段加密的块，加密时的参数是 <code>明文块 异或 iv</code></p>
+<p>第二段及之后的块，加密时的参数是 <code>明文块 异或 前一段加密块</code>。即把前一段加密块当iv使。</p>
+<p>解密算法如下，同样也是以块为单位</p>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">Plaintext-0 = Decrypt(Ciphertext) XOR IV</span><br><span class="line"></span><br><span class="line">Plaintext-N= Decrypt(Ciphertext) XOR Ciphertext-N-1</span><br></pre></td></tr></table></figure>
+
+<p>第一段解密的块，解密时的参数是 <code>密文块 异或 iv</code></p>
+<p>第二段及之后的块，解密时的参数是 <code>密文块 异或 前一段加密块</code>。即把前一段加密块当iv使。</p>
+<p>注意解密时异或的依然还是加密块。</p>
+<h1 id="攻击方式"><a href="#攻击方式" class="headerlink" title="攻击方式"></a>攻击方式</h1><p>由于在第二段密文块及之后的密文块中，都是依据前一个密文块来做解密的。若修改了中间一个密文块的值，则解密出来的明文当然也会改变。我们便可凭借这种方式，修改前一块密文，控制下一块的密文的解密值。</p>
+<p><img src="/2022/05/17/2022-05-17-cbc-byte-flipping-attack/Document\1private-manaul\code-audit\cbc_byte_flipping\3.png"></p>
+<p><strong>Demo</strong></p>
+<p>我们来写个简单的AES CBC加密的demo。用的块长度是16（key和iv长度保持为16即可）：</p>
+<p><em>ps: 由于AES/CBC是前后端密文强关联，所以要求加密密文16字节对齐。Demo中用的加密模式是”NoPadding”，即不自动进行字节填充对齐，就需要我们手动将密文填充成16字节对齐的形式。”NoPadding”模式不会对字节自动填充，初学应该好理解一点。CBC字节翻转是可以对CBC的其他模式进行攻击的。</em></p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">public</span> <span class="keyword">static</span> <span class="keyword">void</span> <span class="title">main</span><span class="params">(String[] args)</span> <span class="keyword">throws</span> Exception</span>&#123;</span><br><span class="line">    <span class="comment">// Generate PlainText, Cipher key and iv</span></span><br><span class="line">    String plainText = <span class="string">&quot;Hello World! How Are You?&quot;</span>;</span><br><span class="line">    <span class="keyword">byte</span>[] key = <span class="string">&quot;bbbbbbbbbbbbbbbb&quot;</span>.getBytes();</span><br><span class="line">    <span class="keyword">byte</span>[] iv = <span class="string">&quot;aaaaaaaaaaaaaaaa&quot;</span>.getBytes();</span><br><span class="line">    SecretKeySpec secretKeySpec = <span class="keyword">new</span> SecretKeySpec(key, <span class="string">&quot;AES&quot;</span>);</span><br><span class="line">    IvParameterSpec ivParameterSpec = <span class="keyword">new</span> IvParameterSpec(iv);</span><br><span class="line">    System.out.print(<span class="string">&quot;PlainText bytes: &quot;</span>);</span><br><span class="line">    <span class="keyword">for</span> (<span class="keyword">byte</span> aByte : plainText.getBytes()) &#123;</span><br><span class="line">        System.out.print(aByte + <span class="string">&quot; &quot;</span>);</span><br><span class="line">    &#125;</span><br><span class="line">    System.out.println();</span><br><span class="line"></span><br><span class="line">    <span class="comment">//encrypt</span></span><br><span class="line">    Cipher cipherEncode = Cipher.getInstance(<span class="string">&quot;AES/CBC/NoPadding&quot;</span>);</span><br><span class="line">    cipherEncode.init(<span class="number">1</span>, secretKeySpec, ivParameterSpec); <span class="comment">//1 is encode mode</span></span><br><span class="line">    <span class="keyword">byte</span>[] bytesEncode = cipherEncode.doFinal(plainText.getBytes());</span><br><span class="line">    System.out.print(<span class="string">&quot;EnCrypt bytes: &quot;</span>);</span><br><span class="line">    <span class="keyword">for</span> (<span class="keyword">byte</span> b : bytesEncode) &#123;</span><br><span class="line">        System.out.print(b + <span class="string">&quot; &quot;</span>);</span><br><span class="line">    &#125;</span><br><span class="line">    System.out.println();</span><br><span class="line"></span><br><span class="line">    <span class="comment">//decrypt</span></span><br><span class="line">    Cipher cipherDecode = Cipher.getInstance(<span class="string">&quot;AES/CBC/NoPadding&quot;</span>);</span><br><span class="line">    cipherDecode.init(<span class="number">2</span>, secretKeySpec, ivParameterSpec); <span class="comment">//2 is decode mode</span></span><br><span class="line">    System.out.print(<span class="string">&quot;ReDeCrypt bytes: &quot;</span>);</span><br><span class="line">    <span class="keyword">byte</span>[] bytesDecode = cipherDecode.doFinal(bytesEncode);</span><br><span class="line">    <span class="keyword">for</span> (<span class="keyword">byte</span> b : bytesDecode) &#123;</span><br><span class="line">        System.out.print(b + <span class="string">&quot; &quot;</span>);</span><br><span class="line">    &#125;</span><br><span class="line">    System.out.println();</span><br><span class="line">    System.out.print(<span class="keyword">new</span> String(bytesDecode));</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>输出:</p>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br></pre></td><td class="code"><pre><span class="line">PlainText bytes: 72 101 108 108 111 32 87 111 114 108 100 33 32 72 111 119 32 65 114 101 32 89 111 117 63 </span><br><span class="line">PlatinText String: Hello World! How Are You?</span><br><span class="line">EnCrypt bytes: 90 40 -75 -65 -48 52 123 46 116 66 -13 -54 103 -120 5 -118 -16 97 -40 -40 -117 82 -23 31 80 7 -100 76 -78 66 -1 113 </span><br><span class="line">ReDeCrypt bytes: 72 101 108 108 111 32 87 111 114 108 100 33 32 72 111 119 32 65 114 101 32 89 111 117 63 65 65 65 65 65 65 65 </span><br><span class="line"></span><br><span class="line">----按16字节分割</span><br><span class="line">PlainText bytes:</span><br><span class="line">72 101 108 108 111 32 87 111 114 108 100 33 32 72 111 119</span><br><span class="line">32 65 114 101 32 89 111 117 63 65 65 65 65 65 65 65</span><br><span class="line"></span><br><span class="line">EnCrypt bytes:</span><br><span class="line">90 40 -75 -65 -48 52 123 46 116 66 -13 -54 103 -120 5 -118</span><br><span class="line">29 69 117 22 -89 50 112 -109 9 18 -81 -116 -7 -54 -85 52</span><br><span class="line"></span><br><span class="line">ReDeCrypt bytes:</span><br><span class="line">72 101 108 108 111 32 87 111 114 108 100 33 32 72 111 119</span><br><span class="line">32 65 114 101 32 89 111 117 63 65 65 65 65 65 65 65</span><br></pre></td></tr></table></figure>
+
+<p>值得注意的是，密文字节将会按照块长度进行对齐。原文总长25，密文总长32。按16字节对齐。</p>
+<p>根据CBC加密模式下的加密流程，第一段密文由于是受<code>iv</code>控制的，还原时<code>第一段</code>不可控。只有<code>第二段</code>及之后的密文段才可以在解密时控制。</p>
+<p>捋一捋这一段Demo中，明文第<code>2</code>段第<code>0</code>字节的字符<code>32</code>的加解密流程：</p>
+<ul>
+<li>加密: 用公式<code>Ciphertext-N= Encrypt(Plaintext XOR Ciphertext-N-1)</code>，得到<code>29=encrypt(32^90)</code></li>
+<li>解密: 用公式<code>Plaintext-N= Decrypt(Ciphertext) XOR Ciphertext-N-1</code>，得到<code>32=decrypt(29)^90</code><ul>
+<li>解密时，忽略<code>decrypt()</code>函数，可以拆分成这样: <code>32=(32^90)^90</code></li>
+<li><code>90^90=0</code>，则<code>32^0</code>就能还原回明文<code>32</code>了</li>
+</ul>
+</li>
+</ul>
+<p>在解密过程中，<code>decrypt()</code>调用完后会返回<code>32^90</code>。即第<code>2</code>段明文第<code>0</code>字节异或<strong>加密时</strong>第<code>1</code>段密文第<code>0</code>字节。由于这个操作读取的是加密时数据，作为攻击者角度<strong>无法控制</strong>；但后头异或的<code>90</code>，即执行<strong>解密时</strong>的第<code>1</code>段密文第<code>0</code>字节，是我们<strong>可控</strong>的，我们只需要修改传入解密函数的密文即可。</p>
+<p>这里思考一个问题: 我们如何使得<code>32^90^XXX</code>的结果控制为任意输出呢？</p>
+<p>我们来看个异或中的一个特性：相同字节异或，结果是<code>0</code>：</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">byte</span> a = <span class="number">10</span>;</span><br><span class="line"><span class="keyword">byte</span> b = <span class="number">22</span>;</span><br><span class="line"><span class="keyword">byte</span> c = (<span class="keyword">byte</span>)(a^b); <span class="comment">//28</span></span><br><span class="line"><span class="keyword">byte</span> d = (<span class="keyword">byte</span>)(a^b^c); <span class="comment">//0  //我们把a^b当作一个整体，就好理解了。a^b其实就是c，c^c自然就是0</span></span><br></pre></td></tr></table></figure>
+
+
+
+<p>既然<code>x^x</code>返回的结果是<code>0</code>。那如果我们控制上文这个<code>XXX</code>的值为<code>32^90</code>，不就能控制<strong>这一个字节</strong>的解密值为<code>0</code>了嘛？其中<code>32</code>和<code>90</code>这两个字节都是可预测的，一个是原始明文，一个是密文。</p>
+<p><em>Demo:</em></p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">public</span> <span class="keyword">static</span> <span class="keyword">void</span> <span class="title">main</span><span class="params">(String[] args)</span> <span class="keyword">throws</span> Exception</span>&#123;</span><br><span class="line">    <span class="comment">//Generate PlainText, Cipher key and iv</span></span><br><span class="line">    .....</span><br><span class="line"></span><br><span class="line">    <span class="comment">//encrypt</span></span><br><span class="line">    Cipher cipherEncode = Cipher.getInstance(<span class="string">&quot;AES/CBC/NoPadding&quot;</span>);</span><br><span class="line">    cipherEncode.init(<span class="number">1</span>, secretKeySpec, ivParameterSpec); <span class="comment">//1 is encode mode</span></span><br><span class="line">    <span class="keyword">byte</span>[] bytesEncode = cipherEncode.doFinal(plainText.getBytes());</span><br><span class="line"></span><br><span class="line">    <span class="comment">//Change the &quot;1&quot; pos of second plain block byte to &quot;0&quot;. In the whole plainText the pos is &quot;17&quot;</span></span><br><span class="line">    bytesEncode[<span class="number">1</span>] = (<span class="keyword">byte</span>)(bytesEncode[<span class="number">1</span>] ^ plainTextBytes[<span class="number">17</span>]);  <span class="comment">//[!]</span></span><br><span class="line"></span><br><span class="line">    System.out.print(<span class="string">&quot;EnCrypt bytes: &quot;</span>);</span><br><span class="line">    <span class="keyword">for</span> (<span class="keyword">byte</span> b : bytesEncode) &#123;</span><br><span class="line">        System.out.print(b + <span class="string">&quot; &quot;</span>);</span><br><span class="line">    &#125;</span><br><span class="line">    System.out.println();</span><br><span class="line"></span><br><span class="line">    <span class="comment">//decrypt</span></span><br><span class="line">    ......</span><br><span class="line">&#125;</span><br><span class="line"></span><br></pre></td></tr></table></figure>
+
+<p>OUTPUT:</p>
+<p>PlainText bytes: 72 101 108 108 111 32 87 111 114 108 100 33 32 72 111 119 <span style="color:red">**32 **</span>65 114 101 32 89 111 117 63 65 65 65 65 65 65 65<br>EnCrypt bytes: 90 105 -75 -65 -48 52 123 46 116 66 -13 -54 103 -120 5 -118 <span style="color:red"><strong>29</strong></span> 69 117 22 -89 50 112 -109 9 18 -81 -116 -7 -54 -85 52<br>ReDeCrypt bytes: 27 -126 -93 121 65 -48 81 -89 -14 15 62 53 -106 41 -44 86 32 <span style="color:red"><strong>0</strong></span> 114 101 32 89 111 117 63 65 65 65 65 65 65 65 </p>
+<p>看到<code>[!]</code>这一段。我们预期修改<strong>明文</strong>下标为<code>17</code>的值为<code>0</code>。根据前面的推测可知，最终解密还原时是通过异或<strong>明文字节</strong>和<strong>加密时前一段密文字节</strong>及<strong>解密时前一段密文字节</strong>得到的。我们将<strong>解密时前一段密文字节</strong>设置为”<strong>明文字节</strong>异或<strong>加密时前一段密文字节</strong>“，即可让解密结果为<code>0</code></p>
+<p>接下再看到异或中的一个小知识点：<code>0</code>异或任何数，结果都是那个数:</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">byte</span> a = <span class="number">10</span>;</span><br><span class="line"><span class="keyword">byte</span> b = <span class="number">22</span>;</span><br><span class="line"><span class="keyword">byte</span> c = (<span class="keyword">byte</span>)(<span class="number">0</span>^a); <span class="comment">//10</span></span><br><span class="line"><span class="keyword">byte</span> d = (<span class="keyword">byte</span>)(<span class="number">0</span>^b); <span class="comment">//22</span></span><br></pre></td></tr></table></figure>
+
+
+
+<p>既然上文我们都能控制解密结果为<code>0</code>了，为何不能跟进一步，让解密结果为任意数值呢？很简单，只要我们在<code>0</code>的基础上再异或多一个数值即可。</p>
+<p><em>Demo:</em></p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">public</span> <span class="keyword">static</span> <span class="keyword">void</span> <span class="title">main</span><span class="params">(String[] args)</span> <span class="keyword">throws</span> Exception</span>&#123;</span><br><span class="line">    <span class="comment">//Generate PlainText, Cipher key and iv</span></span><br><span class="line">    .....</span><br><span class="line"></span><br><span class="line">    <span class="comment">//encrypt</span></span><br><span class="line">    Cipher cipherEncode = Cipher.getInstance(<span class="string">&quot;AES/CBC/NoPadding&quot;</span>);</span><br><span class="line">    cipherEncode.init(<span class="number">1</span>, secretKeySpec, ivParameterSpec); <span class="comment">//1 is encode mode</span></span><br><span class="line">    <span class="keyword">byte</span>[] bytesEncode = cipherEncode.doFinal(plainText.getBytes());</span><br><span class="line"></span><br><span class="line">    <span class="comment">//Change the &quot;1&quot; pos of second plain block byte to &quot;0&quot;. In the whole plainText the pos is &quot;17&quot;</span></span><br><span class="line">    <span class="comment">//修改</span></span><br><span class="line">    <span class="comment">//&quot;bytesEncode[1] ^ plainTextBytes[17]&quot; returns &#x27;0&#x27;. &quot;&#x27;0&#x27; ^ &#x27;x&#x27;&quot; returns &#x27;x&#x27; so that we can control the decrypt result.</span></span><br><span class="line">    bytesEncode[<span class="number">1</span>] = (<span class="keyword">byte</span>)(bytesEncode[<span class="number">1</span>] ^ plainTextBytes[<span class="number">17</span>] ^ <span class="string">&#x27;x&#x27;</span>);  <span class="comment">//[!]</span></span><br><span class="line"></span><br><span class="line">    System.out.print(<span class="string">&quot;EnCrypt bytes: &quot;</span>);</span><br><span class="line">    <span class="keyword">for</span> (<span class="keyword">byte</span> b : bytesEncode) &#123;</span><br><span class="line">        System.out.print(b + <span class="string">&quot; &quot;</span>);</span><br><span class="line">    &#125;</span><br><span class="line">    System.out.println();</span><br><span class="line"></span><br><span class="line">    <span class="comment">//decrypt</span></span><br><span class="line">    ......</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>OUTPUT:</p>
+<p>PlainText bytes: 72 101 108 108 111 32 87 111 114 108 100 33 32 72 111 119 32 <span style="color:red"><strong>65</strong></span> 114 101 32 89 111 117 63 65 65 65 65 65 65 65<br>EnCrypt bytes: 90 105 -75 -65 -48 52 123 46 116 66 -13 -54 103 -120 5 -118 29 <span style="color:red"><strong>69</strong></span> 117 22 -89 50 112 -109 9 18 -81 -116 -7 -54 -85 52<br>ReDeCrypt bytes: -87 -95 -80 -82 25 -34 17 -119 -112 -56 69 103 21 -28 117 -65 32 <span style="color:red"><strong>120</strong></span> 114 101 32 89 111 117 63 65 65 65 65 65 65 65 </p>
+<p>可以看到，第<code>17</code>字节在解密时已经被成功控制为字符<code>&#39;x&#39;</code>。</p>
+<h1 id="作用"><a href="#作用" class="headerlink" title="作用"></a>作用</h1><ul>
+<li>鉴权绕过 - CTF用的多</li>
+<li>和Padding Oracle攻击配合，修改或增加密文</li>
+<li>……</li>
+</ul>
+<h1 id="Reference"><a href="#Reference" class="headerlink" title="Reference"></a>Reference</h1><p><a target="_blank" rel="noopener" href="https://resources.infosecinstitute.com/topic/cbc-byte-flipping-attack-101-approach/">CBC byte flipping attack—101 approach</a></p>
+<p><a target="_blank" rel="noopener" href="https://wooyun.js.org/drops/CBC%E5%AD%97%E8%8A%82%E7%BF%BB%E8%BD%AC%E6%94%BB%E5%87%BB-101Approach.html">https://wooyun.js.org/drops/CBC%E5%AD%97%E8%8A%82%E7%BF%BB%E8%BD%AC%E6%94%BB%E5%87%BB-101Approach.html</a></p>
+
+      
+    </div>
+    
+    
+    
+
+    
+
+    
+
+    
+
+    <footer class="post-footer">
+      
+        <div class="post-tags">
+          
+            <a href="/tags/%E5%8A%A0%E5%AF%86/" rel="tag"># 加密</a>
+          
+        </div>
+      
+
+      
+      
+      
+
+      
+        <div class="post-nav">
+          <div class="post-nav-next post-nav-item">
+            
+              <a href="/2021/12/06/2021-12-06-talk/" rel="next" title="博客跑路半年，简单说下这半年干了嘛">
+                <i class="fa fa-chevron-left"></i> 博客跑路半年，简单说下这半年干了嘛
+              </a>
+            
+          </div>
+
+          <span class="post-nav-divider"></span>
+
+          <div class="post-nav-prev post-nav-item">
+            
+          </div>
+        </div>
+      
+
+      
+      
+    </footer>
+  </div>
+  
+  
+  
+  </article>
+
+
+
+
+
+    <div class="post-spread">
+      
+    </div>
+  </div>
+
+
+          </div>
+          
+
+
+          
+
+  
+
+
+
+        </div>
+        
+          
+  
+  <div class="sidebar-toggle">
+    <div class="sidebar-toggle-line-wrap">
+      <span class="sidebar-toggle-line sidebar-toggle-line-first"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-middle"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-last"></span>
+    </div>
+  </div>
+
+  <aside id="sidebar" class="sidebar">
+    
+    <div class="sidebar-inner">
+
+      
+
+      
+        <ul class="sidebar-nav motion-element">
+          <li class="sidebar-nav-toc sidebar-nav-active" data-target="post-toc-wrap">
+            Table of Contents
+          </li>
+          <li class="sidebar-nav-overview" data-target="site-overview-wrap">
+            Overview
+          </li>
+        </ul>
+      
+
+      <section class="site-overview-wrap sidebar-panel">
+        <div class="site-overview">
+          <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+            
+              <p class="site-author-name" itemprop="name"></p>
+              <p class="site-description motion-element" itemprop="description"></p>
+          </div>
+
+          <nav class="site-state motion-element">
+
+            
+              <div class="site-state-item site-state-posts">
+              
+                <a href="/archives/">
+              
+                  <span class="site-state-item-count">27</span>
+                  <span class="site-state-item-name">posts</span>
+                </a>
+              </div>
+            
+
+            
+              
+              
+              <div class="site-state-item site-state-categories">
+                <a href="/categories/index.html">
+                  <span class="site-state-item-count">22</span>
+                  <span class="site-state-item-name">categories</span>
+                </a>
+              </div>
+            
+
+            
+              
+              
+              <div class="site-state-item site-state-tags">
+                <a href="/tags/index.html">
+                  <span class="site-state-item-count">21</span>
+                  <span class="site-state-item-name">tags</span>
+                </a>
+              </div>
+            
+
+          </nav>
+
+          
+            <div class="feed-link motion-element">
+              <a href="/atom.xml" rel="alternate">
+                <i class="fa fa-rss"></i>
+                RSS
+              </a>
+            </div>
+          
+
+          
+            <div class="links-of-author motion-element">
+                
+                  <span class="links-of-author-item">
+                    <a href="https://github.com/xiaopan233" target="_blank" title="GitHub">
+                      
+                        <i class="fa fa-fw fa-github"></i>GitHub</a>
+                  </span>
+                
+                  <span class="links-of-author-item">
+                    <a href="https://forum.butian.net/people/483" target="_blank" title="奇安信攻防社区">
+                      
+                        <i class="fa fa-fw fa-globe"></i>奇安信攻防社区</a>
+                  </span>
+                
+                  <span class="links-of-author-item">
+                    <a href="https://www.anquanke.com/member.html?memberId=144071" target="_blank" title="安全客">
+                      
+                        <i class="fa fa-fw fa-globe"></i>安全客</a>
+                  </span>
+                
+                  <span class="links-of-author-item">
+                    <a href="https://www.freebuf.com/author/xiaopan233" target="_blank" title="Freebuf">
+                      
+                        <i class="fa fa-fw fa-globe"></i>Freebuf</a>
+                  </span>
+                
+                  <span class="links-of-author-item">
+                    <a href="https://blog.csdn.net/xiaopan233/" target="_blank" title="CSDN">
+                      
+                        <i class="fa fa-fw fa-globe"></i>CSDN</a>
+                  </span>
+                
+            </div>
+          
+
+          
+          
+
+          
+          
+            <div class="links-of-blogroll motion-element links-of-blogroll-block">
+              <div class="links-of-blogroll-title">
+                <i class="fa  fa-fw fa-link"></i>
+                友链
+              </div>
+              <ul class="links-of-blogroll-list">
+                
+                  <li class="links-of-blogroll-item">
+                    <a href="https://hui3c.club/" title="Hui3c 窝" target="_blank">Hui3c 窝</a>
+                  </li>
+                
+                  <li class="links-of-blogroll-item">
+                    <a href="https://www.noerrorp.com/" title="YouGe的技术笔记" target="_blank">YouGe的技术笔记</a>
+                  </li>
+                
+                  <li class="links-of-blogroll-item">
+                    <a href="https://www.jingqingg.com/" title="惊青の小窝" target="_blank">惊青の小窝</a>
+                  </li>
+                
+                  <li class="links-of-blogroll-item">
+                    <a href="https://blog.luolingjiang.com/" title="洛翎酱的小窝" target="_blank">洛翎酱的小窝</a>
+                  </li>
+                
+                  <li class="links-of-blogroll-item">
+                    <a href="https://www.petitstart.club/" title="Petitstart'Blog" target="_blank">Petitstart'Blog</a>
+                  </li>
+                
+              </ul>
+            </div>
+          
+
+          
+
+        </div>
+      </section>
+
+      
+      <!--noindex-->
+        <section class="post-toc-wrap motion-element sidebar-panel sidebar-panel-active">
+          <div class="post-toc">
+
+            
+              
+            
+
+            
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#%E6%94%BB%E5%87%BB%E6%96%B9%E5%BC%8F"><span class="nav-number">1.</span> <span class="nav-text">攻击方式</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#%E4%BD%9C%E7%94%A8"><span class="nav-number">2.</span> <span class="nav-text">作用</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#Reference"><span class="nav-number">3.</span> <span class="nav-text">Reference</span></a></li></ol></div>
+            
+
+          </div>
+        </section>
+      <!--/noindex-->
+      
+
+      
+
+    </div>
+  </aside>
+
+
+        
+      </div>
+    </main>
+
+    <footer id="footer" class="footer">
+      <div class="footer-inner">
+        <div class="copyright">&copy; <span itemprop="copyrightYear">2022</span>
+  <span class="with-love">
+    <i class="fa fa-user"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">Xiaopan233</span>
+
+  
+</div>
+
+
+  <div class="powered-by">Powered by <a class="theme-link" target="_blank" href="https://hexo.io">Hexo</a></div>
+
+
+
+  <span class="post-meta-divider">|</span>
+
+
+
+  <div class="theme-info">Theme &mdash; <a class="theme-link" target="_blank" href="https://github.com/iissnan/hexo-theme-next">NexT.Mist</a> v5.1.4</div>
+
+
+
+
+        
+
+
+
+
+
+
+
+        
+      </div>
+    </footer>
+
+    
+      <div class="back-to-top">
+        <i class="fa fa-arrow-up"></i>
+        
+      </div>
+    
+
+    
+
+  </div>
+
+  
+
+<script type="text/javascript">
+  if (Object.prototype.toString.call(window.Promise) !== '[object Function]') {
+    window.Promise = null;
+  }
+</script>
+
+
+
+
+
+
+
+
+
+  
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  
+    <script type="text/javascript" src="/lib/jquery/index.js?v=2.1.3"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/fastclick/lib/fastclick.min.js?v=1.0.6"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/jquery_lazyload/jquery.lazyload.js?v=1.9.7"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/velocity/velocity.min.js?v=1.2.1"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/velocity/velocity.ui.min.js?v=1.2.1"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/fancybox/source/jquery.fancybox.pack.js?v=2.1.5"></script>
+  
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/utils.js?v=5.1.4"></script>
+
+  <script type="text/javascript" src="/js/src/motion.js?v=5.1.4"></script>
+
+
+
+  
+  
+
+  
+  <script type="text/javascript" src="/js/src/scrollspy.js?v=5.1.4"></script>
+<script type="text/javascript" src="/js/src/post-details.js?v=5.1.4"></script>
+
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/bootstrap.js?v=5.1.4"></script>
+
+
+
+  
+
+
+  
+
+
+
+
+	
+
+
+
+
+
+  
+
+
+
+
+
+  
+
+
+
+
+
+
+
+
+
+
+
+
+  
+
+
+
+
+
+  
+
+  
+
+  
+
+  
+  
+
+  
+
+  
+
+  
+
+</body>
+</html>
