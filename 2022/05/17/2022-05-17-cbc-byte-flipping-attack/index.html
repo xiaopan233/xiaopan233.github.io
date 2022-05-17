@@ -88,15 +88,15 @@
 <meta property="og:site_name" content="Xiaopan233 Blog">
 <meta property="og:description" content="又有半年没更博客233，主要是懒，笔记和文还是有写的，只不过我开了一个私密的语雀，文都放到语雀上了。现在从语雀那扒拉几篇文，丢到博客上吧。">
 <meta property="og:locale" content="en_US">
-<meta property="og:image" content="http://example.com/2022/05/17/2022-05-17-cbc-byte-flipping-attack/Document/1private-manaul/code-audit/cbc_byte_flipping/1.png">
-<meta property="og:image" content="http://example.com/2022/05/17/2022-05-17-cbc-byte-flipping-attack/Document/1private-manaul/code-audit/cbc_byte_flipping/2.png">
-<meta property="og:image" content="http://example.com/2022/05/17/2022-05-17-cbc-byte-flipping-attack/Document/1private-manaul/code-audit/cbc_byte_flipping/3.png">
+<meta property="og:image" content="http://example.com/2022/05/17/2022-05-17-cbc-byte-flipping-attack/1.png">
+<meta property="og:image" content="http://example.com/2022/05/17/2022-05-17-cbc-byte-flipping-attack/2.png">
+<meta property="og:image" content="http://example.com/2022/05/17/2022-05-17-cbc-byte-flipping-attack/3.png">
 <meta property="article:published_time" content="2022-05-17T05:30:00.000Z">
-<meta property="article:modified_time" content="2022-05-17T05:30:10.399Z">
+<meta property="article:modified_time" content="2022-05-17T06:15:43.199Z">
 <meta property="article:author" content="Xiaopan233">
 <meta property="article:tag" content="加密">
 <meta name="twitter:card" content="summary">
-<meta name="twitter:image" content="http://example.com/2022/05/17/2022-05-17-cbc-byte-flipping-attack/Document/1private-manaul/code-audit/cbc_byte_flipping/1.png">
+<meta name="twitter:image" content="http://example.com/2022/05/17/2022-05-17-cbc-byte-flipping-attack/1.png">
 
 
 
@@ -376,8 +376,8 @@
 <p>概念</p>
 <p>简单来说CBC是一种加密模式（我也没学太深），全称 cipher block chaining。即块加密链。</p>
 <p>加密时，<strong>明文会按照约定的块大小，分割成各个小块，并依次加解密</strong>。如下图的加解密过程所示。图源 <a target="_blank" rel="noopener" href="https://resources.infosecinstitute.com/topic/cbc-byte-flipping-attack-101-approach/">CBC byte flipping attack—101 approach</a></p>
-<p><img src="/2022/05/17/2022-05-17-cbc-byte-flipping-attack/Document\1private-manaul\code-audit\cbc_byte_flipping\1.png"></p>
-<p><img src="/2022/05/17/2022-05-17-cbc-byte-flipping-attack/Document\1private-manaul\code-audit\cbc_byte_flipping\2.png"></p>
+<p><img src="/2022/05/17/2022-05-17-cbc-byte-flipping-attack/1.png"></p>
+<p><img src="/2022/05/17/2022-05-17-cbc-byte-flipping-attack/2.png"></p>
 <p>简单来说。在CBC模式中，加密一段明文，需要四要素：</p>
 <ul>
 <li>明文</li>
@@ -398,7 +398,7 @@
 <p>第二段及之后的块，解密时的参数是 <code>密文块 异或 前一段加密块</code>。即把前一段加密块当iv使。</p>
 <p>注意解密时异或的依然还是加密块。</p>
 <h1 id="攻击方式"><a href="#攻击方式" class="headerlink" title="攻击方式"></a>攻击方式</h1><p>由于在第二段密文块及之后的密文块中，都是依据前一个密文块来做解密的。若修改了中间一个密文块的值，则解密出来的明文当然也会改变。我们便可凭借这种方式，修改前一块密文，控制下一块的密文的解密值。</p>
-<p><img src="/2022/05/17/2022-05-17-cbc-byte-flipping-attack/Document\1private-manaul\code-audit\cbc_byte_flipping\3.png"></p>
+<p><img src="/2022/05/17/2022-05-17-cbc-byte-flipping-attack/3.png"></p>
 <p><strong>Demo</strong></p>
 <p>我们来写个简单的AES CBC加密的demo。用的块长度是16（key和iv长度保持为16即可）：</p>
 <p><em>ps: 由于AES/CBC是前后端密文强关联，所以要求加密密文16字节对齐。Demo中用的加密模式是”NoPadding”，即不自动进行字节填充对齐，就需要我们手动将密文填充成16字节对齐的形式。”NoPadding”模式不会对字节自动填充，初学应该好理解一点。CBC字节翻转是可以对CBC的其他模式进行攻击的。</em></p>
