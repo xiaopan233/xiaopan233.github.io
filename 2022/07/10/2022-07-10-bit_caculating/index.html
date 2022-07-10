@@ -1,0 +1,1039 @@
+<!DOCTYPE html>
+
+
+
+  
+
+
+<html class="theme-next mist use-motion" lang="en">
+<head>
+  <meta charset="UTF-8"/>
+<meta http-equiv="X-UA-Compatible" content="IE=edge" />
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1"/>
+<meta name="theme-color" content="#222">
+
+
+
+
+
+
+
+
+
+<meta http-equiv="Cache-Control" content="no-transform" />
+<meta http-equiv="Cache-Control" content="no-siteapp" />
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  
+  <link href="/lib/fancybox/source/jquery.fancybox.css?v=2.1.5" rel="stylesheet" type="text/css" />
+
+
+
+
+
+
+
+<link href="/lib/font-awesome/css/font-awesome.min.css?v=4.6.2" rel="stylesheet" type="text/css" />
+
+<link href="/css/main.css?v=5.1.4" rel="stylesheet" type="text/css" />
+
+
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png?v=5.1.4">
+
+
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32-next.png?v=5.1.4">
+
+
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16-next.png?v=5.1.4">
+
+
+  <link rel="mask-icon" href="/images/logo.svg?v=5.1.4" color="#222">
+
+
+
+
+
+  <meta name="keywords" content="位运算" />
+
+
+
+
+
+  <link rel="alternate" href="/atom.xml" title="Xiaopan233 Blog" type="application/atom+xml" />
+
+
+
+
+
+
+<meta name="description" content="这又是一篇存货文233..还有好多存货文，慢慢发吧。 简单来学学位运算相关的。补补基础趴。">
+<meta property="og:type" content="article">
+<meta property="og:title" content="位运算">
+<meta property="og:url" content="http://example.com/2022/07/10/2022-07-10-bit_caculating/index.html">
+<meta property="og:site_name" content="Xiaopan233 Blog">
+<meta property="og:description" content="这又是一篇存货文233..还有好多存货文，慢慢发吧。 简单来学学位运算相关的。补补基础趴。">
+<meta property="og:locale" content="en_US">
+<meta property="og:image" content="http://example.com/2022/07/10/2022-07-10-bit_caculating/1.png">
+<meta property="og:image" content="http://example.com/2022/07/10/2022-07-10-bit_caculating/2.png">
+<meta property="og:image" content="http://example.com/2022/07/10/2022-07-10-bit_caculating/3.png">
+<meta property="og:image" content="http://example.com/2022/07/10/2022-07-10-bit_caculating/4.png">
+<meta property="og:image" content="http://example.com/2022/07/10/2022-07-10-bit_caculating/5.png">
+<meta property="og:image" content="http://example.com/2022/07/10/2022-07-10-bit_caculating/6.png">
+<meta property="og:image" content="http://example.com/2022/07/10/2022-07-10-bit_caculating/2.png">
+<meta property="article:published_time" content="2022-07-10T15:24:00.000Z">
+<meta property="article:modified_time" content="2022-07-10T15:01:06.541Z">
+<meta property="article:author" content="Xiaopan233">
+<meta property="article:tag" content="基础">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="http://example.com/2022/07/10/2022-07-10-bit_caculating/1.png">
+
+
+
+<script type="text/javascript" id="hexo.configurations">
+  var NexT = window.NexT || {};
+  var CONFIG = {
+    root: '',
+    scheme: 'Mist',
+    version: '5.1.4',
+    sidebar: {"position":"right","display":"always","offset":12,"b2t":false,"scrollpercent":false,"onmobile":false},
+    fancybox: true,
+    tabs: true,
+    motion: {"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}},
+    duoshuo: {
+      userId: '0',
+      author: 'Author'
+    },
+    algolia: {
+      applicationID: '',
+      apiKey: '',
+      indexName: '',
+      hits: {"per_page":10},
+      labels: {"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}
+    }
+  };
+</script>
+
+
+
+  <link rel="canonical" href="http://example.com/2022/07/10/2022-07-10-bit_caculating/"/>
+
+
+
+
+
+  <title>位运算 | Xiaopan233 Blog</title>
+  
+
+
+
+
+
+
+
+
+<meta name="generator" content="Hexo 5.4.0"></head>
+
+<body itemscope itemtype="http://schema.org/WebPage" lang="en">
+
+  
+  
+    
+  
+
+  <div class="container sidebar-position-right page-post-detail">
+    <div class="headband"></div>
+
+    <header id="header" class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-wrapper">
+  <div class="site-meta ">
+    
+
+    <div class="custom-logo-site-title">
+      <a href="/"  class="brand" rel="start">
+        <span class="logo-line-before"><i></i></span>
+        <span class="site-title">Xiaopan233 Blog</span>
+        <span class="logo-line-after"><i></i></span>
+      </a>
+    </div>
+      
+        <p class="site-subtitle"></p>
+      
+  </div>
+
+  <div class="site-nav-toggle">
+    <button>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+    </button>
+  </div>
+</div>
+
+<nav class="site-nav">
+  
+
+  
+    <ul id="menu" class="menu">
+      
+        
+        <li class="menu-item menu-item-home">
+          <a href="/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-question-circle"></i> <br />
+            
+            Home
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-tags">
+          <a href="/tags/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-question-circle"></i> <br />
+            
+            Tags
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-categories">
+          <a href="/categories/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-question-circle"></i> <br />
+            
+            Categories
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-archives">
+          <a href="/archives/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-question-circle"></i> <br />
+            
+            Archives
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-sitemap">
+          <a href="/atom.xml" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-question-circle"></i> <br />
+            
+            Sitemap
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-about">
+          <a href="/2020/01/01/about" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-question-circle"></i> <br />
+            
+            About
+          </a>
+        </li>
+      
+
+      
+    </ul>
+  
+
+  
+</nav>
+
+
+
+ </div>
+    </header>
+
+    <main id="main" class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          <div id="content" class="content">
+            
+
+  <div id="posts" class="posts-expand">
+    
+
+<script>
+  var server_url = "http://127.0.0.1/blog_v1/blog_v1.php";
+</script>
+
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
+  
+  
+  
+  <div class="post-block">
+    <link itemprop="mainEntityOfPage" href="http://example.com/2022/07/10/2022-07-10-bit_caculating/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="">
+      <meta itemprop="description" content="">
+      <meta itemprop="image" content="/images/avatar.gif">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="Xiaopan233 Blog">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">位运算</h1>
+        
+        <div class="post-meta">
+          <span class="post-time">
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">Posted on</span>
+              
+              <time title="Post created" itemprop="dateCreated datePublished" datetime="2022-07-10T23:24:00+08:00">
+                2022-07-10
+              </time>
+            
+
+            
+
+            
+          </span>
+          
+            <span class="post-category" >
+            
+              <span class="post-meta-divider">|</span>
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">In</span>
+              
+              
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/%E5%9F%BA%E7%A1%80/" itemprop="url" rel="index">
+                    <span itemprop="name">基础</span>
+                  </a>
+                </span>
+
+                
+                
+              
+            </span>
+          
+          
+            
+          
+
+
+          
+          
+
+          
+
+          
+
+          
+
+        </div>
+      </header>
+    
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        <p>这又是一篇存货文233..还有好多存货文，慢慢发吧。</p>
+<p>简单来学学位运算相关的。补补基础趴。</p>
+<span id="more"></span>
+
+
+
+<p>感谢<a target="_blank" rel="noopener" href="https://forum.butian.net/share/350">JOHNSON师傅的文章</a>让我学到了这么有趣的知识。</p>
+<p><em>ps：就一个右移时符号位的问题就巴拉了这么多我也是醉了</em></p>
+<h1 id="引言"><a href="#引言" class="headerlink" title="引言"></a>引言</h1><p>总所周知，计算机中进行数据表示的方式是二进制，最小的存储单元就是位(bit)。一个位只有两种状态：0或1。</p>
+<p>1个字节(byte)为8个位</p>
+<p>下面以Java为例，简单看看“位”在编程中是如何工作的。</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">public</span> <span class="keyword">static</span> <span class="keyword">void</span> <span class="title">main</span><span class="params">(String[] args)</span> <span class="keyword">throws</span> Exception</span>&#123;</span><br><span class="line">    <span class="keyword">byte</span> a = <span class="number">10</span>;</span><br><span class="line">    <span class="keyword">byte</span> b = -<span class="number">10</span>;</span><br><span class="line">    File file = <span class="keyword">new</span> File(<span class="string">&quot;D:\\tmp.bin&quot;</span>);</span><br><span class="line">    FileOutputStream fileOutputStream = <span class="keyword">new</span> FileOutputStream(file);</span><br><span class="line">    fileOutputStream.write(a);</span><br><span class="line">    fileOutputStream.write(b);</span><br><span class="line">    fileOutputStream.close();</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>运行后用<code>hexdump</code>查看<code>/tmp.bin</code>。</p>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">PS C:\Users\e&gt; hexdump.exe D:\tmp.bin</span><br><span class="line">000000  0a f6</span><br></pre></td></tr></table></figure>
+
+<p>计算器转成二进制</p>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">00001010  - 0a</span><br><span class="line">11110110  - f6</span><br></pre></td></tr></table></figure>
+
+<p><strong>注意：这里的10不是指int 10（int是4个byte组成的），而是byte的10。</strong></p>
+<p><code>10</code>的二进制是<code>00001010</code>很好理解，那为啥<code>-10</code>的二进制是<code>11110110</code>呢？</p>
+<p>这里涉及到原码、反码和补码的概念了</p>
+<h1 id="原码、反码和补码"><a href="#原码、反码和补码" class="headerlink" title="原码、反码和补码"></a>原码、反码和补码</h1><p><strong>原码</strong>，顾名思义，就是字节最原始的二进制表示形式。如十进制<code>10</code>的二进制表示形式就是<code>00001010</code></p>
+<p><strong>反码</strong>，顾名思义，就是把原码中的位取反，1变0，0变1。啥意思呢？如十进制<code>10</code>的反码就是</p>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">00001010 - 原码</span><br><span class="line">11110101 - 反码</span><br></pre></td></tr></table></figure>
+
+<p><strong>补码</strong>。就是在反码的基础上，再<code>+1</code>。如十进制<code>10</code>的补码就是</p>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">00001010 - 原码</span><br><span class="line">11110101 - 反码</span><br><span class="line">11110110 - 补码</span><br></pre></td></tr></table></figure>
+
+
+
+<p><strong>关于有符号</strong></p>
+<p>那么原码，反码和补码有啥用呢？</p>
+<p>查了下资料，发现最重要的是<code>补码</code>，<code>反码</code>只是运算到<code>补码</code>的其中一步。补码最大的作用是<code>减法</code>运算。</p>
+<p>总所周知，<code>减</code>去一个数等于加上这个数的<code>相反数</code>。这样<code>减法</code>就变成了<code>加法</code>。</p>
+<p>那么要解决减法问题，首先要解决<code>负数</code>的表示问题。</p>
+<p>以<code>1</code> (<code>00000001</code>)为例。思路是，要找到表示<code>1</code>的负数，那么就是找到一个<code>数</code>，让这个<code>数</code>与<code>1</code>相加为<code>0</code></p>
+<p>正常加肯定不可能为<code>0</code>的，大佬们想到了一个思路：<strong>让字节溢出</strong>。即：正常一个字节<code>8位</code>，如果找到一个<code>数</code>让<code>0000 0001</code>(8位)相<code>加</code>等于<code>1 0000 0000</code>(9位)。我们只保留<code>后8位</code>，这样不就能得到<code>0</code>了嘛。</p>
+<p>于是，<code>00000001</code>的负数表示就是 <code>11111111</code>.变换过程就是</p>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">00000001 - 原码</span><br><span class="line">11111110 - 反码</span><br><span class="line">11111111 - 补码</span><br></pre></td></tr></table></figure>
+
+
+
+<p>正由于最高一位的特殊性(最高一位为1后才能进位到溢出)，且为了平衡一个字节中，负数和正数的数量。于是顺带规定，在有符号字节中，<code>最高一位</code>为<code>0</code>表示<code>正数</code>，<code>最高一位</code>为<code>1</code>表示<code>负数</code>。运算时最高位通常不变。</p>
+<p>也正由于补码的特殊性，能够让CPU运算减法。于是<strong>计算机存储数据时都是使用的<code>补码</code>形式存储</strong>。</p>
+<p>于是这样就成了我们耳熟能详的：有符号字节数据位是7位，最高位保留用作表示正负符号。以及：正数的原码等于补码，负数的补码等于反码+1。</p>
+<p>还有人说。<strong>补码</strong>是为了区分<code>+0</code> (<code>10000000</code>)和<code>-0</code> (<code>10000001</code>)。我觉得在当时应该没这个必要，这应该只是补码出现的附属产物。</p>
+<p>以上是我阅读了<a target="_blank" rel="noopener" href="https://www.zhihu.com/question/36667166">补码是谁发明的，它的最初作用是什么</a>的简单理解。可能不大对 :)。就这样把，，</p>
+<h1 id="左移，右移"><a href="#左移，右移" class="headerlink" title="左移，右移"></a>左移，右移</h1><p>先来看一段代码，应该不陌生了吧：</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">public</span> <span class="keyword">static</span> <span class="keyword">void</span> <span class="title">main</span><span class="params">(String[] args)</span> <span class="keyword">throws</span> Exception</span>&#123;</span><br><span class="line">    <span class="keyword">byte</span> a = <span class="number">10</span>;</span><br><span class="line">    <span class="keyword">byte</span> b = -<span class="number">10</span>;</span><br><span class="line"></span><br><span class="line">    File file = <span class="keyword">new</span> File(<span class="string">&quot;D:\\tmp.bin&quot;</span>);</span><br><span class="line">    FileOutputStream fileOutputStream = <span class="keyword">new</span> FileOutputStream(file);</span><br><span class="line">    fileOutputStream.write(a);</span><br><span class="line">    fileOutputStream.write(b);</span><br><span class="line">    fileOutputStream.close();</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>通过hexdump查看</p>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">PS C:\Users\e&gt; hexdump.exe D:\tmp.bin</span><br><span class="line">000000  0a f6</span><br></pre></td></tr></table></figure>
+
+<p>转成二进制</p>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">00001010 - 0a</span><br><span class="line">11110110 - f6</span><br></pre></td></tr></table></figure>
+
+
+
+<p>那么左移和右移是什么东西呢？我们用Java来做例子，尝试将<code>a</code>和<code>b</code><strong>左移</strong><code>1位</code></p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">public</span> <span class="keyword">static</span> <span class="keyword">void</span> <span class="title">main</span><span class="params">(String[] args)</span> <span class="keyword">throws</span> Exception</span>&#123;</span><br><span class="line">    <span class="keyword">byte</span> a = <span class="number">10</span> &lt;&lt; <span class="number">1</span>;</span><br><span class="line">    <span class="keyword">byte</span> b = -<span class="number">10</span> &lt;&lt; <span class="number">1</span>;</span><br><span class="line">	.....   </span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>查看<code>a</code>、<code>b</code>的二进制：</p>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">#</span><span class="bash">左移前</span></span><br><span class="line">00001010 - 0a - a</span><br><span class="line">11110110 - f6 - b</span><br><span class="line"></span><br><span class="line"><span class="meta">#</span><span class="bash">左移后</span></span><br><span class="line">00010100 - 14 - a</span><br><span class="line">11101100 - ec - b</span><br></pre></td></tr></table></figure>
+
+<p>从这个Demo中可以看出，<code>左移</code>就是把位整体往<code>左</code>移动，低位补<code>0</code>。<code>高位</code>溢出的丢弃。</p>
+<p><strong>右移</strong><code>1位</code></p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">public</span> <span class="keyword">static</span> <span class="keyword">void</span> <span class="title">main</span><span class="params">(String[] args)</span> <span class="keyword">throws</span> Exception</span>&#123;</span><br><span class="line">    <span class="keyword">byte</span> a = <span class="number">11</span> &gt;&gt; <span class="number">1</span>;</span><br><span class="line">    <span class="keyword">byte</span> b = -<span class="number">11</span> &gt;&gt; <span class="number">1</span>;</span><br><span class="line">	.....   </span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>查看<code>a</code>、<code>b</code>的二进制</p>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">#</span><span class="bash">右移前</span></span><br><span class="line">00001011 - 0b - a</span><br><span class="line">11110101 - f5 - b</span><br><span class="line"></span><br><span class="line"><span class="meta">#</span><span class="bash">右移后</span></span><br><span class="line">00000101 - 05 - a</span><br><span class="line">11111010 - fa - b</span><br></pre></td></tr></table></figure>
+
+<p>借用菜鸟教程的说明</p>
+<blockquote>
+<p>无符号数，整体往右移动，高位补0，低位溢出的丢弃</p>
+<p>有符号数，各个编译器实现方法不一样。有的是高位补符号位（算数右移），有的是高位补0（逻辑右移）</p>
+</blockquote>
+<p>上面这个Demo可以看出，在Java中，有符号位的<code>右移</code>方式是<code>高位</code>补<code>符号位</code>。</p>
+<p><strong>无符号右移</strong></p>
+<p>运算符是<code>&gt;&gt;&gt;</code>，高位统统补<code>0</code>。</p>
+<h2 id="细节"><a href="#细节" class="headerlink" title="细节"></a>细节</h2><p>注意到一个小细节，左移1位时，若被左移的字节小于<code>-64</code>和大于<code>63</code>时，将会报错</p>
+<img src="/2022/07/10/2022-07-10-bit_caculating/1.png" style="zoom:80%;">
+
+<p>这是为什么呢？将<code>64</code>和<code>-65</code>转成二进制看看：</p>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">01000000 - 64 - 原码</span><br><span class="line">10111111 - -65 - 补码</span><br></pre></td></tr></table></figure>
+
+<p>可以发现，在正符号字节<code>64</code>中，高位<code>第2位</code>为<code>1</code>，此时若左移<code>1位</code>，将会把高位<code>第1位</code>覆盖为<code>1</code>。这种做法在有符号字节中，会破坏原本字节的含义。负符号字节<code>-65</code>中也同理。</p>
+<p>那怎么办呢？IDEA提供了一个解决方法：<strong>将变量类型从<code>byte</code>提升为<code>int</code></strong> (<code>8位</code>-&gt;<code>32位</code>)。这种类型转换的工作原理是在<code>byte</code>高位补**<code>符号位</code>**。即：</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line"><span class="number">01000000</span> - <span class="number">64</span></span><br><span class="line"><span class="number">00000000</span> <span class="number">00000000</span> <span class="number">00000000</span> <span class="number">01000000</span> - 扩充成<span class="keyword">int</span></span><br><span class="line"><span class="number">00000000</span> <span class="number">00000000</span> <span class="number">00000000</span> <span class="number">10000000</span> - 左移一位。此时最高位依然是<span class="number">0</span></span><br><span class="line">    </span><br><span class="line"><span class="number">10111111</span> - -<span class="number">65</span></span><br><span class="line"><span class="number">11111111</span> <span class="number">11111111</span> <span class="number">11111111</span> <span class="number">10111111</span> - 扩充成<span class="keyword">int</span></span><br><span class="line"><span class="number">11111111</span> <span class="number">11111111</span> <span class="number">11111111</span> <span class="number">01111110</span> - 左移一位。此时最高位依然是<span class="number">1</span></span><br></pre></td></tr></table></figure>
+
+
+
+<h1 id="amp-0xff"><a href="#amp-0xff" class="headerlink" title="&amp;0xff"></a>&amp;0xff</h1><p>关于<code>&amp;0xff</code>的操作，网上都是都说的是为了补码对齐。那么啥是补码对齐？</p>
+<p>NoNo，其实，他是有实际需求的。左移和右移操作都存在需求。</p>
+<h2 id="右移"><a href="#右移" class="headerlink" title="右移"></a>右移</h2><p>右移的应用场景是什么呢？我们来看个Demo</p>
+<p>假设场景：一个32位的数据，存在以下数据</p>
+<ul>
+<li><p>Version</p>
+<ul>
+<li>8bit</li>
+</ul>
+</li>
+<li><p>User Id</p>
+<ul>
+<li>8bit</li>
+</ul>
+</li>
+<li><p>Company id</p>
+<ul>
+<li>8bit</li>
+</ul>
+</li>
+<li><p>H-u</p>
+<ul>
+<li>4bit</li>
+</ul>
+</li>
+<li><p>H-c</p>
+<ul>
+<li>4bit</li>
+</ul>
+</li>
+</ul>
+<p>数据结构图示如下：</p>
+<img src="/2022/07/10/2022-07-10-bit_caculating/2.png" style="zoom:80%;">
+
+<p>我们要用最方便的方式读取这个数据，该怎么做呢？</p>
+<p>很显然，涉及到位的操作，还是用位运算来的方便。我们可以通过将数据<code>右移24位</code>取<code>低8位</code>得到<code>Version</code>；<code>右移16位</code>取<code>低8位</code>得到<code>User id</code>；<code>右移8位</code>取<code>低8位</code>得到<code>Company id</code>；直接取<code>低8位</code>：<code>右移4位</code>得到<code>H-u</code>，<code>&amp;</code>上<code>0x0f</code>得到<code>H-c</code>。</p>
+<p>按照这个想法，很容易的写出实现代码：</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">public</span> <span class="keyword">static</span> <span class="keyword">void</span> <span class="title">main</span><span class="params">(String[] args)</span> <span class="keyword">throws</span> Exception</span>&#123;</span><br><span class="line">    <span class="comment">//原始数据</span></span><br><span class="line">    <span class="comment">//00101010 01001110 10110010 11100110</span></span><br><span class="line">    <span class="keyword">int</span> a = <span class="number">0x2a4eb2e6</span>;</span><br><span class="line">    <span class="keyword">byte</span> version = (<span class="keyword">byte</span>)(a&gt;&gt;<span class="number">24</span>); <span class="comment">//00101010</span></span><br><span class="line">    <span class="keyword">byte</span> userId  = (<span class="keyword">byte</span>)(a&gt;&gt;<span class="number">16</span>); <span class="comment">//01001110</span></span><br><span class="line">    <span class="keyword">byte</span> companyId = (<span class="keyword">byte</span>)(a&gt;&gt;<span class="number">8</span>); <span class="comment">//10110010</span></span><br><span class="line"></span><br><span class="line">    <span class="keyword">byte</span> H = (<span class="keyword">byte</span>)(a); <span class="comment">//11100110</span></span><br><span class="line">    <span class="keyword">byte</span> H_u = (<span class="keyword">byte</span>)(H&gt;&gt;&gt;<span class="number">4</span>); <span class="comment">//11111110  //[!]</span></span><br><span class="line">    <span class="keyword">byte</span> H_c = (<span class="keyword">byte</span>)(H&amp;<span class="number">0x0f</span>); <span class="comment">//00000110</span></span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>不知大家有无注意到，在<code>(byte)(H&gt;&gt;&gt;4)</code>的操作中出现了问题。预期应该是得到**<code>00001110</code><strong>，可实际却拿到的是</strong><code>11111110</code>**。</p>
+<p>这是为什么呢？明明我们都用了无符号的右移了啊？</p>
+<p>我们把显示转换<code>(byte)</code>去掉，会很清楚的看到一个编译时异常:</p>
+<img src="/2022/07/10/2022-07-10-bit_caculating/3.png">
+
+<p>是不是Java在进行右移操作时，会自动将运算的数据类型自动提升为<code>32bit</code>呢？莫急，我们来用C写右移，看看是一个什么样的光景，然后再类比看回Java</p>
+<h3 id="在汇编视角下的右移"><a href="#在汇编视角下的右移" class="headerlink" title="在汇编视角下的右移"></a>在汇编视角下的右移</h3><figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">&lt;stdio.h&gt;</span></span></span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">int</span> <span class="title">main</span><span class="params">()</span> </span>&#123;</span><br><span class="line">	<span class="keyword">char</span> a;</span><br><span class="line">	<span class="keyword">char</span> b;</span><br><span class="line"></span><br><span class="line">	<span class="built_in">printf</span>(<span class="string">&quot;%p\n&quot;</span>, &amp;a);</span><br><span class="line">	<span class="built_in">printf</span>(<span class="string">&quot;%p\n&quot;</span>, &amp;b);</span><br><span class="line"></span><br><span class="line">	a = <span class="number">0xb1</span>; <span class="comment">// 10110001</span></span><br><span class="line">	b = a &gt;&gt; <span class="number">4</span>;</span><br><span class="line">    <span class="comment">//需求: 取a的高4位</span></span><br><span class="line">    <span class="comment">//预期: b为 00001011</span></span><br><span class="line">    <span class="comment">//实际: b为 11111011</span></span><br><span class="line">	<span class="keyword">return</span> <span class="number">0</span>;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+
+
+<p>通过VIsual Studio的调试可以发现，为<code>a</code>赋值<code>0xb1</code>时，内存中确确实实是写进了<strong>1个字节</strong><code>b1</code></p>
+<img src="/2022/07/10/2022-07-10-bit_caculating/4.png">
+
+
+
+<p>要进行右移时，会先把<code>a</code>的值写入寄存器<code>EAX</code>。由于<code>EAX</code>是<code>32位</code>的，且读取的变量有符号。程序就会以<code>EAX</code>的高位作符号位，且由于读取的是byte只有<code>8位</code>。而<code>EAX</code>有<code>32位</code>，就会以符号位来进行填充。于是<code>EAX</code>的值就变成了<code>FFFFFFB1</code></p>
+<img src="/2022/07/10/2022-07-10-bit_caculating/5.png">
+
+<p>最终真正执行右移操作时，是以<code>EAX</code>为准进行右移的。这样就会导致右移时，往低8位中移动的是<code>1</code>而不是<code>0</code>。</p>
+<img src="/2022/07/10/2022-07-10-bit_caculating/6.png">
+
+
+
+<p><strong>解决方式</strong>:</p>
+<ol>
+<li><p>将<code>char</code>改成<code>unsigned char</code>。无符号在寄存器中高位填充的永远是<code>0</code></p>
+<figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">unsigned</span> <span class="keyword">char</span> a;</span><br><span class="line"><span class="keyword">unsigned</span> <span class="keyword">char</span> b;</span><br><span class="line">......</span><br></pre></td></tr></table></figure></li>
+<li><p>在运算时进行<code>&amp;0xff</code>。这样会在寄存器运算时，将<code>EAX</code>的<code>高24位</code>置<code>0</code>。这样右移时往低8位移动的就都是<code>0</code>了</p>
+<figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">a = <span class="number">0xb1</span>;</span><br><span class="line">b = (a&amp;<span class="number">0xff</span>) &gt;&gt; <span class="number">4</span>;</span><br><span class="line">....</span><br></pre></td></tr></table></figure></li>
+</ol>
+<h3 id="回到Java"><a href="#回到Java" class="headerlink" title="回到Java"></a>回到Java</h3><p><em>以下纯属yy，肯定不严谨，当看个乐呵就好：</em></p>
+<p>看回Java的那个编译异常。联想到<code>EAX</code>寄存器<code>32位</code>的值，是不是大概明白了点？在有符号的运算中，就算运算的数据类型是<code>8位</code>，<code>EAX</code>也会整上<code>32位</code>的长度，实际上是<code>32位</code>在运算。所以Java为了在位运算时保持类型长度和寄存器统一，便要求位运算返回值是<code>int</code></p>
+<p>看回<code>byte H_u = (byte)(H&gt;&gt;&gt;4);</code>的非预期结果。再结合汇编视角写的右移。可以猜测这样的一个运算逻辑:</p>
+<ul>
+<li>将<code>H</code>装入<code>EAX</code>。由于它是有符号的且符号位为<code>1</code>（Java没有提供<code>unsigned</code>）。此时<code>EAX</code>的值为<code>1......11100110</code></li>
+<li>对<code>EAX</code>进行<strong>无符号</strong>右移<code>4位</code>，是整体<code>32位</code>右移，此时<code>EAX</code>的值为<code>00001.......11111110</code></li>
+<li>此时再转换为<code>byte</code>类型，截取<code>低8位</code>赋值给<code>H_U</code>。</li>
+<li><code>H_u</code>的值为<code>11111110</code>。不符合我们预期的<code>00001110</code></li>
+</ul>
+<p>明白了原因之后，解决也就变的简单了。就按照前文C的解决方式即可。但是注意Java没有无符号类型，所以我们只能选择用<code>&amp;0xff</code>来清理<code>EAX</code>中<code>高24位</code>的污染。</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">.....</span><br><span class="line"><span class="keyword">byte</span> H = (<span class="keyword">byte</span>)(a);</span><br><span class="line"><span class="keyword">byte</span> H_u = (<span class="keyword">byte</span>)((H&amp;<span class="number">0xff</span>)&gt;&gt;<span class="number">4</span>); <span class="comment">//00001110</span></span><br><span class="line"><span class="keyword">byte</span> H_c = (<span class="keyword">byte</span>)(H&amp;<span class="number">0x0f</span>);</span><br><span class="line">.....</span><br></pre></td></tr></table></figure>
+
+
+
+<h2 id="左移"><a href="#左移" class="headerlink" title="左移"></a>左移</h2><p>右移的应用场景是解析数据，左移的场景更多的偏向数据组装。整合和右移相对应。</p>
+<p>数据我们还是用右移的那个数据，只是场景变了，右移的时候我们是解析数据，在左移这一节，我们来组装这个数据。</p>
+<img src="/2022/07/10/2022-07-10-bit_caculating/2.png" style="zoom:80%;">
+
+<p>基本的Demo</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">public</span> <span class="keyword">static</span> <span class="keyword">void</span> <span class="title">main</span><span class="params">(String[] args)</span> <span class="keyword">throws</span> Exception</span>&#123;</span><br><span class="line">        <span class="keyword">byte</span> version = (<span class="keyword">byte</span>)<span class="number">0x05</span>; <span class="comment">//00000101</span></span><br><span class="line">        <span class="keyword">byte</span> userId  = (<span class="keyword">byte</span>)<span class="number">0xa7</span>; <span class="comment">//10100111</span></span><br><span class="line">        <span class="keyword">byte</span> companyId = (<span class="keyword">byte</span>)<span class="number">0xe1</span>; <span class="comment">//11100001</span></span><br><span class="line">        <span class="keyword">byte</span> H_u = (<span class="keyword">byte</span>)<span class="number">0x05</span>; <span class="comment">//0101</span></span><br><span class="line">        <span class="keyword">byte</span> H_c = (<span class="keyword">byte</span>)<span class="number">0x07</span>; <span class="comment">//0111</span></span><br><span class="line"></span><br><span class="line">        <span class="keyword">int</span> data1;</span><br><span class="line">        <span class="keyword">int</span> data2;</span><br><span class="line">        data1 = version&lt;&lt;<span class="number">24</span>; <span class="comment">//00000101 0.....</span></span><br><span class="line">        data2 = userId&lt;&lt;<span class="number">16</span>;  <span class="comment">//预期: 00000000 10100111 0.....</span></span><br><span class="line">    					     <span class="comment">//实际: 11111111 10100111 0.... [!]</span></span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>可以发现，在赋值给<code>data2</code>时，<code>userId</code>左移16位时，高位是<code>1</code>。不符合预期。</p>
+<p>结合前文”汇编视角下的右移”不难猜出，这里依然是<code>EAX</code>的锅。原理如下:</p>
+<ol>
+<li>将<code>userId</code>的值存入<code>EAX</code>，由于<code>EAX</code>是32位的，会按照符号位对高位进行填充。此时<code>EAX</code>的值是<code>1...... 10100111</code></li>
+<li>对<code>EAX</code>整体左移<code>16位</code>，低位补零。此时<code>EAX</code>的值是<code>11111111 10100111 0.....</code></li>
+<li>把<code>EAX</code>的值赋给<code>data2</code>。造成了非预期结果</li>
+</ol>
+<p>解决方式也很简单，只要我们在<code>EAX</code>执行左移前，使用<code>&amp;0xff</code>把<code>高24位</code>置<code>0</code>即可。</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">....</span><br><span class="line">data2 = (userId&amp;<span class="number">0xff</span>)&lt;&lt;<span class="number">16</span>; <span class="comment">//00000000 10100111 0.....</span></span><br></pre></td></tr></table></figure>
+
+
+
+<p>解决了左移时的小问题后，我们就可以通过使用左移，把<code>各个byte</code>放到<code>int</code>的对应<strong>偏移</strong>中，如下:</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">public</span> <span class="keyword">static</span> <span class="keyword">void</span> <span class="title">main</span><span class="params">(String[] args)</span> <span class="keyword">throws</span> Exception</span>&#123;</span><br><span class="line">        <span class="keyword">byte</span> version = (<span class="keyword">byte</span>)<span class="number">0x05</span>;    <span class="comment">//00000101</span></span><br><span class="line">        <span class="keyword">byte</span> userId  = (<span class="keyword">byte</span>)<span class="number">0xa7</span>;    <span class="comment">//10100111</span></span><br><span class="line">        <span class="keyword">byte</span> companyId = (<span class="keyword">byte</span>)<span class="number">0xe1</span>;  <span class="comment">//11100001</span></span><br><span class="line">        <span class="keyword">byte</span> H_u = (<span class="keyword">byte</span>)<span class="number">0x05</span>; 		  <span class="comment">//0101</span></span><br><span class="line">        <span class="keyword">byte</span> H_c = (<span class="keyword">byte</span>)<span class="number">0x07</span>; 		  <span class="comment">//0111</span></span><br><span class="line"></span><br><span class="line">        <span class="keyword">int</span> data1, data2, data3, data4, data5;</span><br><span class="line">        data1 = version&lt;&lt;<span class="number">24</span>;      	  <span class="comment">//00000101 0...</span></span><br><span class="line">        data2 = (userId&amp;<span class="number">0xff</span>)&lt;&lt;<span class="number">16</span>;	  <span class="comment">//0...     10100111 0...</span></span><br><span class="line">        data3 = (userId&amp;<span class="number">0xff</span>)&lt;&lt;<span class="number">8</span>;	  <span class="comment">//0... 	          11100001 0...</span></span><br><span class="line">        data4 = (userId&amp;<span class="number">0xff</span>)&lt;&lt;<span class="number">4</span>;	  <span class="comment">//0...                       01010000</span></span><br><span class="line">        data5 = (userId&amp;<span class="number">0xff</span>);		  <span class="comment">//0...                           0111</span></span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>偏移位置正确后，我们可以通过”或”运算符把数据拼在一个int中</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">......</span><br><span class="line"><span class="keyword">int</span> dataRes = data1 | data2 | data3 | data4 | data5; <span class="comment">//00000101 10100111 11100001 01010111</span></span><br></pre></td></tr></table></figure>
+
+<p>再简化点，不弄5个int变量，直接把byte塞进<code>dataRes</code></p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">......</span><br><span class="line"><span class="keyword">int</span> dataRes = version&lt;&lt;<span class="number">24</span> | (userId&amp;<span class="number">0xff</span>)&lt;&lt;<span class="number">16</span> | (companyId&amp;<span class="number">0xff</span>)&lt;&lt;<span class="number">8</span> | (H_u&amp;<span class="number">0xff</span>)&lt;&lt;<span class="number">4</span> | (H_c&amp;<span class="number">0xff</span>);</span><br><span class="line"><span class="comment">//00000101 10100111 11100001 01010111</span></span><br></pre></td></tr></table></figure>
+
+
+
+<h1 id="Reference"><a href="#Reference" class="headerlink" title="Reference"></a>Reference</h1><p>JOHNSON~ JOHNSON！<a target="_blank" rel="noopener" href="https://forum.butian.net/share/350">HTTP 2 协议学习与实战</a></p>
+<p><a target="_blank" rel="noopener" href="https://www.zhihu.com/question/36667166">补码是谁发明的，它的最初作用是什么</a></p>
+
+      
+    </div>
+    
+    
+    
+
+    
+
+    
+
+    
+
+    <footer class="post-footer">
+      
+        <div class="post-tags">
+          
+            <a href="/tags/%E5%9F%BA%E7%A1%80/" rel="tag"># 基础</a>
+          
+        </div>
+      
+
+      
+      
+      
+
+      
+        <div class="post-nav">
+          <div class="post-nav-next post-nav-item">
+            
+              <a href="/2022/07/07/2022-07-07-java-memory-shell/" rel="next" title="Tomcat内存马">
+                <i class="fa fa-chevron-left"></i> Tomcat内存马
+              </a>
+            
+          </div>
+
+          <span class="post-nav-divider"></span>
+
+          <div class="post-nav-prev post-nav-item">
+            
+          </div>
+        </div>
+      
+
+      
+      
+    </footer>
+  </div>
+  
+  
+  
+  </article>
+
+
+
+
+
+    <div class="post-spread">
+      
+    </div>
+  </div>
+
+
+          </div>
+          
+
+
+          
+
+  
+
+
+
+        </div>
+        
+          
+  
+  <div class="sidebar-toggle">
+    <div class="sidebar-toggle-line-wrap">
+      <span class="sidebar-toggle-line sidebar-toggle-line-first"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-middle"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-last"></span>
+    </div>
+  </div>
+
+  <aside id="sidebar" class="sidebar">
+    
+    <div class="sidebar-inner">
+
+      
+
+      
+        <ul class="sidebar-nav motion-element">
+          <li class="sidebar-nav-toc sidebar-nav-active" data-target="post-toc-wrap">
+            Table of Contents
+          </li>
+          <li class="sidebar-nav-overview" data-target="site-overview-wrap">
+            Overview
+          </li>
+        </ul>
+      
+
+      <section class="site-overview-wrap sidebar-panel">
+        <div class="site-overview">
+          <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+            
+              <p class="site-author-name" itemprop="name"></p>
+              <p class="site-description motion-element" itemprop="description"></p>
+          </div>
+
+          <nav class="site-state motion-element">
+
+            
+              <div class="site-state-item site-state-posts">
+              
+                <a href="/archives/">
+              
+                  <span class="site-state-item-count">31</span>
+                  <span class="site-state-item-name">posts</span>
+                </a>
+              </div>
+            
+
+            
+              
+              
+              <div class="site-state-item site-state-categories">
+                <a href="/categories/index.html">
+                  <span class="site-state-item-count">24</span>
+                  <span class="site-state-item-name">categories</span>
+                </a>
+              </div>
+            
+
+            
+              
+              
+              <div class="site-state-item site-state-tags">
+                <a href="/tags/index.html">
+                  <span class="site-state-item-count">24</span>
+                  <span class="site-state-item-name">tags</span>
+                </a>
+              </div>
+            
+
+          </nav>
+
+          
+            <div class="feed-link motion-element">
+              <a href="/atom.xml" rel="alternate">
+                <i class="fa fa-rss"></i>
+                RSS
+              </a>
+            </div>
+          
+
+          
+            <div class="links-of-author motion-element">
+                
+                  <span class="links-of-author-item">
+                    <a href="https://github.com/xiaopan233" target="_blank" title="GitHub">
+                      
+                        <i class="fa fa-fw fa-github"></i>GitHub</a>
+                  </span>
+                
+                  <span class="links-of-author-item">
+                    <a href="https://tttang.com/user/Xiaopan233" target="_blank" title="跳跳糖">
+                      
+                        <i class="fa fa-fw fa-globe"></i>跳跳糖</a>
+                  </span>
+                
+                  <span class="links-of-author-item">
+                    <a href="https://forum.butian.net/people/483" target="_blank" title="奇安信攻防社区">
+                      
+                        <i class="fa fa-fw fa-globe"></i>奇安信攻防社区</a>
+                  </span>
+                
+                  <span class="links-of-author-item">
+                    <a href="https://www.anquanke.com/member.html?memberId=144071" target="_blank" title="安全客">
+                      
+                        <i class="fa fa-fw fa-globe"></i>安全客</a>
+                  </span>
+                
+                  <span class="links-of-author-item">
+                    <a href="https://www.freebuf.com/author/xiaopan233" target="_blank" title="Freebuf">
+                      
+                        <i class="fa fa-fw fa-globe"></i>Freebuf</a>
+                  </span>
+                
+                  <span class="links-of-author-item">
+                    <a href="https://blog.csdn.net/xiaopan233/" target="_blank" title="CSDN">
+                      
+                        <i class="fa fa-fw fa-globe"></i>CSDN</a>
+                  </span>
+                
+            </div>
+          
+
+          
+          
+
+          
+          
+            <div class="links-of-blogroll motion-element links-of-blogroll-block">
+              <div class="links-of-blogroll-title">
+                <i class="fa  fa-fw fa-link"></i>
+                友链
+              </div>
+              <ul class="links-of-blogroll-list">
+                
+                  <li class="links-of-blogroll-item">
+                    <a href="https://hui3c.club/" title="Hui3c 窝" target="_blank">Hui3c 窝</a>
+                  </li>
+                
+                  <li class="links-of-blogroll-item">
+                    <a href="https://www.noerrorp.com/" title="YouGe的技术笔记" target="_blank">YouGe的技术笔记</a>
+                  </li>
+                
+                  <li class="links-of-blogroll-item">
+                    <a href="https://www.jingqingg.com/" title="惊青の小窝" target="_blank">惊青の小窝</a>
+                  </li>
+                
+                  <li class="links-of-blogroll-item">
+                    <a href="https://blog.luolingjiang.com/" title="洛翎酱的小窝" target="_blank">洛翎酱的小窝</a>
+                  </li>
+                
+                  <li class="links-of-blogroll-item">
+                    <a href="https://www.petitstart.club/" title="Petitstart'Blog" target="_blank">Petitstart'Blog</a>
+                  </li>
+                
+              </ul>
+            </div>
+          
+
+          
+
+        </div>
+      </section>
+
+      
+      <!--noindex-->
+        <section class="post-toc-wrap motion-element sidebar-panel sidebar-panel-active">
+          <div class="post-toc">
+
+            
+              
+            
+
+            
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#%E5%BC%95%E8%A8%80"><span class="nav-number">1.</span> <span class="nav-text">引言</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#%E5%8E%9F%E7%A0%81%E3%80%81%E5%8F%8D%E7%A0%81%E5%92%8C%E8%A1%A5%E7%A0%81"><span class="nav-number">2.</span> <span class="nav-text">原码、反码和补码</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#%E5%B7%A6%E7%A7%BB%EF%BC%8C%E5%8F%B3%E7%A7%BB"><span class="nav-number">3.</span> <span class="nav-text">左移，右移</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#%E7%BB%86%E8%8A%82"><span class="nav-number">3.1.</span> <span class="nav-text">细节</span></a></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#amp-0xff"><span class="nav-number">4.</span> <span class="nav-text">&amp;0xff</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#%E5%8F%B3%E7%A7%BB"><span class="nav-number">4.1.</span> <span class="nav-text">右移</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#%E5%9C%A8%E6%B1%87%E7%BC%96%E8%A7%86%E8%A7%92%E4%B8%8B%E7%9A%84%E5%8F%B3%E7%A7%BB"><span class="nav-number">4.1.1.</span> <span class="nav-text">在汇编视角下的右移</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E5%9B%9E%E5%88%B0Java"><span class="nav-number">4.1.2.</span> <span class="nav-text">回到Java</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E5%B7%A6%E7%A7%BB"><span class="nav-number">4.2.</span> <span class="nav-text">左移</span></a></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#Reference"><span class="nav-number">5.</span> <span class="nav-text">Reference</span></a></li></ol></div>
+            
+
+          </div>
+        </section>
+      <!--/noindex-->
+      
+
+      
+
+    </div>
+  </aside>
+
+
+        
+      </div>
+    </main>
+
+    <footer id="footer" class="footer">
+      <div class="footer-inner">
+        <div class="copyright">&copy; <span itemprop="copyrightYear">2022</span>
+  <span class="with-love">
+    <i class="fa fa-user"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">Xiaopan233</span>
+
+  
+</div>
+
+
+  <div class="powered-by">Powered by <a class="theme-link" target="_blank" href="https://hexo.io">Hexo</a></div>
+
+
+
+  <span class="post-meta-divider">|</span>
+
+
+
+  <div class="theme-info">Theme &mdash; <a class="theme-link" target="_blank" href="https://github.com/iissnan/hexo-theme-next">NexT.Mist</a> v5.1.4</div>
+
+
+
+
+        
+
+
+
+
+
+
+
+        
+      </div>
+    </footer>
+
+    
+      <div class="back-to-top">
+        <i class="fa fa-arrow-up"></i>
+        
+      </div>
+    
+
+    
+
+  </div>
+
+  
+
+<script type="text/javascript">
+  if (Object.prototype.toString.call(window.Promise) !== '[object Function]') {
+    window.Promise = null;
+  }
+</script>
+
+
+
+
+
+
+
+
+
+  
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  
+    <script type="text/javascript" src="/lib/jquery/index.js?v=2.1.3"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/fastclick/lib/fastclick.min.js?v=1.0.6"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/jquery_lazyload/jquery.lazyload.js?v=1.9.7"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/velocity/velocity.min.js?v=1.2.1"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/velocity/velocity.ui.min.js?v=1.2.1"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/fancybox/source/jquery.fancybox.pack.js?v=2.1.5"></script>
+  
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/utils.js?v=5.1.4"></script>
+
+  <script type="text/javascript" src="/js/src/motion.js?v=5.1.4"></script>
+
+
+
+  
+  
+
+  
+  <script type="text/javascript" src="/js/src/scrollspy.js?v=5.1.4"></script>
+<script type="text/javascript" src="/js/src/post-details.js?v=5.1.4"></script>
+
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/bootstrap.js?v=5.1.4"></script>
+
+
+
+  
+
+
+  
+
+
+
+
+	
+
+
+
+
+
+  
+
+
+
+
+
+  
+
+
+
+
+
+
+
+
+
+
+
+
+  
+
+
+
+
+
+  
+
+  
+
+  
+
+  
+  
+
+  
+
+  
+
+  
+
+</body>
+</html>

